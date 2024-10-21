@@ -1,0 +1,4000 @@
+{
+  "schemas": [
+    {
+      "name": "public",
+      "note": "Default Public Schema",
+      "tables": [
+        {
+          "name": "ktq_configs",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "key_name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "unique": true,
+              "not_null": true,
+              "note": null
+            },
+            {
+              "name": "key_type",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "key_value",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_websites",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "website_name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "description",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_categories",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "website_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "enable",
+              "type": {
+                "schemaName": null,
+                "type_name": "boolean",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "url_key",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "description",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "parent_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_category_products",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "product_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "category_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_visibles",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "value",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_product_visibles",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "product_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "visible_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_medias",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "url",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "type",
+              "type": {
+                "schemaName": null,
+                "type_name": "enum",
+                "args": "'image', 'video'"
+              },
+              "note": null
+            },
+            {
+              "name": "product_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_default_attrobutes",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "product_type",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "attribute_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_products",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "sku",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "has_weight",
+              "type": {
+                "schemaName": null,
+                "type_name": "boolean",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "enable",
+              "type": {
+                "schemaName": null,
+                "type_name": "boolean",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "type",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "url_key",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "description",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "short_description",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "attribute_set_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_product_websites",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "product_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "website_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_attribute_sets",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "attribute_set_code",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "unique": true,
+              "note": null
+            },
+            {
+              "name": "attribute_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_attributes",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "attribute_code",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "unique": true,
+              "note": null
+            },
+            {
+              "name": "attribute_label",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar(255)",
+                "args": "255"
+              },
+              "note": null
+            },
+            {
+              "name": "backend_type",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar(255)",
+                "args": "255"
+              },
+              "note": null
+            },
+            {
+              "name": "frontend_input",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar(255)",
+                "args": "255"
+              },
+              "note": null
+            },
+            {
+              "name": "is_required",
+              "type": {
+                "schemaName": null,
+                "type_name": "BOOLEAN",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "is_unique",
+              "type": {
+                "schemaName": null,
+                "type_name": "BOOLEAN",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "is_system",
+              "type": {
+                "schemaName": null,
+                "type_name": "boolean",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "TIMESTAMP",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "TIMESTAMP",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_attribute_values",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "INTEGER",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "attribute_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "INTEGER",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "value",
+              "type": {
+                "schemaName": null,
+                "type_name": "VARCHAR",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "TIMESTAMP",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "TIMESTAMP",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_admin_users",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "int",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "email",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "unique": true,
+              "note": null
+            },
+            {
+              "name": "password_hash",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "role_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "int",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "is_active",
+              "type": {
+                "schemaName": null,
+                "type_name": "boolean",
+                "args": null
+              },
+              "note": null,
+              "dbdefault": {
+                "type": "number",
+                "value": 1
+              }
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_roles",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "int",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "role_name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "unique": true,
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_permissions",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "int",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "permission_code",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "unique": true,
+              "note": null
+            },
+            {
+              "name": "description",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_role_permissions",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "role_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "int",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "permission_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "int",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "primary",
+              "type": {
+                "schemaName": null,
+                "type_name": "key(role_id, permission_id)",
+                "args": "role_id, permission_id"
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_resources",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "int",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "resource_name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "unique": true,
+              "note": null
+            },
+            {
+              "name": "description",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_role_resources",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "role_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "int",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "resource_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "int",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "primary",
+              "type": {
+                "schemaName": null,
+                "type_name": "key(role_id, resource_id)",
+                "args": "role_id, resource_id"
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_customers",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "int",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "username",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "password",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "email",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "first_name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "last_name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_customer_black_lists",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "int",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "customer_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "type",
+              "type": {
+                "schemaName": null,
+                "type_name": "enum",
+                "args": "'warning', 'block'"
+              },
+              "note": null
+            },
+            {
+              "name": "start_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "end_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "description",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_customer_back_list_logs",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "int",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "customer_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "black_list_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "type",
+              "type": {
+                "schemaName": null,
+                "type_name": "enum",
+                "args": "'warning', 'block'"
+              },
+              "note": null
+            },
+            {
+              "name": "start_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "end_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "description",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_sessions",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "int",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "user_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "int",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "user_type",
+              "type": {
+                "schemaName": null,
+                "type_name": "enum",
+                "args": "'admin', 'customer'"
+              },
+              "note": null
+            },
+            {
+              "name": "session_token",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "expires_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_orders",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "website_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "user_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "total_amount",
+              "type": {
+                "schemaName": null,
+                "type_name": "float",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "shipping_cost",
+              "type": {
+                "schemaName": null,
+                "type_name": "float",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "tax_amount",
+              "type": {
+                "schemaName": null,
+                "type_name": "float",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "status",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "histories",
+              "type": {
+                "schemaName": null,
+                "type_name": "json",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "shipping_address_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_order_items",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "product_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "order_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "sku",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "qty",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "price",
+              "type": {
+                "schemaName": null,
+                "type_name": "float",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_countries",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "country_name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "unique": true,
+              "note": null
+            },
+            {
+              "name": "country_code",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_regions",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "country_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "region_name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "region_code",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_addresses",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "customer_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "address_line",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "ward",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "district",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "city",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "postal_code",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "state",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "country_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "region_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "is_default",
+              "type": {
+                "schemaName": null,
+                "type_name": "boolean",
+                "args": null
+              },
+              "note": null,
+              "dbdefault": {
+                "type": "number",
+                "value": 0
+              }
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_order_payments",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "order_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "payment_method_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "amount",
+              "type": {
+                "schemaName": null,
+                "type_name": "float",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "status",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_payment_methods",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "method_name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "unique": true,
+              "note": null
+            },
+            {
+              "name": "description",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_tax_rates",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "rate_name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "unique": true,
+              "note": null
+            },
+            {
+              "name": "rate",
+              "type": {
+                "schemaName": null,
+                "type_name": "float",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_order_taxes",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "order_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "tax_rate_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "amount",
+              "type": {
+                "schemaName": null,
+                "type_name": "float",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_tax_conditions",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "tax_rate_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "condition_type",
+              "type": {
+                "schemaName": null,
+                "type_name": "enum",
+                "args": "'always_apply', 'condition'"
+              },
+              "note": null
+            },
+            {
+              "name": "condition_table_name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "condition_table_row",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "condition_method",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "condition_value",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "condition_data_type",
+              "type": {
+                "schemaName": null,
+                "type_name": "enum",
+                "args": "'integer', 'float', 'string', 'boolean'"
+              },
+              "note": null
+            },
+            {
+              "name": "description",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_coupons",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "code",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "unique": true,
+              "note": null
+            },
+            {
+              "name": "discount_type",
+              "type": {
+                "schemaName": null,
+                "type_name": "enum",
+                "args": "'fix', 'percent'"
+              },
+              "note": null
+            },
+            {
+              "name": "discount_value",
+              "type": {
+                "schemaName": null,
+                "type_name": "float",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "start_date",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "end_date",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "usage_limit",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "usage_count",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null,
+              "dbdefault": {
+                "type": "number",
+                "value": 0
+              }
+            },
+            {
+              "name": "histories",
+              "type": {
+                "schemaName": null,
+                "type_name": "json",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_coupon_conditions",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "coupon_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "condition_type",
+              "type": {
+                "schemaName": null,
+                "type_name": "enum",
+                "args": "'always_apply', 'condition'"
+              },
+              "note": null
+            },
+            {
+              "name": "condition_table_name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "condition_table_row",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "condition_method",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "condition_value",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "condition_data_type",
+              "type": {
+                "schemaName": null,
+                "type_name": "enum",
+                "args": "'integer', 'float', 'string', 'boolean'"
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_coupon_usage",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "coupon_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "user_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "order_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "used_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_promotions",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "promotion_code",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "unique": true,
+              "note": null
+            },
+            {
+              "name": "description",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "discount_type",
+              "type": {
+                "schemaName": null,
+                "type_name": "enum",
+                "args": "'percent', 'fix'"
+              },
+              "note": null
+            },
+            {
+              "name": "discount_value",
+              "type": {
+                "schemaName": null,
+                "type_name": "float",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "start_date",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "end_date",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "status",
+              "type": {
+                "schemaName": null,
+                "type_name": "enum",
+                "args": "'active', 'inactive'"
+              },
+              "note": null
+            },
+            {
+              "name": "applicable_product_types",
+              "type": {
+                "schemaName": null,
+                "type_name": "json",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "histories",
+              "type": {
+                "schemaName": null,
+                "type_name": "json",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_product_promotions",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "promotion_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "product_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_product_reviews",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "product_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "customer_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "rating",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "review_text",
+              "type": {
+                "schemaName": null,
+                "type_name": "text",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_inventories",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "INTEGER",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "product_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "INTEGER",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "attribute_values",
+              "type": {
+                "schemaName": null,
+                "type_name": "JSON",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "quantity",
+              "type": {
+                "schemaName": null,
+                "type_name": "INTEGER",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_carts",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "INTEGER",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "qty",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "price",
+              "type": {
+                "schemaName": null,
+                "type_name": "float",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "product_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "customer_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "updated_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_admin_notifications",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "INTEGER",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "message",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "severity",
+              "type": {
+                "schemaName": null,
+                "type_name": "enum",
+                "args": "'notice', 'warning', 'error'"
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_notifications",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "INTEGER",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "title",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "message",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_read_admin_notifications",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "INTEGER",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "admin_user_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "read_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_read_notifications",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "INTEGER",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "customer_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "read_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "name": "ktq_notifi_images",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "INTEGER",
+                "args": null
+              },
+              "pk": true,
+              "note": null
+            },
+            {
+              "name": "noti_id",
+              "type": {
+                "schemaName": null,
+                "type_name": "integer",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "name",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "url",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "created_at",
+              "type": {
+                "schemaName": null,
+                "type_name": "timestamp",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": []
+        }
+      ],
+      "enums": [],
+      "tableGroups": [],
+      "refs": [
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_products",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_product_reviews",
+              "fieldNames": [
+                "product_id"
+              ],
+              "relation": "*"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_customers",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_product_reviews",
+              "fieldNames": [
+                "customer_id"
+              ],
+              "relation": "*"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_admin_users",
+              "fieldNames": [
+                "role_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_roles",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_role_permissions",
+              "fieldNames": [
+                "role_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_roles",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_role_permissions",
+              "fieldNames": [
+                "permission_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_permissions",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_role_resources",
+              "fieldNames": [
+                "role_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_roles",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_role_resources",
+              "fieldNames": [
+                "resource_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_resources",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_read_admin_notifications",
+              "fieldNames": [
+                "admin_user_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_admin_notifications",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_read_notifications",
+              "fieldNames": [
+                "customer_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_notifications",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_notifi_images",
+              "fieldNames": [
+                "noti_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_notifications",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_orders",
+              "fieldNames": [
+                "user_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_customers",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_order_payments",
+              "fieldNames": [
+                "order_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_orders",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_order_payments",
+              "fieldNames": [
+                "payment_method_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_payment_methods",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_order_taxes",
+              "fieldNames": [
+                "order_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_orders",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_order_taxes",
+              "fieldNames": [
+                "tax_rate_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_tax_rates",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_tax_conditions",
+              "fieldNames": [
+                "tax_rate_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_tax_rates",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_orders",
+              "fieldNames": [
+                "shipping_address_id"
+              ],
+              "relation": "1"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_addresses",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_customer_black_lists",
+              "fieldNames": [
+                "customer_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_customers",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_customer_back_list_logs",
+              "fieldNames": [
+                "customer_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_customers",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_customer_back_list_logs",
+              "fieldNames": [
+                "black_list_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_customer_black_lists",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_order_items",
+              "fieldNames": [
+                "order_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_orders",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_order_items",
+              "fieldNames": [
+                "product_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_products",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_carts",
+              "fieldNames": [
+                "customer_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_customers",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_carts",
+              "fieldNames": [
+                "product_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_products",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_products",
+              "fieldNames": [
+                "attribute_set_id"
+              ],
+              "relation": "1"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_attribute_sets",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_attribute_sets",
+              "fieldNames": [
+                "attribute_set_code"
+              ],
+              "relation": "1"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_attributes",
+              "fieldNames": [
+                "attribute_code"
+              ],
+              "relation": "*"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_attributes",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_attribute_values",
+              "fieldNames": [
+                "attribute_id"
+              ],
+              "relation": "*"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_regions",
+              "fieldNames": [
+                "country_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_countries",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_addresses",
+              "fieldNames": [
+                "customer_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_customers",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_addresses",
+              "fieldNames": [
+                "country_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_countries",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_addresses",
+              "fieldNames": [
+                "region_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_regions",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_product_websites",
+              "fieldNames": [
+                "product_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_products",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_product_websites",
+              "fieldNames": [
+                "website_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_websites",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_coupon_usage",
+              "fieldNames": [
+                "coupon_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_coupons",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_coupon_usage",
+              "fieldNames": [
+                "user_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_customers",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_coupon_usage",
+              "fieldNames": [
+                "order_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_orders",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_coupons",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_coupon_conditions",
+              "fieldNames": [
+                "coupon_id"
+              ],
+              "relation": "*"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_product_promotions",
+              "fieldNames": [
+                "promotion_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_promotions",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_product_promotions",
+              "fieldNames": [
+                "product_id"
+              ],
+              "relation": "*"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_products",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_products",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_medias",
+              "fieldNames": [
+                "product_id"
+              ],
+              "relation": "*"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_products",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_product_visibles",
+              "fieldNames": [
+                "product_id"
+              ],
+              "relation": "*"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_visibles",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_product_visibles",
+              "fieldNames": [
+                "visible_id"
+              ],
+              "relation": "*"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_products",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_category_products",
+              "fieldNames": [
+                "product_id"
+              ],
+              "relation": "*"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_categories",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "1"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_category_products",
+              "fieldNames": [
+                "category_id"
+              ],
+              "relation": "*"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_products",
+              "fieldNames": [
+                "type"
+              ],
+              "relation": "1"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_default_attrobutes",
+              "fieldNames": [
+                "product_type"
+              ],
+              "relation": "1"
+            }
+          ]
+        },
+        {
+          "name": null,
+          "endpoints": [
+            {
+              "schemaName": null,
+              "tableName": "ktq_default_attrobutes",
+              "fieldNames": [
+                "attribute_id"
+              ],
+              "relation": "1"
+            },
+            {
+              "schemaName": null,
+              "tableName": "ktq_attributes",
+              "fieldNames": [
+                "id"
+              ],
+              "relation": "*"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "notes": []
+}

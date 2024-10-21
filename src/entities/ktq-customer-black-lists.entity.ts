@@ -1,0 +1,44 @@
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+} from "typeorm";
+import { BackListType } from "@/common/enums/back-list-type.enum";
+
+import KtqCustomer from "./ktq-customers.entity";
+import KtqCustomerBackListLog from "./ktq-customer-back-list-logs.entity";
+
+@Entity("ktq_customer_black_lists")
+export default class KtqCustomerBlackList {
+  @PrimaryGeneratedColumn("increment")
+  id: number;
+
+  @Column({ type: "integer" })
+  customer_id: number;
+
+  @Column({ type: "enum", enum: BackListType })
+  back_list_type: BackListType;
+
+  @Column({ type: "timestamp" })
+  start_at: Date;
+
+  @Column({ type: "timestamp" })
+  end_at: Date;
+
+  @Column({ type: "varchar" })
+  description: string;
+
+  @ManyToOne(() => KtqCustomer, (customer) => customer.customerBlackLists, {
+    cascade: true,
+    eager: true,
+  })
+  customer: KtqCustomer;
+
+  @OneToMany(
+    () => KtqCustomerBackListLog,
+    (customerBackListLog) => customerBackListLog.customerBlackList,
+  )
+  customerBackListLogs: KtqCustomerBackListLog[];
+}

@@ -1,0 +1,8 @@
+Table ktq_coupon_usage {
+  id integer [primary key] // ID của lượt sử dụng
+  coupon_id integer [default: null] // Liên kết đến bảng coupon
+  user_id integer // ID của người sử dụng (có thể là khách hàng hoặc quản trị viên)
+  order_id integer // ID của đơn hàng (nếu có)
+  used_at timestamp // Thời gian sử dụng coupon
+  created_at timestamp
+}

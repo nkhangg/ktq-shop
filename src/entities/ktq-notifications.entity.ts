@@ -14,9 +14,6 @@ export default class KtqNotification {
   @Column({ type: "varchar" })
   message: string;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
   @OneToMany(
     () => KtqReadNotification,
     (readNotification) => readNotification.notification,

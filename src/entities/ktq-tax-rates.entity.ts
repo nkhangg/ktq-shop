@@ -16,12 +16,6 @@ export default class KtqTaxRate extends Timestamp {
   @Column({ type: "float" })
   rate: number;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @OneToMany(() => KtqOrderTax, (orderTax) => orderTax.taxRate)
   orderTaxes: KtqOrderTax[];
 

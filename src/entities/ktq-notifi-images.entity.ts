@@ -16,9 +16,6 @@ export default class KtqNotifiImage {
   @Column({ type: "varchar" })
   url: string;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
   @ManyToOne(
     () => KtqNotification,
     (notification) => notification.notifiImages,

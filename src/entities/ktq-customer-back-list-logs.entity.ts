@@ -18,17 +18,14 @@ export default class KtqCustomerBackListLog {
   @Column({ type: "enum", enum: BackListType })
   back_list_type: BackListType;
 
-  @Column({ type: "timestamp" })
+  @Column({ type: "timestamp", default: null })
   start_at: Date;
 
-  @Column({ type: "timestamp" })
+  @Column({ type: "timestamp", default: null })
   end_at: Date;
 
   @Column({ type: "varchar" })
   description: string;
-
-  @Column({ type: "timestamp" })
-  created_at: Date;
 
   @ManyToOne(() => KtqCustomer, (customer) => customer.customerBackListLogs, {
     cascade: true,

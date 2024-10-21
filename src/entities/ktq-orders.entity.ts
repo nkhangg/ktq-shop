@@ -45,12 +45,6 @@ export default class KtqOrder extends Timestamp {
   @Column({ type: "integer" })
   shipping_address_id: number;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @ManyToOne(() => KtqCustomer, (customer) => customer.orders, {
     cascade: true,
     eager: true,

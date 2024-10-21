@@ -1,6 +1,6 @@
 import KtqConfig from '@/entities/ktq-configs.entity';
 import { ServiceInterface } from '@/services/service-interface';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -30,7 +30,7 @@ export class KtqConfigsService implements ServiceInterface<KtqConfig, CreateConf
         return this.ktqConfigRepository.findOneBy({ id });
     }
 
-    async update(id: number, configData: CreateConfigDto): Promise<KtqConfig> {
+    async update(id: KtqConfig['id'], configData: CreateConfigDto): Promise<KtqConfig> {
         await this.ktqConfigRepository.update(id, configData);
         return this.findOne(id);
     }

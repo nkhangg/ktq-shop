@@ -22,12 +22,6 @@ export default class KtqOrderPayment extends Timestamp {
   @Column({ type: "varchar" })
   status: string;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @ManyToOne(() => KtqOrder, (order) => order.orderPayments, {
     cascade: true,
     eager: true,

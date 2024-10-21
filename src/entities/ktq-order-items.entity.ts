@@ -25,12 +25,6 @@ export default class KtqOrderItem extends Timestamp {
   @Column({ type: "float" })
   price: number;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @ManyToOne(() => KtqOrder, (order) => order.orderItems, {
     cascade: true,
     eager: true,

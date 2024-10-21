@@ -31,12 +31,6 @@ export default class KtqCouponCondition extends Timestamp {
   @Column({ type: "enum", enum: ConditionDataType })
   condition_data_type: ConditionDataType;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @ManyToOne(() => KtqCoupon, (coupon) => coupon.couponConditions, {
     cascade: true,
     eager: true,

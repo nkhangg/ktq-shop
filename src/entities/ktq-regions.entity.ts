@@ -25,12 +25,6 @@ export default class KtqRegion extends Timestamp {
   @Column({ type: "varchar" })
   region_code: string;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @ManyToOne(() => KtqCountry, (country) => country.regions, {
     cascade: true,
     eager: true,

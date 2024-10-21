@@ -15,10 +15,4 @@ export default class KtqInventory extends Timestamp {
 
   @Column({ type: "integer" })
   quantity: number;
-
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
 }

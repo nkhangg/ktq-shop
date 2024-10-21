@@ -20,9 +20,6 @@ export default class KtqMedia {
   @Column({ type: "integer" })
   product_id: number;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
   @ManyToOne(() => KtqProduct, (product) => product.medias, {
     cascade: true,
     eager: true,

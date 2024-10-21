@@ -21,12 +21,6 @@ export default class KtqAdminUser extends Timestamp {
   @Column({ type: "boolean", default: 1 })
   is_active: boolean;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @ManyToOne(() => KtqRole, (role) => role.adminUsers, {
     cascade: true,
     eager: true,

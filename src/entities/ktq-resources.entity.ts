@@ -15,12 +15,6 @@ export default class KtqResource extends Timestamp {
   @Column({ type: "varchar" })
   description: string;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @OneToMany(() => KtqRoleResource, (roleResource) => roleResource.resource)
   roleResources: KtqRoleResource[];
 }

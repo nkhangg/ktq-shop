@@ -15,12 +15,6 @@ export default class KtqAttributeValue extends Timestamp {
   @Column({ type: "varchar" })
   value: string;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @ManyToOne(() => KtqAttribute, (attribute) => attribute.attributeValues, {
     cascade: true,
     eager: true,

@@ -48,12 +48,6 @@ export default class KtqAddress extends Timestamp {
   @Column({ type: "boolean", default: 0 })
   is_default: boolean;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @OneToOne(() => KtqOrder, (order) => order.address)
   order: KtqOrder;
 

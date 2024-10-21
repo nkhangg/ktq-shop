@@ -14,9 +14,6 @@ export default class KtqProductPromotion {
   @Column({ type: "integer" })
   product_id: number;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
   @ManyToOne(() => KtqPromotion, (promotion) => promotion.productPromotions, {
     cascade: true,
     eager: true,

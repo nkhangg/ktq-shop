@@ -22,12 +22,6 @@ export default class KtqAttributeSet extends Timestamp {
   @Column({ type: "varchar" })
   attribute_id: string;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @OneToOne(() => KtqProduct, (product) => product.attributeSet)
   product: KtqProduct;
 

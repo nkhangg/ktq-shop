@@ -21,10 +21,10 @@ export default class KtqCustomerBlackList {
   @Column({ type: "enum", enum: BackListType })
   back_list_type: BackListType;
 
-  @Column({ type: "timestamp" })
+  @Column({ type: "timestamp", default: null })
   start_at: Date;
 
-  @Column({ type: "timestamp" })
+  @Column({ type: "timestamp", default: null })
   end_at: Date;
 
   @Column({ type: "varchar" })

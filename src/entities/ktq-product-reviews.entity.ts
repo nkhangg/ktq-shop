@@ -22,12 +22,6 @@ export default class KtqProductReview extends Timestamp {
   @Column({ type: "text" })
   review_text: string;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @ManyToOne(() => KtqProduct, (product) => product.productReviews, {
     cascade: true,
     eager: true,

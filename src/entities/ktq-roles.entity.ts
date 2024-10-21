@@ -14,12 +14,6 @@ export default class KtqRole extends Timestamp {
   @Column({ type: "varchar", unique: true })
   role_name: string;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @OneToMany(() => KtqAdminUser, (adminUser) => adminUser.role)
   adminUsers: KtqAdminUser[];
 

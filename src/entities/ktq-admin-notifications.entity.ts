@@ -14,9 +14,6 @@ export default class KtqAdminNotification {
   @Column({ type: "enum", enum: NotificationSeverity })
   notification_severity: NotificationSeverity;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
   @OneToMany(
     () => KtqReadAdminNotification,
     (readAdminNotification) => readAdminNotification.adminNotification,

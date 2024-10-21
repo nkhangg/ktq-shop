@@ -1,56 +1,15 @@
 // ts-node src/commands/generate-model/index.ts generate
-import { ModelExporter, Parser } from '@dbml/core';
-import { execSync } from 'child_process';
+import { ModelExporter } from '@dbml/core';
 import { Presets, SingleBar } from 'cli-progress';
 import * as fs from 'fs';
 import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
-import * as pluralize from 'pluralize';
-import { Project } from 'ts-morph';
-import acorn from 'acorn';
-import walk from 'acorn-walk';
-interface Field {
-    name: string;
-    type: {
-        schemaName: string | null;
-        type_name: string;
-        args: any | null;
-    };
-    pk?: boolean;
-    unique?: boolean;
-    not_null?: boolean;
-    note?: string | null;
-    dbdefault?: {
-        type: string;
-        value: any;
-    };
-}
+import GenerateBase, { Endpoint, Field, Relation, TableDefinition } from '../generate-base';
 
-interface TableDefinition {
-    name: string;
-    alias: string | null;
-    note: string | null;
-    fields: Field[];
-    indexes: any[];
-}
-
-interface Endpoint {
-    schemaName: string | null;
-    tableName: string;
-    fieldNames: string[];
-    relation: '1' | '*'; // Quan hệ 1-1 hoặc 1-nhiều
-}
-
-interface Relation {
-    name: string | null;
-    endpoints: Endpoint[];
-}
-
-export default class GenerateCommand {
+export default class GenerateCommand extends GenerateBase {
     private outputDir = join(__dirname, '../../entities');
     private enumsDir = join(__dirname, '../../common/enums');
     private schemaFilePath = join(__dirname, '../../etc/db_schemas.dbml'); // Đặt cứng đường dẫn tới file schema
-    private morph = new Project();
     private importPath = {
         timestamp: "import { Timestamp } from '@/common/entities/column/timestamp';",
     };
@@ -59,12 +18,17 @@ export default class GenerateCommand {
         '*-1': '@ManyToOne',
         '1-*': '@OneToMany',
     };
-    private parser = new Parser();
+    private parser = this.getParser();
     constructor() {
+        super();
         // Tạo thư mục nếu chưa tồn tại
         if (!existsSync(this.outputDir)) {
             mkdirSync(this.outputDir);
         }
+    }
+
+    setSchemaFilePath(filename: string) {
+        this.schemaFilePath = join(__dirname, `../../etc/${filename}`);
     }
 
     createEnumFolder() {
@@ -74,12 +38,7 @@ export default class GenerateCommand {
     }
 
     generateModels() {
-        const dbml = fs.readFileSync(this.schemaFilePath, 'utf-8');
-        const database = this.parser.parse(dbml, 'dbml');
-
-        // Export Database object to PostgreSQL
-        const jsonSQL = ModelExporter.export(database, 'json', false);
-        const data = JSON.parse(jsonSQL.toString());
+        const data = this.getDataFormDbml(this.schemaFilePath);
 
         const tables: TableDefinition[] = data['schemas'][0]['tables'];
         const refs: Relation[] = data['schemas'][0]['refs'];
@@ -116,43 +75,12 @@ export default class GenerateCommand {
         return uniqueTableNames;
     }
 
-    toSingular(word: string): string {
-        return pluralize(word, 1);
-    }
-
-    lowerCaseFirstLetter(str: string): string {
-        return str.charAt(0).toLowerCase() + str.slice(1);
-    }
-
-    toPlural(word: string): string {
-        return pluralize(word);
-    }
-
-    removePrefix(word: string, prefix = 'ktq_') {
-        return word.replaceAll(prefix, '');
-    }
-
     getRelation(refs: Relation[], item: TableDefinition) {
         return refs.filter((ref) => {
             const data = ref.endpoints.find((i) => i.tableName === item.name);
 
             return data && data.tableName === item.name;
         });
-    }
-
-    existsClass(className: string, path: string) {
-        try {
-            const module = require(path);
-
-            if (className in module) {
-                return module[className];
-            } else {
-                return null;
-            }
-        } catch (error) {
-            console.log(error);
-            return null;
-        }
     }
 
     createRelation(refs: Relation[], item: TableDefinition) {
@@ -300,25 +228,6 @@ export default class GenerateCommand {
         }, '');
     }
 
-    fileExists(filePath: string) {
-        try {
-            // Kiểm tra file với fs.accessSync
-            fs.accessSync(filePath, fs.constants.F_OK);
-            return true; // File tồn tại
-        } catch (err) {
-            return false; // File không tồn tại
-        }
-    }
-
-    formatFileSync(filePath: string) {
-        try {
-            execSync(`npx prettier --write ${filePath}`, { stdio: 'inherit' });
-            // console.log(`File ${filePath} đã được format thành công. \n`);
-        } catch (error) {
-            console.error(`Error formatting file: ${error.message} \n`);
-        }
-    }
-
     saveModelFile(item: TableDefinition, template: string) {
         const filePath = join(this.outputDir, `${item.name.replaceAll('_', '-')}.entity.ts`);
 
@@ -392,53 +301,10 @@ export default class GenerateCommand {
         fs.writeFileSync(filePath, fileContent, 'utf8');
     }
 
-    getAllFileNames(directoryPath: string) {
-        try {
-            // Đọc nội dung của thư mục
-            const files = fs.readdirSync(directoryPath);
-
-            // Trả về danh sách tên file
-            return files;
-        } catch (error) {
-            console.error(`Lỗi khi đọc thư mục: ${error.message}`);
-            return [];
-        }
-    }
-
     getAllModelClassnames() {
         const filenames = this.getAllFileNames(this.outputDir);
 
         return filenames.map((item) => ({ original: item, classname: this.convertFilenameToClassName(item) }));
-    }
-
-    mapSqlDataTypeToJs(sqlType: string, callback?: () => string): string {
-        switch (this.extractType(sqlType.toLowerCase())) {
-            case 'integer':
-            case 'int':
-            case 'bigint':
-                return 'number'; // Mapped to JavaScript number
-            case 'varchar':
-            case 'text':
-            case 'char':
-            case 'string':
-                return 'string'; // Mapped to JavaScript string
-            case 'boolean':
-            case 'bool':
-                return 'boolean'; // Mapped to JavaScript boolean
-            case 'date':
-            case 'timestamp':
-                return 'Date'; // Mapped to JavaScript Date object
-            case 'float':
-            case 'double':
-                return 'number'; // Mapped to JavaScript number
-            case 'json':
-                return 'object'; // Mapped to JavaScript object
-            case 'enum':
-                return (callback && callback()) || 'string'; // Mapped to JavaScript string (enums are usually represented as strings)
-            default:
-                console.log(sqlType);
-                throw new Error(`Unsupported SQL type: ${sqlType}`);
-        }
     }
 
     isTimestamp(fields: Field[]) {
@@ -448,32 +314,11 @@ export default class GenerateCommand {
         return createdAt && updatedAt;
     }
 
-    convertFilenameToClassName(fileName: string) {
-        return this.toSingular(
-            fileName
-                .split('-')
-                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                .join('')
-                .split('.')[0],
-        );
-    }
-
-    convertTableNameToClassName(tableName: string): string {
-        return tableName
-            .split('_')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join('');
-    }
-
     createPrimaryKey(primaryField: Field) {
         return `
         @PrimaryGeneratedColumn('increment')
         ${primaryField.name}: ${this.mapSqlDataTypeToJs(primaryField.type.type_name)};
         `;
-    }
-
-    extractType(dataType: string) {
-        return dataType.split('(')[0];
     }
 
     createColumn(item: Field) {
@@ -517,7 +362,11 @@ export default class GenerateCommand {
     createColumns(fields: Field[]) {
         let result = '';
 
-        fields.forEach((item) => {
+        const clearedTimestamp = fields.filter((item) => {
+            return item.name !== 'created_at' && item.name !== 'updated_at';
+        });
+
+        clearedTimestamp.forEach((item) => {
             if (item.pk) {
                 result += this.createPrimaryKey(item);
             } else {

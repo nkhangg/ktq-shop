@@ -30,12 +30,6 @@ export default class KtqCustomer extends Timestamp {
   @Column({ type: "varchar" })
   last_name: string;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @OneToMany(() => KtqProductReview, (productReview) => productReview.customer)
   productReviews: KtqProductReview[];
 

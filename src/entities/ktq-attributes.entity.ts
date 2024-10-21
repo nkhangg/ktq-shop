@@ -38,12 +38,6 @@ export default class KtqAttribute extends Timestamp {
   @Column({ type: "boolean" })
   is_system: boolean;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @ManyToOne(() => KtqAttributeSet, (attributeSet) => attributeSet.attributes, {
     cascade: true,
     eager: true,

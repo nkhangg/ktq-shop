@@ -34,12 +34,6 @@ export default class KtqTaxCondition extends Timestamp {
   @Column({ type: "varchar" })
   description: string;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @ManyToOne(() => KtqTaxRate, (taxRate) => taxRate.taxConditions, {
     cascade: true,
     eager: true,

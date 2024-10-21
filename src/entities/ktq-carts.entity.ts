@@ -22,12 +22,6 @@ export default class KtqCart extends Timestamp {
   @Column({ type: "integer" })
   customer_id: number;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @ManyToOne(() => KtqCustomer, (customer) => customer.carts, {
     cascade: true,
     eager: true,

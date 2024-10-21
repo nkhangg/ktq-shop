@@ -1,0 +1,7 @@
+Table ktq_websites{
+  id integer [primary key]
+  website_name varchar
+  description varchar
+  created_at timestamp
+  updated_at timestamp
+}

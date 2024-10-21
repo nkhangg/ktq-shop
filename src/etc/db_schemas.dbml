@@ -1,8 +1,486 @@
-Table ktq_coupon_usage {
-  id integer [primary key] // ID của lượt sử dụng
-  coupon_id integer [default: null] // Liên kết đến bảng coupon
-  user_id integer // ID của người sử dụng (có thể là khách hàng hoặc quản trị viên)
-  order_id integer // ID của đơn hàng (nếu có)
-  used_at timestamp // Thời gian sử dụng coupon
+Table ktq_configs {
+  id integer [primary key]
+  key_name varchar unique
+  key_type varchar
+  key_value varchar
+}
+
+Table ktq_websites{
+  id integer [primary key]
+  website_name varchar
+  description varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_categories{
+  id integer [primary key]
+  website_id integer
+  name varchar
+  enable boolean
+  url_key varchar
+  description varchar
+  parent_id integer
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_category_products{
+  id integer [primary key]
+  product_id integer
+  category_id integer
+}
+
+Table ktq_visibles{
+  id integer [primary key]
+  name varchar
+  value varchar
+}
+
+Table ktq_product_visibles{
+  id integer [primary key]
+  product_id integer
+  visible_id integer
+}
+
+Table ktq_medias{
+  id integer [primary key]
+  name varchar
+  url varchar
+  media_type enum('image', 'video')
+  product_id integer
   created_at timestamp
 }
+
+Table ktq_default_attributes{
+  id integer [primary key]
+  product_type varchar// simple_product, configurable_product, virtual_product, grouped_product, bundle_product, downloadable_product
+  attribute_id integer
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_products {
+  id integer [primary key]
+  sku varchar
+  name varchar
+  has_weight boolean
+  enable boolean
+  type varchar // simple_product, configurable_product, virtual_product, grouped_product, bundle_product, downloadable_product
+  url_key varchar
+  description varchar
+  short_description varchar
+  attribute_set_id integer
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_product_websites {
+  id integer [primary key]
+  product_id integer // Liên kết đến bảng sản phẩm
+  website_id integer // Liên kết đến bảng website
+}
+
+Table ktq_attribute_sets {
+  id integer [primary key]
+  attribute_set_code varchar [unique]
+  attribute_id varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_attributes {
+    id integer [primary key] 
+    attribute_code varchar [UNIQUE] // Mã của thuộc tính (ví dụ: color, size)
+    attribute_label varchar(255) // Tên hiển thị của thuộc tính
+    backend_type varchar(255) //Kiểu dữ liệu (int, varchar, text, decimal, datetime)
+    frontend_input varchar(255) // Kiểu nhập liệu (text, select, multiselect, boolean, etc.)
+    is_required BOOLEAN // Xác định thuộc tính có bắt buộc hay không
+    is_unique BOOLEAN // Thuộc tính có cần giá trị duy nhất hay không
+    is_system boolean
+    created_at TIMESTAMP 
+    updated_at TIMESTAMP 
+}
+
+Table ktq_attribute_values {
+    id INTEGER [primary key]
+    attribute_id INTEGER // Liên kết đến attribute (ví dụ: color, size)
+    value VARCHAR // Giá trị chọn từ select box (liên kết với option_value)
+    created_at TIMESTAMP 
+    updated_at TIMESTAMP
+}
+
+Table ktq_admin_users {
+  id int [pk]
+  email varchar [unique]
+  password_hash varchar
+  role_id int
+  is_active boolean [default: 1]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_roles { // Super Admin, Management, ...
+  id int [pk]
+  role_name varchar [unique]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_permissions { // CRUD
+  id int [pk]
+  permission_code varchar [unique]
+  description varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_role_permissions {
+  id integer [primary key]
+  role_id int
+  permission_id int
+}
+
+
+Table ktq_resources { // API, Admin, Order, ...
+  id int [pk]
+  resource_name varchar [unique]
+  description varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_role_resources {
+  id int [pk]
+  role_id int
+  resource_id int
+}
+
+Table ktq_customers{
+  id int [pk]
+  username varchar
+  password varchar
+  email varchar
+  first_name varchar
+  last_name varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_customer_black_lists{
+  id int [pk]
+  customer_id integer
+  back_list_type enum('warning', 'block')
+  start_at timestamp [null, default: null]
+  end_at timestamp [null, default: null]
+  description varchar
+}
+
+Table ktq_customer_back_list_logs{
+  id int [pk]
+  customer_id integer
+  black_list_id integer 
+  back_list_type enum('warning', 'block')
+  start_at timestamp [null, default: null]
+  end_at timestamp [null, default: null]
+  description varchar
+  created_at timestamp
+}
+
+Table ktq_sessions {
+  id int [pk]
+  user_id int // ID của người dùng (có thể là admin hoặc customer)
+  user_role_type enum('admin', 'customer') // Xác định loại người dùng
+  session_token varchar
+  expires_at timestamp [null, default: null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_orders {
+  id integer [primary key]
+  website_id integer
+  user_id integer // ID của người đặt hàng
+  total_amount float // Tổng số tiền của đơn hàng
+  shipping_cost float // Chi phí giao hàng (nếu có)
+  tax_amount float // Số tiền thuế
+  status varchar // Trạng thái đơn hàng (Pending, Processing, Complete, etc.)
+  histories json
+  shipping_address_id integer
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_order_items{
+  id integer [primary key]
+  product_id integer
+  order_id integer
+  sku varchar
+  qty integer
+  price float
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_countries {
+  id integer [primary key]
+  country_name varchar [unique] // Tên quốc gia
+  country_code varchar // Mã quốc gia (ISO)
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_regions {
+  id integer [primary key]
+  country_id integer // Liên kết đến bảng quốc gia
+  region_name varchar // Tên vùng (tỉnh/bang)
+  region_code varchar // Mã vùng (nếu có)
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_addresses {
+  id integer [primary key]
+  customer_id integer // Liên kết đến bảng khách hàng
+  address_line varchar // Số nhà, tên đường
+  ward varchar // Phường/Xã (có thể tùy chỉnh hoặc bỏ qua nếu không phù hợp với quốc gia khác)
+  district varchar // Quận/Huyện (có thể tùy chỉnh hoặc bỏ qua nếu không phù hợp với quốc gia khác)
+  city varchar // Tỉnh/Thành phố
+  postal_code varchar // Mã bưu điện (nếu có)
+  state varchar // Tiểu bang hoặc vùng (dành cho các quốc gia như Hoa Kỳ, Úc...)
+  country_id integer // Liên kết đến bảng quốc gia
+  region_id integer // Liên kết đến bảng vùng (nếu có)
+  is_default boolean [default: 0] // Đánh dấu địa chỉ mặc định
+  created_at timestamp
+  updated_at timestamp // Có thể thêm trường này để theo dõi thời gian cập nhật
+}
+
+Table ktq_order_payments {
+  id integer [primary key]
+  order_id integer // Liên kết đến đơn hàng
+  payment_method_id integer // Liên kết đến phương thức thanh toán
+  amount float // Số tiền thanh toán
+  status varchar // Trạng thái thanh toán (Pending, Completed, Failed)
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_payment_methods {
+  id integer [primary key]
+  method_name varchar [unique] // Tên phương thức thanh toán (ví dụ: Credit Card, PayPal, etc.)
+  description varchar // Mô tả về phương thức thanh toán
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_tax_rates {
+  id integer [primary key]
+  rate_name varchar [unique] // Tên tỷ lệ thuế
+  rate float // Tỷ lệ phần trăm thuế
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_order_taxes {
+  id integer [primary key]
+  order_id integer // Liên kết đến đơn hàng
+  tax_rate_id integer // Liên kết đến tỷ lệ thuế
+  amount float // Số tiền thuế
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_tax_conditions {
+  id integer [primary key]
+  tax_rate_id integer // Liên kết đến tỷ lệ thuế
+  condition_type enum('always_apply', 'condition') // Loại điều kiện
+  condition_table_name varchar // Tên bảng điều kiện liên kết (ví dụ: orders, products)
+  condition_table_row varchar // Tên cột trong bảng điều kiện liên kết
+  condition_method varchar //enum('<', '>', '<=', '>=', '=', '!=') // Phương thức so sánh
+  condition_value varchar // Giá trị để so sánh
+  condition_data_type enum('integer', 'float', 'string', 'boolean') // Kiểu dữ liệu của giá trị điều kiện
+   description varchar // Mô tả điều kiện
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_coupons {
+  id integer [primary key] // ID của coupon
+  code varchar [unique] // Mã coupon
+  discount_type enum('fix', 'percent') // Loại giảm giá (số tiền cố định, phần trăm)
+  discount_value float // Giá trị giảm giá
+  start_date timestamp [null, default: null] // Ngày bắt đầu
+  end_date timestamp [null, default: null] // Ngày kết thúc
+  usage_limit integer // Giới hạn số lần sử dụng
+  usage_count integer [default: 0] // Số lần đã sử dụng
+  histories json [null, default: null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_coupon_conditions {
+  id integer [primary key] // ID của điều kiện
+  coupon_id integer // Liên kết đến bảng coupon
+  condition_type enum('always_apply', 'condition') // Loại điều kiện
+  condition_table_name varchar // Tên bảng điều kiện liên kết (ví dụ: orders, products)
+  condition_table_row varchar // Tên cột trong bảng điều kiện liên kết
+  condition_method varchar //enum('<', '>', '<=', '>=', '=', '!=') // Phương thức so sánh
+  condition_value varchar // Giá trị để so sánh
+  condition_data_type enum('integer', 'float', 'string', 'boolean') // Kiểu dữ liệu của giá trị điều kiện
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_coupon_usage {
+  id integer [primary key] // ID của lượt sử dụng
+  coupon_id integer // Liên kết đến bảng coupon
+  user_id integer // ID của người sử dụng (có thể là khách hàng hoặc quản trị viên)
+  order_id integer // ID của đơn hàng (nếu có)
+  used_at timestamp [null, default: null]// Thời gian sử dụng coupon
+  created_at timestamp
+}
+
+Table ktq_promotions {
+  id integer [primary key] // ID của chương trình khuyến mãi
+  promotion_code varchar [unique] // Mã khuyến mãi
+  description varchar // Mô tả về khuyến mãi
+  discount_type enum('percent', 'fix') // Loại giảm giá (phần trăm hoặc số tiền cố định)
+  discount_value float [null, default: null] // Giá trị giảm giá
+  start_date timestamp [null, default: null] // Ngày bắt đầu khuyến mãi
+  end_date timestamp [null, default: null]// Ngày kết thúc khuyến mãi
+  promotions_status enum('active', 'inactive') // Trạng thái khuyến mãi
+  applicable_product_types json // Danh sách loại sản phẩm áp dụng (ví dụ: ['simple_product', 'configurable_product'])
+  histories json [null, default: null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ktq_product_promotions {
+  id integer [primary key] // ID của liên kết giữa sản phẩm và khuyến mãi
+  promotion_id integer // Liên kết đến bảng khuyến mãi
+  product_id integer // Liên kết đến bảng sản phẩm
+  created_at timestamp
+}
+
+Table ktq_product_reviews {
+  id integer [primary key] // ID của đánh giá
+  product_id integer [ref: > ktq_products.id] // Liên kết đến bảng sản phẩm
+  customer_id integer [ref: > ktq_customers.id] // Liên kết đến bảng khách hàng (nếu có)
+  rating integer // Đánh giá (1-5)
+  review_text text // Nội dung đánh giá
+  created_at timestamp // Thời gian tạo
+  updated_at timestamp // Thời gian cập nhật
+}
+
+Table ktq_inventories {
+  id INTEGER [primary key] // ID của bản ghi tồn kho
+  product_id INTEGER // Liên kết đến bảng sản phẩm
+  attribute_values JSON // Lưu trữ mảng giá trị thuộc tính (ví dụ: size color)
+  quantity INTEGER // Số lượng tồn kho
+  created_at timestamp // Thời gian tạo
+  updated_at timestamp // Thời gian cập nhật
+}
+
+Table ktq_carts {
+  id INTEGER [primary key]
+  qty integer
+  price float
+  product_id integer
+  customer_id integer
+  created_at timestamp // Thời gian tạo
+  updated_at timestamp // Thời gian cập nhật
+}
+
+Table ktq_admin_notifications{
+  id INTEGER [primary key]
+  message varchar
+  notification_severity enum('notice', 'warning', 'error')
+  created_at timestamp // Thời gian tạo
+}
+
+Table ktq_notifications{
+  id INTEGER [primary key]
+  title varchar
+  message varchar
+  created_at timestamp // Thời gian tạo
+}
+
+Table ktq_read_admin_notifications{
+  id INTEGER [primary key]
+  admin_user_id integer
+  read_at timestamp
+}
+
+Table ktq_read_notifications{
+  id INTEGER [primary key]
+  customer_id integer
+  read_at timestamp
+}
+
+Table ktq_notifi_images{
+  id INTEGER [primary key]
+  noti_id integer
+  name varchar
+  url varchar
+  created_at timestamp // Thời gian tạo
+}
+
+
+
+Ref: ktq_admin_users.role_id > ktq_roles.id
+Ref: ktq_role_permissions.role_id > ktq_roles.id
+Ref: ktq_role_permissions.permission_id > ktq_permissions.id
+Ref: ktq_role_resources.role_id > ktq_roles.id
+Ref: ktq_role_resources.resource_id > ktq_resources.id
+
+Ref: ktq_read_admin_notifications.admin_user_id > ktq_admin_notifications.id
+Ref: ktq_read_notifications.customer_id > ktq_notifications.id
+Ref: ktq_notifi_images.noti_id > ktq_notifications.id
+
+Ref: ktq_orders.user_id > ktq_customers.id
+Ref: ktq_order_payments.order_id > ktq_orders.id
+Ref: ktq_order_payments.payment_method_id > ktq_payment_methods.id
+Ref: ktq_order_taxes.order_id > ktq_orders.id
+Ref: ktq_order_taxes.tax_rate_id > ktq_tax_rates.id
+Ref: ktq_tax_conditions.tax_rate_id > ktq_tax_rates.id
+
+Ref: ktq_orders.shipping_address_id - ktq_addresses.id
+
+Ref: ktq_customer_black_lists.customer_id > ktq_customers.id
+Ref: ktq_customer_back_list_logs.customer_id > ktq_customers.id
+Ref: ktq_customer_back_list_logs.black_list_id > ktq_customer_black_lists.id
+
+Ref: ktq_order_items.order_id > ktq_orders.id
+Ref: ktq_order_items.product_id > ktq_products.id
+
+Ref: ktq_carts.customer_id > ktq_customers.id
+Ref: ktq_carts.product_id > ktq_products.id
+
+Ref: ktq_products.attribute_set_id - ktq_attribute_sets.id
+Ref: ktq_attribute_sets.attribute_set_code < ktq_attributes.attribute_code
+Ref: ktq_attributes.id < ktq_attribute_values.attribute_id
+
+Ref: ktq_regions.country_id > ktq_countries.id
+Ref: ktq_addresses.customer_id > ktq_customers.id
+Ref: ktq_addresses.country_id > ktq_countries.id
+Ref: ktq_addresses.region_id > ktq_regions.id
+
+Ref: ktq_product_websites.product_id > ktq_products.id
+Ref: ktq_product_websites.website_id > ktq_websites.id
+
+Ref: ktq_coupon_usage.coupon_id > ktq_coupons.id
+Ref: ktq_coupon_usage.user_id > ktq_customers.id // Nếu user_id là khách hàng
+Ref: ktq_coupon_usage.order_id > ktq_orders.id // Nếu coupon được sử dụng trong một đơn hàng
+Ref: ktq_coupons.id < ktq_coupon_conditions.coupon_id
+
+Ref: ktq_product_promotions.promotion_id > ktq_promotions.id
+Ref: ktq_product_promotions.product_id > ktq_products.id
+
+Ref: ktq_products.id < ktq_medias.product_id
+Ref: ktq_products.id < ktq_product_visibles.product_id
+Ref: ktq_visibles.id < ktq_product_visibles.visible_id
+Ref: ktq_products.id < ktq_category_products.product_id
+Ref: ktq_categories.id < ktq_category_products.category_id
+
+Ref: ktq_products.type - ktq_default_attributes.product_type
+Ref: ktq_default_attributes.attribute_id < ktq_attributes.id

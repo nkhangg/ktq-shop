@@ -51,12 +51,6 @@ export default class KtqProduct extends Timestamp {
   @Column({ type: "integer" })
   attribute_set_id: number;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @OneToMany(() => KtqProductReview, (productReview) => productReview.product)
   productReviews: KtqProductReview[];
 

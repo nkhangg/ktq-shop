@@ -16,12 +16,6 @@ export default class KtqSession extends Timestamp {
   @Column({ type: "varchar" })
   session_token: string;
 
-  @Column({ type: "timestamp" })
+  @Column({ type: "timestamp", default: null })
   expires_at: Date;
-
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
 }

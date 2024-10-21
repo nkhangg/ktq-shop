@@ -19,12 +19,6 @@ export default class KtqOrderTax extends Timestamp {
   @Column({ type: "float" })
   amount: number;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @ManyToOne(() => KtqOrder, (order) => order.orderTaxes, {
     cascade: true,
     eager: true,

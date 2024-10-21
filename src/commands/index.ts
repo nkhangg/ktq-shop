@@ -2,22 +2,39 @@
 
 import { Command } from 'commander';
 import { ModelGenerateConmand } from './generate-model';
+import { ServiceGenerateConmand } from './generate-service';
 const program = new Command();
-
-const modelCommand = new ModelGenerateConmand();
 
 program
     .command('generate <subcommand>')
     .description('Generate something')
-    .action((subcommand) => {
+    .option('-f, --file <path>', 'Specify a file path')
+    .option('-m, --module <name>')
+    .option('-md, --model <name>')
+    .action((subcommand, options) => {
         switch (subcommand) {
             case 'm-g':
             case 'model-generate':
+                const modelCommand = new ModelGenerateConmand();
+
+                if (options && options?.file) {
+                    const file = options.file as string;
+
+                    if (file.split('.').at(-1) !== 'dbml') {
+                        console.error('The extensions must .dbml');
+                        return;
+                    }
+
+                    modelCommand.setSchemaFilePath(file);
+                }
+
                 modelCommand.generateModels();
                 break;
             case 's-g':
             case 'service-generate':
-                modelCommand.generateModels();
+                const serviceCommand = new ServiceGenerateConmand();
+
+                serviceCommand.generateService();
                 break;
         }
     });

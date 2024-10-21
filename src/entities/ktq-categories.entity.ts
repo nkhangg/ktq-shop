@@ -27,12 +27,6 @@ export default class KtqCategory extends Timestamp {
   @Column({ type: "integer" })
   parent_id: number;
 
-  @Column({ type: "timestamp" })
-  created_at: Date;
-
-  @Column({ type: "timestamp" })
-  updated_at: Date;
-
   @OneToMany(
     () => KtqCategoryProduct,
     (categoryProduct) => categoryProduct.category,

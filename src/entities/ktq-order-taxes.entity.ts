@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import { Timestamp } from "@/common/entities/column/timestamp";
 
@@ -10,12 +11,6 @@ export default class KtqOrderTax extends Timestamp {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @Column({ type: "integer" })
-  order_id: number;
-
-  @Column({ type: "integer" })
-  tax_rate_id: number;
-
   @Column({ type: "float" })
   amount: number;
 
@@ -23,11 +18,13 @@ export default class KtqOrderTax extends Timestamp {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   order: KtqOrder;
 
   @ManyToOne(() => KtqTaxRate, (taxRate) => taxRate.orderTaxes, {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   taxRate: KtqTaxRate;
 }

@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import KtqReadNotification from "./ktq-read-notifications.entity";
 import KtqNotifiImage from "./ktq-notifi-images.entity";
@@ -18,8 +19,10 @@ export default class KtqNotification {
     () => KtqReadNotification,
     (readNotification) => readNotification.notification,
   )
+  @Exclude()
   readNotifications: KtqReadNotification[];
 
   @OneToMany(() => KtqNotifiImage, (notifiImage) => notifiImage.notification)
+  @Exclude()
   notifiImages: KtqNotifiImage[];
 }

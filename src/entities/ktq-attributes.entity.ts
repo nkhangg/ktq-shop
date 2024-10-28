@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
 } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import { Timestamp } from "@/common/entities/column/timestamp";
 
@@ -42,12 +43,14 @@ export default class KtqAttribute extends Timestamp {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   attributeSet: KtqAttributeSet;
 
   @OneToMany(
     () => KtqAttributeValue,
     (attributeValue) => attributeValue.attribute,
   )
+  @Exclude()
   attributeValues: KtqAttributeValue[];
 
   @ManyToOne(
@@ -55,5 +58,6 @@ export default class KtqAttribute extends Timestamp {
     (defaultAttribute) => defaultAttribute.attributes,
     { cascade: true, eager: true },
   )
+  @Exclude()
   defaultAttribute: KtqDefaultAttribute;
 }

@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import KtqProductVisible from "./ktq-product-visibles.entity";
 
@@ -17,5 +18,6 @@ export default class KtqVisible {
     () => KtqProductVisible,
     (productVisible) => productVisible.visible,
   )
+  @Exclude()
   productVisibles: KtqProductVisible[];
 }

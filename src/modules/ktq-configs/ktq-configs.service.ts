@@ -1,23 +1,18 @@
+import KtqConfigConstant from '@/constants/ktq-configs.constant';
 import KtqConfig from '@/entities/ktq-configs.entity';
 import { ServiceInterface } from '@/services/service-interface';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-interface CreateConfigDto {
-    key_name: string;
-    key_type: string;
-    key_value: string;
-}
-
 @Injectable()
-export class KtqConfigsService implements ServiceInterface<KtqConfig, CreateConfigDto> {
+export class KtqConfigsService implements ServiceInterface<KtqConfig, Partial<KtqConfig>> {
     constructor(
         @InjectRepository(KtqConfig)
         private readonly ktqConfigRepository: Repository<KtqConfig>,
     ) {}
 
-    async create(configData: CreateConfigDto): Promise<KtqConfig> {
+    async create(configData: Partial<KtqConfig>): Promise<KtqConfig> {
         const ktqConfig = this.ktqConfigRepository.create(configData);
         return this.ktqConfigRepository.save(ktqConfig);
     }
@@ -30,7 +25,7 @@ export class KtqConfigsService implements ServiceInterface<KtqConfig, CreateConf
         return this.ktqConfigRepository.findOneBy({ id });
     }
 
-    async update(id: KtqConfig['id'], configData: CreateConfigDto): Promise<KtqConfig> {
+    async update(id: KtqConfig['id'], configData: Partial<KtqConfig>): Promise<KtqConfig> {
         await this.ktqConfigRepository.update(id, configData);
         return this.findOne(id);
     }
@@ -45,5 +40,9 @@ export class KtqConfigsService implements ServiceInterface<KtqConfig, CreateConf
             return null;
         }
         return config;
+    }
+
+    async initConfigs() {
+        return await this.ktqConfigRepository.save(KtqConfigConstant.getConfigs());
     }
 }

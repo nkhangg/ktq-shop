@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import { Timestamp } from "@/common/entities/column/timestamp";
 
@@ -9,9 +10,6 @@ export default class KtqAttributeValue extends Timestamp {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @Column({ type: "integer" })
-  attribute_id: number;
-
   @Column({ type: "varchar" })
   value: string;
 
@@ -19,5 +17,6 @@ export default class KtqAttributeValue extends Timestamp {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   attribute: KtqAttribute;
 }

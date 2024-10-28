@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Exclude } from "class-transformer";
 import { DiscountType } from "@/common/enums/discount-type.enum";
 import { PromotionsStatus } from "@/common/enums/promotions-status.enum";
 import { Timestamp } from "@/common/entities/column/timestamp";
@@ -32,14 +33,15 @@ export default class KtqPromotion extends Timestamp {
   promotions_status: PromotionsStatus;
 
   @Column({ type: "json" })
-  applicable_product_types: object;
+  applicable_product_types: string;
 
   @Column({ type: "json", default: null })
-  histories: object;
+  histories: string;
 
   @OneToMany(
     () => KtqProductPromotion,
     (productPromotion) => productPromotion.promotion,
   )
+  @Exclude()
   productPromotions: KtqProductPromotion[];
 }

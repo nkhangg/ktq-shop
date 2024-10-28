@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Exclude } from "class-transformer";
 import { MediaType } from "@/common/enums/media-type.enum";
 
 import KtqProduct from "./ktq-products.entity";
@@ -17,12 +18,10 @@ export default class KtqMedia {
   @Column({ type: "enum", enum: MediaType })
   media_type: MediaType;
 
-  @Column({ type: "integer" })
-  product_id: number;
-
   @ManyToOne(() => KtqProduct, (product) => product.medias, {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   product: KtqProduct;
 }

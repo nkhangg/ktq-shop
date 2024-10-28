@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Exclude } from "class-transformer";
 import { ConditionType } from "@/common/enums/condition-type.enum";
 import { ConditionDataType } from "@/common/enums/condition-data-type.enum";
 import { Timestamp } from "@/common/entities/column/timestamp";
@@ -9,9 +10,6 @@ import KtqCoupon from "./ktq-coupons.entity";
 export default class KtqCouponCondition extends Timestamp {
   @PrimaryGeneratedColumn("increment")
   id: number;
-
-  @Column({ type: "integer" })
-  coupon_id: number;
 
   @Column({ type: "enum", enum: ConditionType })
   condition_type: ConditionType;
@@ -35,5 +33,6 @@ export default class KtqCouponCondition extends Timestamp {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   coupon: KtqCoupon;
 }

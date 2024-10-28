@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import { Timestamp } from "@/common/entities/column/timestamp";
 
@@ -9,12 +10,6 @@ import KtqProduct from "./ktq-products.entity";
 export default class KtqOrderItem extends Timestamp {
   @PrimaryGeneratedColumn("increment")
   id: number;
-
-  @Column({ type: "integer" })
-  product_id: number;
-
-  @Column({ type: "integer" })
-  order_id: number;
 
   @Column({ type: "varchar" })
   sku: string;
@@ -29,11 +24,13 @@ export default class KtqOrderItem extends Timestamp {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   order: KtqOrder;
 
   @ManyToOne(() => KtqProduct, (product) => product.orderItems, {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   product: KtqProduct;
 }

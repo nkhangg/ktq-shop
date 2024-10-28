@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import KtqNotification from "./ktq-notifications.entity";
 
@@ -6,9 +7,6 @@ import KtqNotification from "./ktq-notifications.entity";
 export default class KtqNotifiImage {
   @PrimaryGeneratedColumn("increment")
   id: number;
-
-  @Column({ type: "integer" })
-  noti_id: number;
 
   @Column({ type: "varchar" })
   name: string;
@@ -21,5 +19,6 @@ export default class KtqNotifiImage {
     (notification) => notification.notifiImages,
     { cascade: true, eager: true },
   )
+  @Exclude()
   notification: KtqNotification;
 }

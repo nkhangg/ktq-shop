@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Exclude } from "class-transformer";
 import { NotificationSeverity } from "@/common/enums/notification-severity.enum";
 
 import KtqReadAdminNotification from "./ktq-read-admin-notifications.entity";
@@ -18,5 +19,6 @@ export default class KtqAdminNotification {
     () => KtqReadAdminNotification,
     (readAdminNotification) => readAdminNotification.adminNotification,
   )
+  @Exclude()
   readAdminNotifications: KtqReadAdminNotification[];
 }

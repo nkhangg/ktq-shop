@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import KtqNotification from "./ktq-notifications.entity";
 
@@ -6,9 +7,6 @@ import KtqNotification from "./ktq-notifications.entity";
 export default class KtqReadNotification {
   @PrimaryGeneratedColumn("increment")
   id: number;
-
-  @Column({ type: "integer" })
-  customer_id: number;
 
   @Column({ type: "timestamp" })
   read_at: Date;
@@ -18,5 +16,6 @@ export default class KtqReadNotification {
     (notification) => notification.readNotifications,
     { cascade: true, eager: true },
   )
+  @Exclude()
   notification: KtqNotification;
 }

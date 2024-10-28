@@ -5,6 +5,7 @@ import {
   OneToOne,
   OneToMany,
 } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import { Timestamp } from "@/common/entities/column/timestamp";
 
@@ -19,12 +20,11 @@ export default class KtqAttributeSet extends Timestamp {
   @Column({ type: "varchar", unique: true })
   attribute_set_code: string;
 
-  @Column({ type: "varchar" })
-  attribute_id: string;
-
   @OneToOne(() => KtqProduct, (product) => product.attributeSet)
+  @Exclude()
   product: KtqProduct;
 
   @OneToMany(() => KtqAttribute, (attribute) => attribute.attributeSet)
+  @Exclude()
   attributes: KtqAttribute[];
 }

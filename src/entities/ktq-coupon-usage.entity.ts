@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import KtqCoupon from "./ktq-coupons.entity";
 import KtqCustomer from "./ktq-customers.entity";
@@ -9,15 +10,6 @@ export default class KtqCouponUsage {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @Column({ type: "integer" })
-  coupon_id: number;
-
-  @Column({ type: "integer" })
-  user_id: number;
-
-  @Column({ type: "integer" })
-  order_id: number;
-
   @Column({ type: "timestamp", default: null })
   used_at: Date;
 
@@ -25,17 +17,20 @@ export default class KtqCouponUsage {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   coupon: KtqCoupon;
 
   @ManyToOne(() => KtqCustomer, (customer) => customer.couponUsages, {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   customer: KtqCustomer;
 
   @ManyToOne(() => KtqOrder, (order) => order.couponUsages, {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   order: KtqOrder;
 }

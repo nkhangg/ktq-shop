@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import KtqProduct from "./ktq-products.entity";
 import KtqWebsite from "./ktq-websites.entity";
@@ -8,21 +9,17 @@ export default class KtqProductWebsite {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @Column({ type: "integer" })
-  product_id: number;
-
-  @Column({ type: "integer" })
-  website_id: number;
-
   @ManyToOne(() => KtqProduct, (product) => product.productWebsites, {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   product: KtqProduct;
 
   @ManyToOne(() => KtqWebsite, (website) => website.productWebsites, {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   website: KtqWebsite;
 }

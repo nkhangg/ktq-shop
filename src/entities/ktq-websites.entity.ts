@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import { Timestamp } from "@/common/entities/column/timestamp";
 
@@ -19,5 +20,6 @@ export default class KtqWebsite extends Timestamp {
     () => KtqProductWebsite,
     (productWebsite) => productWebsite.website,
   )
+  @Exclude()
   productWebsites: KtqProductWebsite[];
 }

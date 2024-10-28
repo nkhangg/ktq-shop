@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import { Timestamp } from "@/common/entities/column/timestamp";
 
@@ -11,12 +12,6 @@ export default class KtqProductReview extends Timestamp {
   id: number;
 
   @Column({ type: "integer" })
-  product_id: number;
-
-  @Column({ type: "integer" })
-  customer_id: number;
-
-  @Column({ type: "integer" })
   rating: number;
 
   @Column({ type: "text" })
@@ -26,11 +21,13 @@ export default class KtqProductReview extends Timestamp {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   product: KtqProduct;
 
   @ManyToOne(() => KtqCustomer, (customer) => customer.productReviews, {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   customer: KtqCustomer;
 }

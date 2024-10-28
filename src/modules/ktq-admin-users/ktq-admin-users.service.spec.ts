@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { KtqProductsService } from './ktq-products.service';
+import { KtqAdminUsersService } from './ktq-admin-users.service';
 
-describe('KtqProductsService', () => {
-  let service: KtqProductsService;
+describe('KtqAdminUsersService', () => {
+  let service: KtqAdminUsersService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [KtqProductsService],
+      providers: [KtqAdminUsersService],
     }).compile();
 
-    service = module.get<KtqProductsService>(KtqProductsService);
+    service = module.get<KtqAdminUsersService>(KtqAdminUsersService);
   });
 
   it('should be defined', () => {

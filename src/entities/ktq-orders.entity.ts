@@ -6,6 +6,7 @@ import {
   OneToMany,
   OneToOne,
 } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import { Timestamp } from "@/common/entities/column/timestamp";
 
@@ -21,12 +22,6 @@ export default class KtqOrder extends Timestamp {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @Column({ type: "integer" })
-  website_id: number;
-
-  @Column({ type: "integer" })
-  user_id: number;
-
   @Column({ type: "float" })
   total_amount: number;
 
@@ -40,29 +35,32 @@ export default class KtqOrder extends Timestamp {
   status: string;
 
   @Column({ type: "json" })
-  histories: object;
-
-  @Column({ type: "integer" })
-  shipping_address_id: number;
+  histories: string;
 
   @ManyToOne(() => KtqCustomer, (customer) => customer.orders, {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   customer: KtqCustomer;
 
   @OneToMany(() => KtqOrderPayment, (orderPayment) => orderPayment.order)
+  @Exclude()
   orderPayments: KtqOrderPayment[];
 
   @OneToMany(() => KtqOrderTax, (orderTax) => orderTax.order)
+  @Exclude()
   orderTaxes: KtqOrderTax[];
 
   @OneToOne(() => KtqAddress, (address) => address.order)
+  @Exclude()
   address: KtqAddress;
 
   @OneToMany(() => KtqOrderItem, (orderItem) => orderItem.order)
+  @Exclude()
   orderItems: KtqOrderItem[];
 
   @OneToMany(() => KtqCouponUsage, (couponUsage) => couponUsage.order)
+  @Exclude()
   couponUsages: KtqCouponUsage[];
 }

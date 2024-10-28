@@ -1,7 +1,7 @@
 Table ktq_configs {
   id integer [primary key]
   key_name varchar unique
-  key_type varchar
+  key_type enum('string', 'number', 'json', 'none')
   key_value varchar
 }
 
@@ -113,8 +113,11 @@ Table ktq_attribute_values {
 Table ktq_admin_users {
   id int [pk]
   email varchar [unique]
+  username varchar [unique]
+  first_name varchar [null, default: null]
+  last_name varchar [null, default: null]
   password_hash varchar
-  role_id int
+  role_id int [null, default: null]
   is_active boolean [default: 1]
   created_at timestamp
   updated_at timestamp
@@ -192,7 +195,9 @@ Table ktq_sessions {
   user_id int // ID của người dùng (có thể là admin hoặc customer)
   user_role_type enum('admin', 'customer') // Xác định loại người dùng
   session_token varchar
+  payload json [null,  default: null]
   expires_at timestamp [null, default: null]
+  live bool [null, default: 1]
   created_at timestamp
   updated_at timestamp
 }
@@ -484,3 +489,4 @@ Ref: ktq_categories.id < ktq_category_products.category_id
 
 Ref: ktq_products.type - ktq_default_attributes.product_type
 Ref: ktq_default_attributes.attribute_id < ktq_attributes.id
+

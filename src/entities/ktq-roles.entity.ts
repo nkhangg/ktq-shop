@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import { Timestamp } from "@/common/entities/column/timestamp";
 
@@ -15,11 +16,14 @@ export default class KtqRole extends Timestamp {
   role_name: string;
 
   @OneToMany(() => KtqAdminUser, (adminUser) => adminUser.role)
+  @Exclude()
   adminUsers: KtqAdminUser[];
 
   @OneToMany(() => KtqRolePermission, (rolePermission) => rolePermission.role)
+  @Exclude()
   rolePermissions: KtqRolePermission[];
 
   @OneToMany(() => KtqRoleResource, (roleResource) => roleResource.role)
+  @Exclude()
   roleResources: KtqRoleResource[];
 }

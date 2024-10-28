@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import { Timestamp } from "@/common/entities/column/timestamp";
 
@@ -8,9 +9,6 @@ import KtqCategoryProduct from "./ktq-category-products.entity";
 export default class KtqCategory extends Timestamp {
   @PrimaryGeneratedColumn("increment")
   id: number;
-
-  @Column({ type: "integer" })
-  website_id: number;
 
   @Column({ type: "varchar" })
   name: string;
@@ -24,12 +22,10 @@ export default class KtqCategory extends Timestamp {
   @Column({ type: "varchar" })
   description: string;
 
-  @Column({ type: "integer" })
-  parent_id: number;
-
   @OneToMany(
     () => KtqCategoryProduct,
     (categoryProduct) => categoryProduct.category,
   )
+  @Exclude()
   categoryProducts: KtqCategoryProduct[];
 }

@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import { Timestamp } from "@/common/entities/column/timestamp";
 
@@ -19,6 +20,7 @@ export default class KtqCustomer extends Timestamp {
   username: string;
 
   @Column({ type: "varchar" })
+  @Exclude()
   password: string;
 
   @Column({ type: "varchar" })
@@ -31,29 +33,36 @@ export default class KtqCustomer extends Timestamp {
   last_name: string;
 
   @OneToMany(() => KtqProductReview, (productReview) => productReview.customer)
+  @Exclude()
   productReviews: KtqProductReview[];
 
   @OneToMany(() => KtqOrder, (order) => order.customer)
+  @Exclude()
   orders: KtqOrder[];
 
   @OneToMany(
     () => KtqCustomerBlackList,
     (customerBlackList) => customerBlackList.customer,
   )
+  @Exclude()
   customerBlackLists: KtqCustomerBlackList[];
 
   @OneToMany(
     () => KtqCustomerBackListLog,
     (customerBackListLog) => customerBackListLog.customer,
   )
+  @Exclude()
   customerBackListLogs: KtqCustomerBackListLog[];
 
   @OneToMany(() => KtqCart, (cart) => cart.customer)
+  @Exclude()
   carts: KtqCart[];
 
   @OneToMany(() => KtqAddress, (address) => address.customer)
+  @Exclude()
   addresses: KtqAddress[];
 
   @OneToMany(() => KtqCouponUsage, (couponUsage) => couponUsage.customer)
+  @Exclude()
   couponUsages: KtqCouponUsage[];
 }

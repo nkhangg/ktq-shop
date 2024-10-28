@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Exclude } from "class-transformer";
 import { DiscountType } from "@/common/enums/discount-type.enum";
 import { Timestamp } from "@/common/entities/column/timestamp";
 
@@ -32,14 +33,16 @@ export default class KtqCoupon extends Timestamp {
   usage_count: number;
 
   @Column({ type: "json", default: null })
-  histories: object;
+  histories: string;
 
   @OneToMany(() => KtqCouponUsage, (couponUsage) => couponUsage.coupon)
+  @Exclude()
   couponUsages: KtqCouponUsage[];
 
   @OneToMany(
     () => KtqCouponCondition,
     (couponCondition) => couponCondition.coupon,
   )
+  @Exclude()
   couponConditions: KtqCouponCondition[];
 }

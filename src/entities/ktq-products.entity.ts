@@ -5,6 +5,7 @@ import {
   OneToMany,
   OneToOne,
 } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import { Timestamp } from "@/common/entities/column/timestamp";
 
@@ -48,51 +49,58 @@ export default class KtqProduct extends Timestamp {
   @Column({ type: "varchar" })
   short_description: string;
 
-  @Column({ type: "integer" })
-  attribute_set_id: number;
-
   @OneToMany(() => KtqProductReview, (productReview) => productReview.product)
+  @Exclude()
   productReviews: KtqProductReview[];
 
   @OneToMany(() => KtqOrderItem, (orderItem) => orderItem.product)
+  @Exclude()
   orderItems: KtqOrderItem[];
 
   @OneToMany(() => KtqCart, (cart) => cart.product)
+  @Exclude()
   carts: KtqCart[];
 
   @OneToOne(() => KtqAttributeSet, (attributeSet) => attributeSet.product)
+  @Exclude()
   attributeSet: KtqAttributeSet;
 
   @OneToMany(
     () => KtqProductWebsite,
     (productWebsite) => productWebsite.product,
   )
+  @Exclude()
   productWebsites: KtqProductWebsite[];
 
   @OneToMany(
     () => KtqProductPromotion,
     (productPromotion) => productPromotion.product,
   )
+  @Exclude()
   productPromotions: KtqProductPromotion[];
 
   @OneToMany(() => KtqMedia, (media) => media.product)
+  @Exclude()
   medias: KtqMedia[];
 
   @OneToMany(
     () => KtqProductVisible,
     (productVisible) => productVisible.product,
   )
+  @Exclude()
   productVisibles: KtqProductVisible[];
 
   @OneToMany(
     () => KtqCategoryProduct,
     (categoryProduct) => categoryProduct.product,
   )
+  @Exclude()
   categoryProducts: KtqCategoryProduct[];
 
   @OneToOne(
     () => KtqDefaultAttribute,
     (defaultAttribute) => defaultAttribute.product,
   )
+  @Exclude()
   defaultAttribute: KtqDefaultAttribute;
 }

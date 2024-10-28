@@ -1,8 +1,7 @@
-import * as pluralize from 'pluralize';
+import pluralize from 'pluralize';
 import * as fs from 'fs';
 import { execSync } from 'child_process';
 import { ModelExporter, Parser } from '@dbml/core';
-
 export interface Field {
     name: string;
     type: {
@@ -96,6 +95,10 @@ export default class GenerateBase {
         }
     }
 
+    camelToSnakeCase(str: string): string {
+        return str.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
+    }
+
     getAllFileNames(directoryPath: string) {
         try {
             // Đọc nội dung của thư mục
@@ -151,6 +154,7 @@ export default class GenerateBase {
             case 'text':
             case 'char':
             case 'string':
+            case 'json':
                 return 'string'; // Mapped to JavaScript string
             case 'boolean':
             case 'bool':
@@ -169,5 +173,27 @@ export default class GenerateBase {
                 console.log(sqlType);
                 throw new Error(`Unsupported SQL type: ${sqlType}`);
         }
+    }
+
+    createEnumImports(fields: Field[], basePath = '@/common/enums') {
+        return fields.reduce((prev, cur) => {
+            return (prev += this.isEnum(cur) ? `import {${this.createEnumName(cur)}} from '${basePath}/${cur.name.replaceAll('_', '-')}.enum';` : '');
+        }, '');
+    }
+
+    getPrimaryKey(fields: Field[]) {
+        return fields.find((item) => item.pk) || null;
+    }
+
+    isEnum(field: Field) {
+        return field?.type?.type_name === 'enum';
+    }
+
+    existEnum(fields: Field[]) {
+        return fields.some((item) => this.isEnum(item));
+    }
+
+    createEnumName(field: Field) {
+        return this.convertTableNameToClassName(`${field.name}`);
     }
 }

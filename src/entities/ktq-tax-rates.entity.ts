@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import { Timestamp } from "@/common/entities/column/timestamp";
 
@@ -17,8 +18,10 @@ export default class KtqTaxRate extends Timestamp {
   rate: number;
 
   @OneToMany(() => KtqOrderTax, (orderTax) => orderTax.taxRate)
+  @Exclude()
   orderTaxes: KtqOrderTax[];
 
   @OneToMany(() => KtqTaxCondition, (taxCondition) => taxCondition.taxRate)
+  @Exclude()
   taxConditions: KtqTaxCondition[];
 }

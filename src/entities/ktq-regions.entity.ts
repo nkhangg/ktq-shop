@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
 } from "typeorm";
+import { Exclude } from "class-transformer";
 
 import { Timestamp } from "@/common/entities/column/timestamp";
 
@@ -16,9 +17,6 @@ export default class KtqRegion extends Timestamp {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @Column({ type: "integer" })
-  country_id: number;
-
   @Column({ type: "varchar" })
   region_name: string;
 
@@ -29,8 +27,10 @@ export default class KtqRegion extends Timestamp {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   country: KtqCountry;
 
   @OneToMany(() => KtqAddress, (address) => address.region)
+  @Exclude()
   addresses: KtqAddress[];
 }

@@ -1,5 +1,4 @@
 // ts-node src/commands/generate-model/index.ts generate
-import { ModelExporter } from '@dbml/core';
 import { Presets, SingleBar } from 'cli-progress';
 import * as fs from 'fs';
 import { existsSync, mkdirSync } from 'fs';
@@ -18,13 +17,21 @@ export default class GenerateCommand extends GenerateBase {
         '*-1': '@ManyToOne',
         '1-*': '@OneToMany',
     };
-    private parser = this.getParser();
+
+    private dataDb = {
+        refs: [] as Relation[],
+        tables: [] as TableDefinition[],
+    };
+
+    private excludeKeys = ['password', '_id', 'is_active', 'active'];
     constructor() {
         super();
         // Tạo thư mục nếu chưa tồn tại
         if (!existsSync(this.outputDir)) {
             mkdirSync(this.outputDir);
         }
+
+        this.dataDb = this.getDataDb();
     }
 
     setSchemaFilePath(filename: string) {
@@ -37,11 +44,20 @@ export default class GenerateCommand extends GenerateBase {
         }
     }
 
-    generateModels() {
+    getDataDb() {
         const data = this.getDataFormDbml(this.schemaFilePath);
 
         const tables: TableDefinition[] = data['schemas'][0]['tables'];
         const refs: Relation[] = data['schemas'][0]['refs'];
+
+        return { tables, refs };
+    }
+
+    generateModels() {
+        // const data = this.getDataFormDbml(this.schemaFilePath);
+
+        const tables: TableDefinition[] = this.dataDb.tables;
+        const refs: Relation[] = this.dataDb.refs;
 
         // Tạo thanh tiến trình
         const progressBar = new SingleBar({}, Presets.shades_classic);
@@ -59,6 +75,33 @@ export default class GenerateCommand extends GenerateBase {
         this.addEntityToModule();
 
         // Kết thúc thanh tiến trình sau khi xử lý tất cả bảng
+        progressBar.stop();
+    }
+
+    generateModel(tableName: string) {
+        const data = this.getDataFormDbml(this.schemaFilePath);
+
+        const tables: TableDefinition[] = data['schemas'][0]['tables'];
+        const refs: Relation[] = data['schemas'][0]['refs'];
+
+        const progressBar = new SingleBar({}, Presets.shades_classic);
+
+        progressBar.start(1, 0);
+
+        const table = tables.find((table) => table.name === tableName);
+
+        if (!table) {
+            console.log(`The table name ${tableName} is not exits`);
+            return;
+        }
+
+        const template = this.createTemplate(table, refs);
+        this.saveModelFile(table, template);
+
+        progressBar.update(1);
+
+        this.addEntityToModule();
+
         progressBar.stop();
     }
 
@@ -132,6 +175,7 @@ export default class GenerateCommand extends GenerateBase {
 
         return `
                 @OneToMany(() => ${consumerClass}, (${consumerName}) => ${consumerName}.${this.toSingular(producerVariable)})
+                @Exclude()
                 ${this.toPlural(consumerVariable)}: ${consumerClass}[];
                 `;
     }
@@ -151,6 +195,7 @@ export default class GenerateCommand extends GenerateBase {
 
         return `
                 @ManyToOne(() => ${consumerClass}, (${consumerName}) => ${consumerName}.${this.toPlural(producerVariable)}, { cascade: true, eager: true })
+                @Exclude()
                 ${this.toSingular(consumerVariable)}: ${consumerClass};
                 `;
     }
@@ -172,6 +217,7 @@ export default class GenerateCommand extends GenerateBase {
 
         return `
                 @OneToOne(() => ${consumerClass}, (${consumerName}) => ${consumerName}.${this.toSingular(producerVariable)}, ${fileExists ? '' : '{ cascade: true }'})
+                @Exclude()
                 ${this.toSingular(consumerVariable)}: ${consumerClass};
                 `;
     }
@@ -182,18 +228,6 @@ export default class GenerateCommand extends GenerateBase {
         }, '');
 
         return { key: key, name: this.refNames[key] };
-    }
-
-    isEnum(field: Field) {
-        return field?.type?.type_name === 'enum';
-    }
-
-    existEnum(fields: Field[]) {
-        return fields.some((item) => this.isEnum(item));
-    }
-
-    createEnumName(field: Field) {
-        return this.convertTableNameToClassName(`${field.name}`);
     }
 
     createEnum(field: Field) {
@@ -220,12 +254,6 @@ export default class GenerateCommand extends GenerateBase {
         fields.forEach((field) => {
             this.createEnum(field);
         });
-    }
-
-    createEnumImports(fields: Field[]) {
-        return fields.reduce((prev, cur) => {
-            return (prev += this.isEnum(cur) ? `import {${this.createEnumName(cur)}} from '@/common/enums/${cur.name.replaceAll('_', '-')}.enum';` : '');
-        }, '');
     }
 
     saveModelFile(item: TableDefinition, template: string) {
@@ -321,8 +349,14 @@ export default class GenerateCommand extends GenerateBase {
         `;
     }
 
-    createColumn(item: Field) {
+    exitsRelation(tableName: string) {
+        return this.dataDb.refs.find((item) => item.endpoints.find((i) => tableName === i.tableName));
+    }
+
+    createColumn(tableName: string, item: Field) {
         let jsonParamsData = ``;
+
+        if (item.name.includes('_id') && this.exitsRelation(tableName)) return '';
 
         const params = {
             type: this.extractType(item.type.type_name.toLocaleLowerCase()),
@@ -353,13 +387,14 @@ export default class GenerateCommand extends GenerateBase {
 
         return `
             @Column(${jsonParamsData})
+            ${this.isExclude(item) ? '@Exclude()' : ''}
             ${item.name}: ${this.mapSqlDataTypeToJs(item.type.type_name, () => {
                 return this.createEnumName(item);
             })};
         `;
     }
 
-    createColumns(fields: Field[]) {
+    createColumns(tableName: string, fields: Field[]) {
         let result = '';
 
         const clearedTimestamp = fields.filter((item) => {
@@ -370,7 +405,7 @@ export default class GenerateCommand extends GenerateBase {
             if (item.pk) {
                 result += this.createPrimaryKey(item);
             } else {
-                result += this.createColumn(item);
+                result += this.createColumn(tableName, item);
             }
         });
 
@@ -403,6 +438,22 @@ export default class GenerateCommand extends GenerateBase {
         return `import { ${[...initImport, ...relationImports].join(', ')} } from 'typeorm';`;
     }
 
+    isExcludeDeep(data: TableDefinition, refs: Relation[]) {
+        return data.fields.some((item) => this.isExclude(item)) || refs.some((item) => item.endpoints.map((i) => i.tableName).includes(data.name));
+    }
+
+    isExclude(field: Field) {
+        return this.excludeKeys.find((item) => {
+            return field.name.includes(item);
+        });
+    }
+
+    createImportExclude(data: TableDefinition, refs: Relation[]) {
+        const result = this.isExcludeDeep(data, refs);
+
+        return result ? `import { Exclude } from 'class-transformer';` : '';
+    }
+
     createTemplate(data: TableDefinition, refs: Relation[]) {
         const isTimestamp = this.isTimestamp(data.fields);
         const isExitsEnum = this.existEnum(data.fields);
@@ -414,6 +465,7 @@ export default class GenerateCommand extends GenerateBase {
 
         return `
             ${this.createImportTypeOrm(data, refs)}
+            ${this.createImportExclude(data, refs)}
             ${isExitsEnum ? this.createEnumImports(data.fields) : ''}
             ${isTimestamp ? this.importPath.timestamp : ''}
 
@@ -422,7 +474,7 @@ export default class GenerateCommand extends GenerateBase {
 
             @Entity('${data.name}')
             export default class ${this.toSingular(this.convertTableNameToClassName(data.name))} ${isTimestamp ? 'extends Timestamp' : ''} {
-                ${this.createColumns(data.fields)}
+                ${this.createColumns(data.name, data.fields)}
 
                 
         

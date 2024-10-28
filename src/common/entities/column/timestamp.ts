@@ -6,6 +6,5 @@ export abstract class Timestamp {
     created_at: Date;
 
     @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
-    @Exclude()
     updated_at: Date;
 }

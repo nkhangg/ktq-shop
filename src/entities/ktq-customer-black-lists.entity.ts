@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
 } from "typeorm";
+import { Exclude } from "class-transformer";
 import { BackListType } from "@/common/enums/back-list-type.enum";
 
 import KtqCustomer from "./ktq-customers.entity";
@@ -14,9 +15,6 @@ import KtqCustomerBackListLog from "./ktq-customer-back-list-logs.entity";
 export default class KtqCustomerBlackList {
   @PrimaryGeneratedColumn("increment")
   id: number;
-
-  @Column({ type: "integer" })
-  customer_id: number;
 
   @Column({ type: "enum", enum: BackListType })
   back_list_type: BackListType;
@@ -34,11 +32,13 @@ export default class KtqCustomerBlackList {
     cascade: true,
     eager: true,
   })
+  @Exclude()
   customer: KtqCustomer;
 
   @OneToMany(
     () => KtqCustomerBackListLog,
     (customerBackListLog) => customerBackListLog.customerBlackList,
   )
+  @Exclude()
   customerBackListLogs: KtqCustomerBackListLog[];
 }

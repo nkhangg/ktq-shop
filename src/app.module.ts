@@ -9,9 +9,10 @@ import { KtqAuthenticationsModule } from './modules/ktq-authentications/ktq-auth
 import { KtqConfigsModule } from './modules/ktq-configs/ktq-configs.module';
 import { KtqRolesModule } from './modules/ktq-roles/ktq-roles.module';
 import { KtqSessionsModule } from './modules/ktq-sessions/ktq-sessions.module';
+import { KtqWebsitesModule } from './modules/ktq-websites/ktq-websites.module';
 
 @Module({
-    imports: [KtqAppConfigsModule, KtqConfigsModule, KtqAppValidatorsModule, KtqAdminUsersModule, KtqAuthenticationsModule, KtqSessionsModule, KtqRolesModule],
+    imports: [KtqAppConfigsModule, KtqConfigsModule, KtqAppValidatorsModule, KtqAdminUsersModule, KtqAuthenticationsModule, KtqSessionsModule, KtqRolesModule, KtqWebsitesModule],
     controllers: [],
     providers: [],
 })

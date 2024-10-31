@@ -9,12 +9,12 @@
         "target": "ES2021",
         "sourceMap": true,
         "outDir": "./dist",
+        "rootDir": "./",
         "baseUrl": "./",
         "paths": {
             "@/*": ["src/*"]
         },
         "incremental": true,
-        "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true,
         "strictNullChecks": false,
         "noImplicitAny": false,
@@ -23,5 +23,6 @@
         "noFallthroughCasesInSwitch": false,
         "resolveJsonModule": true,
         "esModuleInterop": true
-    }
+    },
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.js"]
 }

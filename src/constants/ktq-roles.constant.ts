@@ -21,4 +21,11 @@ export default class KtqRolesConstant {
             },
         ] as KtqRole[];
     }
+
+    public static getSuperAdmin() {
+        return this.getRoles().find((role) => role.role_name === this.SUPER_ADMIN);
+    }
+    public static getManagement() {
+        return this.getRoles().find((role) => role.role_name === this.MANAGEMENT);
+    }
 }

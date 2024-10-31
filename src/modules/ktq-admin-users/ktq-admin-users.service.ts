@@ -1,11 +1,14 @@
+import * as bcrypt from 'bcryptjs';
 import GeneralKtqAdminUserDto from '@/common/dtos/ktq-admin-users.dto';
+import KtqAppConstant from '@/constants/ktq-app.constant';
 import KtqAdminUser from '@/entities/ktq-admin-users.entity';
-
 import { ServiceInterface } from '@/services/service-interface';
 import { ServiceUserAuthInterface } from '@/services/service-user-auth-interface';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import KtqRolesConstant from '@/constants/ktq-roles.constant';
+import KtqResponse from '@/common/systems/response/ktq-response';
 
 @Injectable()
 export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Partial<KtqAdminUser>>, ServiceUserAuthInterface<KtqAdminUser> {
@@ -23,8 +26,8 @@ export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Part
         return this.ktqAdminUserRepository.find();
     }
 
-    async findOne(id: KtqAdminUser['id']): Promise<KtqAdminUser> {
-        return this.ktqAdminUserRepository.findOneBy({ id });
+    async findOne(id: KtqAdminUser['id'], active?: true): Promise<KtqAdminUser> {
+        return this.ktqAdminUserRepository.findOneBy({ id, is_active: active });
     }
 
     async update(id: KtqAdminUser['id'], adminUser: Partial<KtqAdminUser>): Promise<KtqAdminUser> {
@@ -46,5 +49,24 @@ export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Part
 
     async findByUsernameAndEmail(username: string, email: string) {
         return await this.ktqAdminUserRepository.findOne({ where: { email, username } });
+    }
+
+    async initRootAdmin() {
+        const adminData = KtqAppConstant.getRootUserData();
+
+        if (!adminData) return KtqResponse.toResponse(false);
+
+        if ((await this.findByEmail(adminData.email)) || (await this.findByUsername(adminData.username))) return KtqResponse.toResponse(false);
+
+        const rootRole = KtqRolesConstant.getSuperAdmin();
+
+        const admin = new KtqAdminUser();
+
+        admin.username = adminData.username;
+        admin.email = adminData.email;
+        admin.role = rootRole;
+        admin.password_hash = bcrypt.hashSync(adminData.password);
+
+        return KtqResponse.toResponse(!!this.create(admin));
     }
 }

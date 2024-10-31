@@ -30,3 +30,8 @@ export class RegisterKtqAdminUserDto {
     @HasExisted({ tableName: 'ktq_roles', column: 'id' })
     role_id: number;
 }
+
+export class RefreshTokenDto {
+    @IsNotEmpty()
+    refresh_token: string;
+}

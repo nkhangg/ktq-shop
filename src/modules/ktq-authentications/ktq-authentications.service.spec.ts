@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
@@ -370,6 +370,49 @@ describe('KtqAuthenticationsService', () => {
             await expect(service.adminRegister({ username: 'khangpn', password: 'password', email: 'khang@gmail.com', role_id: superAdminRole.id })).rejects.toThrow(
                 new BadRequestException('The role is not allowed to set up this account'),
             );
+        });
+
+        it('should throw error if the role is invalid', async () => {
+            // Giả lập không tìm thấy role
+            jest.spyOn(adminUserService, 'findByUsername').mockResolvedValue(null);
+            jest.spyOn(adminUserService, 'findByEmail').mockResolvedValue(null);
+            jest.spyOn(rolesService, 'findOne').mockResolvedValue(null);
+
+            const dto: RegisterKtqAdminUserDto = {
+                username: 'newUser',
+                password: 'password123',
+                email: 'test@example.com',
+                role_id: 99, // Role không hợp lệ
+            };
+
+            await expect(service.adminRegister(dto)).rejects.toThrow(new BadRequestException('The role is required'));
+        });
+
+        it('should throw error if role is Super Admin', async () => {
+            // Giả lập tên người dùng và email không tồn tại
+            jest.spyOn(adminUserService, 'findByUsername').mockResolvedValue(null);
+            jest.spyOn(adminUserService, 'findByEmail').mockResolvedValue(null);
+
+            // Giả lập dữ liệu role với id = 1 (Super Admin)
+            const superAdminRole = {
+                ...KtqRolesConstant.getSuperAdmin(),
+                adminUsers: [],
+                rolePermissions: [],
+                roleResources: [],
+                created_at: new Date(),
+                updated_at: new Date(),
+            };
+
+            jest.spyOn(rolesService, 'findOne').mockResolvedValue(superAdminRole);
+
+            const dto: RegisterKtqAdminUserDto = {
+                username: 'newUser',
+                password: 'password123',
+                email: 'test@example.com',
+                role_id: 1, // Super Admin
+            };
+
+            await expect(service.adminRegister(dto)).rejects.toThrow(new BadRequestException('The role is not allowed to set up this account'));
         });
 
         it('should create a new admin successfully', async () => {

@@ -3,10 +3,10 @@ import * as fs from 'fs';
 import { join } from 'path';
 import GenerateBase, { Relation, TableDefinition } from '../generate-base';
 import { execSync } from 'child_process';
-import { table } from 'console';
+import KtqAppConstant from '../../constants/ktq-app.constant';
 export default class GenerateCommand extends GenerateBase {
     private moduleFolder = join(__dirname, '../../modules');
-    private schemaFilePath = join(__dirname, '../../etc/db_schemas.dbml');
+    private schemaFilePath = KtqAppConstant.DB_SCHEMA_PATH;
     private dtosDir = join(__dirname, '../../common/dtos');
     private outputDir = join(__dirname, '../../entities');
 
@@ -18,6 +18,8 @@ export default class GenerateCommand extends GenerateBase {
     constructor() {
         super();
         const data = this.getDataFormDbml(this.schemaFilePath);
+
+        console.log(this.schemaFilePath);
 
         const tables: TableDefinition[] = data['schemas'][0]['tables'];
         const refs: Relation[] = data['schemas'][0]['refs'];

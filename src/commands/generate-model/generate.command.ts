@@ -4,11 +4,13 @@ import * as fs from 'fs';
 import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import GenerateBase, { Endpoint, Field, Relation, TableDefinition } from '../generate-base';
+import KtqAppConstant from '../../constants/ktq-app.constant';
 
 export default class GenerateCommand extends GenerateBase {
     private outputDir = join(__dirname, '../../entities');
     private enumsDir = join(__dirname, '../../common/enums');
-    private schemaFilePath = join(__dirname, '../../etc/db_schemas.dbml'); // Đặt cứng đường dẫn tới file schema
+    private schemaFilePath = KtqAppConstant.DB_SCHEMA_PATH; // Đặt cứng đường dẫn tới file schema
+    // private schemaFilePath = join(__dirname, '../../etc/db_schemas.dbml'); // Đặt cứng đường dẫn tới file schema
     private importPath = {
         timestamp: "import { Timestamp } from '@/common/entities/column/timestamp';",
     };

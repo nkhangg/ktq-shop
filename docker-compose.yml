@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+    mysql:
+        image: mysql:latest
+        container_name: my_mysql_container
+        environment:
+            MYSQL_ROOT_PASSWORD: 123
+            MYSQL_DATABASE: ktq_shops
+            MYSQL_USER: ktq_admin
+            MYSQL_PASSWORD: ktqadmin@123
+        ports:
+            - '3306:3306'
+        volumes:
+            - /data/database:/var/lib/mysql

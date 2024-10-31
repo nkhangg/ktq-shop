@@ -8,15 +8,16 @@ import { JwtService } from '@nestjs/jwt';
 import { plainToClass } from 'class-transformer';
 import KtqCustomer from '@/entities/ktq-customers.entity';
 import KtqAdminUser from '@/entities/ktq-admin-users.entity';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import KtqResponse from '@/common/systems/response/ktq-response';
 import { UserRoleType } from '@/common/enums/user-role-type.enum';
 import { KtqSessionsService } from '../ktq-sessions/ktq-sessions.service';
 import { KtqAdminUsersService } from '../ktq-admin-users/ktq-admin-users.service';
 import { KtqRolesService } from '../ktq-roles/ktq-roles.service';
 import KtqRolesConstant from '@/constants/ktq-roles.constant';
-import { LoginKtqAdminUserDto, RegisterKtqAdminUserDto } from '@/common/dtos/ktq-authentication.dto';
+import { LoginKtqAdminUserDto, RefreshTokenDto, RegisterKtqAdminUserDto } from '@/common/dtos/ktq-authentication.dto';
 import { TTokenData } from '@/common/decorators/token-data.decorator';
+import KtqSession from '@/entities/ktq-sessions.entity';
 @Injectable()
 export class KtqAuthenticationsService {
     constructor(
@@ -44,11 +45,13 @@ export class KtqAuthenticationsService {
 
         const sessionMD5Key = options?.sessionMD5Key || this.generateMD5Hash(sessionKey);
 
-        const expiresIn = '1h';
+        // const expiresIn = '1h';
+        const expiresIn = '10s';
 
         const token = this.createToken({ id: user.id, class: options?.class || UserRoleType.ADMIN, session_key: sessionMD5Key }, { expiresIn });
 
-        const expiresAt = moment().add(1, 'hour').toISOString();
+        const expiresAt = moment().add(10, 'second').toISOString();
+        // const expiresAt = moment().add(1, 'hour').toISOString();
 
         return {
             sessionMD5Key,
@@ -100,6 +103,42 @@ export class KtqAuthenticationsService {
         };
     }
 
+    async adminRefreshToken({ refresh_token }: RefreshTokenDto) {
+        if (refresh_token.length <= 1) throw new BadRequestException(KtqResponse.toResponse(null, { message: 'Refresh token is valid', status_code: HttpStatus.BAD_REQUEST }));
+
+        let session: KtqSession | null = null;
+
+        try {
+            const tokenData: TTokenData = await this.jwtService.verify(refresh_token);
+
+            session = await this.ktqSessionService.findByTokenData(tokenData);
+
+            if (!session) throw new BadRequestException({});
+        } catch (error) {
+            throw new BadRequestException(KtqResponse.toResponse(null, { message: 'Refresh token is expired', status_code: HttpStatus.FORBIDDEN }));
+        }
+
+        const expiredTime = new Date(session.expires_at);
+        const now = new Date();
+
+        if (now <= expiredTime) {
+            throw new BadRequestException(KtqResponse.toResponse(null, { message: 'The session still valid', status_code: HttpStatus.BAD_REQUEST }));
+        }
+
+        const admin = await this.ktqAdminUserService.findOne(session.user_id);
+
+        if (!admin) throw new BadRequestException(KtqResponse.toResponse(null, { message: 'The admin is not found', status_code: HttpStatus.NOT_FOUND }));
+
+        const { token, sessionMD5Key, expiresAt } = this.createAccessToken(admin);
+        const refreshToken = this.createRefreshToken(admin, { sessionMD5Key: sessionMD5Key });
+
+        const newSession = await this.ktqSessionService.update(session.id, { ...session, expires_at: new Date(expiresAt), session_token: sessionMD5Key });
+
+        if (!newSession) throw new BadRequestException(KtqResponse.toResponse(null, { message: 'The session is not define', status_code: HttpStatus.NOT_FOUND }));
+
+        return KtqResponse.toResponse(plainToClass(KtqAdminUser, admin), { bonus: { token, refresh_token: refreshToken.token } });
+    }
+
     async adminLogin({ username, password }: LoginKtqAdminUserDto, request: Request) {
         const admin = await this.validateUser(username, password);
 
@@ -138,6 +177,10 @@ export class KtqAuthenticationsService {
 
     async adminRegister({ username, password, email, role_id }: RegisterKtqAdminUserDto) {
         const roleData = await this.ktqRolesService.findOne(role_id);
+
+        if (!roleData) {
+            throw new BadRequestException('The role is required');
+        }
 
         if (roleData.role_name === KtqRolesConstant.SUPER_ADMIN) {
             throw new BadRequestException('The role is not allowed to set up this account');

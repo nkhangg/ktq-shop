@@ -13,7 +13,7 @@ export default class GenerateCommand extends GenerateBase {
                 return;
             }
             if (stderr) {
-                console.error(`Initialize roles success`);
+                console.log(`Initialize roles success`);
                 return;
             }
         });
@@ -28,7 +28,27 @@ export default class GenerateCommand extends GenerateBase {
                 return;
             }
             if (stderr) {
-                console.error(`Initialize configs success`);
+                console.log(`Initialize configs success`);
+                return;
+            }
+        });
+    }
+
+    public async generateRootUser() {
+        const curlCommand = `curl -X POST "${KtqConfigConstant.getHostname()}/ktq-admin-users/init-configs"`;
+
+        exec(curlCommand, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Lỗi khi gọi API: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                const response = JSON.parse(stdout);
+                if (response.data) {
+                    console.log(`Initialize root user success`);
+                } else {
+                    console.log(`Initialize root user failure`);
+                }
                 return;
             }
         });
@@ -37,5 +57,6 @@ export default class GenerateCommand extends GenerateBase {
     public async generateInit() {
         await this.generateRoles();
         await this.generateConfigs();
+        await this.generateRootUser();
     }
 }

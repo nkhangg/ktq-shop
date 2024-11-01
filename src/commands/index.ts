@@ -4,6 +4,7 @@ import { Command } from 'commander';
 import { ModelGenerateConmand } from './generate-model';
 import { ServiceGenerateConmand } from './generate-service';
 import { InitGenerateCommand } from './generate-init';
+import { ControllerGenerateCommand } from './generate-controllers';
 const program = new Command();
 
 program
@@ -13,6 +14,7 @@ program
     .option('-m, --module <name>', '')
     .option('-e, --entity <values>', 'Entity name')
     .option('-t, --table <name>', 'Table name')
+    .option('-i, --controllerFolder <name>', 'Include controller folder ?')
     .action((subcommand, options) => {
         switch (subcommand) {
             case 'm-g':
@@ -63,7 +65,22 @@ program
                 }
 
                 if (!options?.module) {
-                    serviceCommand.generateServiceWithModelName(options.entity);
+                    serviceCommand.generateServiceWithModelName(options.module);
+                    return;
+                }
+
+                break;
+
+            case 'controller-generate':
+            case 'c-g':
+                if (!options) {
+                    console.log('Please add option to generate');
+                    return;
+                }
+
+                const controllerGenerateCommand = new ControllerGenerateCommand();
+                if (options?.module) {
+                    controllerGenerateCommand.generateWithModuleName(options.module, options?.controllerFolder);
                     return;
                 }
 

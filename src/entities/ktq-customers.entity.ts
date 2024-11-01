@@ -26,10 +26,10 @@ export default class KtqCustomer extends Timestamp {
   @Column({ type: "varchar" })
   email: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", default: null })
   first_name: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", default: null })
   last_name: string;
 
   @OneToMany(() => KtqProductReview, (productReview) => productReview.customer)

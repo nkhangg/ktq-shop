@@ -196,4 +196,39 @@ export default class GenerateBase {
     createEnumName(field: Field) {
         return this.convertTableNameToClassName(`${field.name}`);
     }
+
+    createModule(table: TableDefinition) {
+        try {
+            const modulePath = `./modules/${table.name.replaceAll('_', '-')}`;
+            execSync(`nest generate module ${modulePath}`, { stdio: 'inherit' });
+        } catch (error) {
+            console.error(`Error create module file: ${error.message} \n`);
+        }
+    }
+
+    createService(table: TableDefinition) {
+        try {
+            execSync(`nest generate service ./modules/${table.name.replaceAll('_', '-')}`, { stdio: 'inherit' });
+        } catch (error) {
+            console.error(`Error create service file: ${error.message} \n`);
+        }
+    }
+
+    createController(table: TableDefinition) {
+        try {
+            execSync(`nest generate controller ./modules/${table.name.replaceAll('_', '-')}`, { stdio: 'inherit' });
+        } catch (error) {
+            console.error(`Error create service file: ${error.message} \n`);
+        }
+    }
+
+    createControllerWithNameFile(name: string, isControllerFolder = false) {
+        try {
+            execSync(`nest generate controller ./modules/${name.replaceAll('_', '-')}${isControllerFolder ? `/controllers/${name.replaceAll('_', '-')}` : ''}`, {
+                stdio: 'inherit',
+            });
+        } catch (error) {
+            console.error(`Error create service file: ${error.message} \n`);
+        }
+    }
 }

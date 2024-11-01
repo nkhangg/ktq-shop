@@ -10,9 +10,21 @@ import { KtqConfigsModule } from './modules/ktq-configs/ktq-configs.module';
 import { KtqRolesModule } from './modules/ktq-roles/ktq-roles.module';
 import { KtqSessionsModule } from './modules/ktq-sessions/ktq-sessions.module';
 import { KtqWebsitesModule } from './modules/ktq-websites/ktq-websites.module';
+import { KtqCustomersModule } from './modules/ktq-customers/ktq-customers.module';
+import { KtqCustomersController } from './modules/ktq-customers/ktq-customers.controller';
 
 @Module({
-    imports: [KtqAppConfigsModule, KtqConfigsModule, KtqAppValidatorsModule, KtqAdminUsersModule, KtqAuthenticationsModule, KtqSessionsModule, KtqRolesModule, KtqWebsitesModule],
+    imports: [
+        KtqAppConfigsModule,
+        KtqConfigsModule,
+        KtqAppValidatorsModule,
+        KtqAdminUsersModule,
+        KtqAuthenticationsModule,
+        KtqSessionsModule,
+        KtqRolesModule,
+        KtqWebsitesModule,
+        KtqCustomersModule,
+    ],
     controllers: [],
     providers: [],
 })
@@ -21,6 +33,6 @@ export class AppModule {
         consumer
             .apply(AuthMiddleware)
             .exclude(...excludeRoute)
-            .forRoutes(KtqAdminAuthenticationsController);
+            .forRoutes(KtqAdminAuthenticationsController, KtqCustomersController);
     }
 }

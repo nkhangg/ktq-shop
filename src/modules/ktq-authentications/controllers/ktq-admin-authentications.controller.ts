@@ -21,17 +21,20 @@ export class KtqAdminAuthenticationsController {
     }
 
     @Post('logout')
+    @HttpCode(200)
     async logout(@TokenData() tokendata: TTokenData) {
         return await this.ktqAuthenticationService.logout(tokendata);
     }
 
     @Get('me')
-    async getProfile(@TokenData() tokendata: TTokenData) {
-        return await this.ktqAuthenticationService.getAdminProfile(tokendata);
+    @HttpCode(200)
+    async getCurrentProfile(@TokenData() tokendata: TTokenData) {
+        return await this.ktqAuthenticationService.getCurrentAdminProfile(tokendata);
     }
 
     @Post('refresh-token')
-    async adminRefreshToken(@Body() body: RefreshTokenDto) {
+    @HttpCode(200)
+    async refreshToken(@Body() body: RefreshTokenDto) {
         return await this.ktqAuthenticationService.adminRefreshToken(body);
     }
 }

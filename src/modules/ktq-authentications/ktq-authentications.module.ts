@@ -6,10 +6,13 @@ import { KtqRolesModule } from '../ktq-roles/ktq-roles.module';
 import { KtqSessionsModule } from '../ktq-sessions/ktq-sessions.module';
 import { KtqAdminAuthenticationsController } from './controllers/ktq-admin-authentications.controller';
 import { KtqAuthenticationsService } from './ktq-authentications.service';
+import { KtqCustomersModule } from '../ktq-customers/ktq-customers.module';
+import { KtqCustomerAuthenticationsController } from './controllers/ktq-customer-authentications.controller';
 
 @Module({
     imports: [
         KtqAdminUsersModule,
+        KtqCustomersModule,
         KtqSessionsModule,
         KtqRolesModule,
         PassportModule,
@@ -19,7 +22,7 @@ import { KtqAuthenticationsService } from './ktq-authentications.service';
             signOptions: { expiresIn: '15m' },
         }),
     ],
-    controllers: [KtqAdminAuthenticationsController],
+    controllers: [KtqAdminAuthenticationsController, KtqCustomerAuthenticationsController],
     providers: [KtqAuthenticationsService],
     exports: [KtqAuthenticationsService],
 })

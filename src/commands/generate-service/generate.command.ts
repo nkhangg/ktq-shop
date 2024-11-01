@@ -127,23 +127,6 @@ export default class GenerateCommand extends GenerateBase {
         // this.addEntityToModule(item.name);
     }
 
-    createModule(table: TableDefinition) {
-        try {
-            const modulePath = `./modules/${table.name.replaceAll('_', '-')}`;
-            execSync(`nest generate module ${modulePath}`, { stdio: 'inherit' });
-        } catch (error) {
-            console.error(`Error create module file: ${error.message} \n`);
-        }
-    }
-
-    createService(table: TableDefinition) {
-        try {
-            execSync(`nest generate service ./modules/${table.name.replaceAll('_', '-')}`, { stdio: 'inherit' });
-        } catch (error) {
-            console.error(`Error create service file: ${error.message} \n`);
-        }
-    }
-
     saveServiceFile(table: TableDefinition) {
         const serviceFilePath = join(this.moduleFolder, `${this.moduleName}/${table.name.replaceAll('_', '-')}.service.ts`);
 

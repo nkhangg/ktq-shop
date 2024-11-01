@@ -14,4 +14,16 @@ export default [
         path: 'admin/auth/refresh-token',
         method: RequestMethod.POST,
     },
+    {
+        path: 'auth/register',
+        method: RequestMethod.POST,
+    },
+    {
+        path: 'auth/login',
+        method: RequestMethod.POST,
+    },
+    {
+        path: 'auth/refresh-token',
+        method: RequestMethod.POST,
+    },
 ] as (string | RouteInfo)[];

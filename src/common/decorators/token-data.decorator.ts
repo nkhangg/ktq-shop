@@ -1,5 +1,5 @@
 // user.decorator.ts
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { BadRequestException, createParamDecorator, ExecutionContext } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { UserRoleType } from '../enums/user-role-type.enum';
 
@@ -17,6 +17,6 @@ export const TokenData = createParamDecorator((data: unknown, ctx: ExecutionCont
 
         return decoded as TTokenData;
     } catch (error) {
-        throw new Error('Invalid token');
+        throw new BadRequestException('Invalid token');
     }
 });

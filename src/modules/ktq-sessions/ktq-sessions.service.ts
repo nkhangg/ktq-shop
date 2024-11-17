@@ -1,12 +1,13 @@
 import { TTokenData } from '@/common/decorators/token-data.decorator';
 import GeneralKtqSessionDto from '@/common/dtos/ktq-sessions.dto';
 import { UserRoleType } from '@/common/enums/user-role-type.enum';
+import KtqCustomer from '@/entities/ktq-customers.entity';
 import KtqSession from '@/entities/ktq-sessions.entity';
 
 import { ServiceInterface } from '@/services/service-interface';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 
 @Injectable()
 export class KtqSessionsService implements ServiceInterface<KtqSession, Partial<KtqSession>> {
@@ -33,8 +34,21 @@ export class KtqSessionsService implements ServiceInterface<KtqSession, Partial<
         return this.findOne(id);
     }
 
+    async updates(query: FindOptionsWhere<KtqSession>, session: Partial<KtqSession>): Promise<KtqSession[]> {
+        await this.ktqSessionRepository.update(query, { ...session });
+        return this.ktqSessionRepository.find({ where: query });
+    }
+
     async delete(id: KtqSession['id']): Promise<void> {
         await this.ktqSessionRepository.delete(id);
+    }
+
+    async findByCustomer(customer: KtqCustomer) {
+        return await this.ktqSessionRepository.findBy({ user_id: customer.id, user_role_type: UserRoleType.CUSTOMER, live: true });
+    }
+
+    async logoutByCustomer(customer: KtqCustomer) {
+        return await this.ktqSessionRepository.update({ user_id: customer.id, user_role_type: UserRoleType.CUSTOMER, live: true }, { live: false });
     }
 
     async getSessionByData({ payload, ...data }: { user_id: number; user_role_type: UserRoleType; payload?: string }) {

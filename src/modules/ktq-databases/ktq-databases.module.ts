@@ -1,5 +1,8 @@
 import KtqWebsite from '@/entities/ktq-websites.entity';
 import KtqVisible from '@/entities/ktq-visibles.entity';
+import KtqUserForgotPassword from '@/entities/ktq-user-forgot-passwords.entity';
+import KtqUserBlackList from '@/entities/ktq-user-black-lists.entity';
+import KtqUserBackListLog from '@/entities/ktq-user-back-list-logs.entity';
 import KtqTaxRate from '@/entities/ktq-tax-rates.entity';
 import KtqTaxCondition from '@/entities/ktq-tax-conditions.entity';
 import KtqSession from '@/entities/ktq-sessions.entity';
@@ -7,6 +10,7 @@ import KtqRole from '@/entities/ktq-roles.entity';
 import KtqRoleResource from '@/entities/ktq-role-resources.entity';
 import KtqRolePermission from '@/entities/ktq-role-permissions.entity';
 import KtqResource from '@/entities/ktq-resources.entity';
+import KtqResourcePermission from '@/entities/ktq-resource-permissions.entity';
 import KtqRegion from '@/entities/ktq-regions.entity';
 import KtqReadNotification from '@/entities/ktq-read-notifications.entity';
 import KtqReadAdminNotification from '@/entities/ktq-read-admin-notifications.entity';
@@ -28,8 +32,6 @@ import KtqMedia from '@/entities/ktq-medias.entity';
 import KtqInventory from '@/entities/ktq-inventories.entity';
 import KtqDefaultAttribute from '@/entities/ktq-default-attributes.entity';
 import KtqCustomer from '@/entities/ktq-customers.entity';
-import KtqCustomerBlackList from '@/entities/ktq-customer-black-lists.entity';
-import KtqCustomerBackListLog from '@/entities/ktq-customer-back-list-logs.entity';
 import KtqCoupon from '@/entities/ktq-coupons.entity';
 import KtqCouponUsage from '@/entities/ktq-coupon-usage.entity';
 import KtqCouponCondition from '@/entities/ktq-coupon-conditions.entity';
@@ -60,7 +62,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
                 username: configService.get<string>('DB_USERNAME'),
                 password: configService.get<string>('DB_PASSWORD'),
                 database: configService.get<string>('DB_NAME'),
-                entities: [KtqAddress,KtqAdminNotification,KtqAdminUser,KtqAttributeSet,KtqAttributeValue,KtqAttribute,KtqCart,KtqCategory,KtqCategoryProduct,KtqConfig,KtqCountry,KtqCouponCondition,KtqCouponUsage,KtqCoupon,KtqCustomerBackListLog,KtqCustomerBlackList,KtqCustomer,KtqDefaultAttribute,KtqInventory,KtqMedia,KtqNotifiImage,KtqNotification,KtqOrderItem,KtqOrderPayment,KtqOrderTax,KtqOrder,KtqPaymentMethod,KtqPermission,KtqProductPromotion,KtqProductReview,KtqProductVisible,KtqProductWebsite,KtqProduct,KtqPromotion,KtqReadAdminNotification,KtqReadNotification,KtqRegion,KtqResource,KtqRolePermission,KtqRoleResource,KtqRole,KtqSession,KtqTaxCondition,KtqTaxRate,KtqVisible,KtqWebsite],
+                charset: 'utf8mb4_unicode_ci',
+                entities: [KtqAddress,KtqAdminNotification,KtqAdminUser,KtqAttributeSet,KtqAttributeValue,KtqAttribute,KtqCart,KtqCategory,KtqCategoryProduct,KtqConfig,KtqCountry,KtqCouponCondition,KtqCouponUsage,KtqCoupon,KtqCustomer,KtqDefaultAttribute,KtqInventory,KtqMedia,KtqNotifiImage,KtqNotification,KtqOrderItem,KtqOrderPayment,KtqOrderTax,KtqOrder,KtqPaymentMethod,KtqPermission,KtqProductPromotion,KtqProductReview,KtqProductVisible,KtqProductWebsite,KtqProduct,KtqPromotion,KtqReadAdminNotification,KtqReadNotification,KtqRegion,KtqResourcePermission,KtqResource,KtqRolePermission,KtqRoleResource,KtqRole,KtqSession,KtqTaxCondition,KtqTaxRate,KtqUserBackListLog,KtqUserBlackList,KtqUserForgotPassword,KtqVisible,KtqWebsite],
                 synchronize: true,
             }),
         }),

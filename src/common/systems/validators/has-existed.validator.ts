@@ -21,8 +21,8 @@ export class HasExistedValidator implements ValidatorConstraintInterface {
     }
 
     defaultMessage(args: ValidationArguments) {
-        const { column }: IsExitedInput = args.constraints[0];
+        const { column, message }: IsExitedInput = args.constraints[0];
 
-        return `${column} $value is not found`;
+        return message || `${column} $value is not found`;
     }
 }

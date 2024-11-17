@@ -5,12 +5,13 @@ export type IsExitedInput = {
     tableName: string;
     column: string;
     queryOption?: Record<string, any>;
+    message?: string;
 };
 
 export function HasExisted(options: IsExitedInput, validationOptions?: ValidationOptions) {
     return function (object: any, propertyName: string) {
         registerDecorator({
-            name: 'is-unique',
+            name: 'has-exited',
             target: object.constructor,
             propertyName: propertyName,
             options: validationOptions,

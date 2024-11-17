@@ -1,8 +1,8 @@
-import { Body, Controller, Get, HttpCode, Post, Req } from '@nestjs/common';
-import { KtqAuthenticationsService } from '../ktq-authentications.service';
-import { Request } from 'express';
-import { LoginKtqAdminUserDto, RefreshTokenDto, RegisterKtqAdminUserDto } from '@/common/dtos/ktq-authentication.dto';
 import { TokenData, TTokenData } from '@/common/decorators/token-data.decorator';
+import { AdminForgotPasswordDto, ChangePasswordForgot, LoginKtqAdminUserDto, RefreshTokenDto, RegisterKtqAdminUserDto } from '@/common/dtos/ktq-authentication.dto';
+import { Body, Controller, Get, HttpCode, Post, Req } from '@nestjs/common';
+import { Request } from 'express';
+import { KtqAuthenticationsService } from '../ktq-authentications.service';
 
 @Controller('admin/auth')
 export class KtqAdminAuthenticationsController {
@@ -36,5 +36,17 @@ export class KtqAdminAuthenticationsController {
     @HttpCode(200)
     async refreshToken(@Body() body: RefreshTokenDto) {
         return await this.ktqAuthenticationService.adminRefreshToken(body);
+    }
+
+    @Post('forgot-password')
+    @HttpCode(200)
+    async forgotPassword(@Body() body: AdminForgotPasswordDto) {
+        return await this.ktqAuthenticationService.adminForgotPassword(body);
+    }
+
+    @Post('grant-new-password')
+    @HttpCode(200)
+    async changePasswordForgot(@Body() body: ChangePasswordForgot) {
+        return await this.ktqAuthenticationService.adminChangePasswordForgot(body);
     }
 }

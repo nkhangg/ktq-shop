@@ -6,6 +6,7 @@ export default class KtqConfigConstant {
     public static CONFIG_APP_PORT = 'app-port';
     public static CONFIG_APP_API_PREFIX = 'app-api-prefix';
     public static CONFIG_APP_API_VERSION = 'app-api-version';
+    public static CONFIG_APP_CLIENT_APP_URL = 'app-client-app-url';
 
     public static getConfigs() {
         return [
@@ -33,6 +34,12 @@ export default class KtqConfigConstant {
                 key_type: KeyType.STRING,
                 key_value: 'v1',
             },
+            {
+                id: 5,
+                key_name: this.CONFIG_APP_CLIENT_APP_URL,
+                key_type: KeyType.STRING,
+                key_value: 'http://localhost:3000/forgot-password',
+            },
         ] as KtqConfig[];
     }
 
@@ -56,7 +63,15 @@ export default class KtqConfigConstant {
         return this.getConfigs().find((item) => item.key_name === key);
     }
 
+    public static getVersionPrefix() {
+        return `/${this.getApiPrefix().key_value}/${this.getApiVersion().key_value}`;
+    }
+
     public static getHostname() {
         return `${this.getAppHost().key_value}:${this.getAppPort().key_value}/${this.getApiPrefix().key_value}/${this.getApiVersion().key_value}`;
+    }
+
+    public static getClientAppUrl() {
+        return this.getConfigs().find((item) => item.key_name === this.CONFIG_APP_CLIENT_APP_URL);
     }
 }

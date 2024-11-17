@@ -1,7 +1,7 @@
 import { Controller, Post } from '@nestjs/common';
 import { KtqRolesService } from './ktq-roles.service';
 
-@Controller('ktq-roles')
+@Controller('admin/roles')
 export class KtqRolesController {
     constructor(private ktqRolesService: KtqRolesService) {}
 

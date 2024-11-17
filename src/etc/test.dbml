@@ -1,7 +1,17 @@
-Table ktq_websites{
-  id integer [primary key]
-  website_name varchar
-  description varchar
-  created_at timestamp
-  updated_at timestamp
+Table ExampleEntity {
+  id int [pk, increment]
+  column1 varchar [unique]
+  column2 varchar
+  column3 varchar
+  column4 varchar
+
+  Indexes {
+    (column3, column4) [unique] // Unique trên column1 và column2
+  }
+
+  // Đánh index cho nhiều cột
+  Indexes {
+    (column3, column4) // Index kết hợp trên column3 và column4
+  }
+
 }

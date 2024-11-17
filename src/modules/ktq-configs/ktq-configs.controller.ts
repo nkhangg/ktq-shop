@@ -2,7 +2,7 @@ import { Controller, Get, Post } from '@nestjs/common';
 import { KtqConfigsService } from './ktq-configs.service';
 import { KeyType } from '@/common/enums/key-type.enum';
 
-@Controller('ktq-configs')
+@Controller('admin/configs')
 export class KtqConfigsController {
     constructor(private readonly ktqConfigService: KtqConfigsService) {}
 

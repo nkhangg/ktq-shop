@@ -25,7 +25,12 @@ export default class KtqRolesConstant {
     public static getSuperAdmin() {
         return this.getRoles().find((role) => role.role_name === this.SUPER_ADMIN);
     }
+
     public static getManagement() {
         return this.getRoles().find((role) => role.role_name === this.MANAGEMENT);
+    }
+
+    public static getNormalAdmin() {
+        return this.getRoles().find((role) => role.role_name === this.NORMAL_ADMIN);
     }
 }

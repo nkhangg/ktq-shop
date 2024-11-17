@@ -4,6 +4,7 @@ import { Exclude } from "class-transformer";
 import { Timestamp } from "@/common/entities/column/timestamp";
 
 import KtqRolePermission from "./ktq-role-permissions.entity";
+import KtqResourcePermission from "./ktq-resource-permissions.entity";
 
 @Entity("ktq_permissions")
 export default class KtqPermission extends Timestamp {
@@ -22,4 +23,11 @@ export default class KtqPermission extends Timestamp {
   )
   @Exclude()
   rolePermissions: KtqRolePermission[];
+
+  @OneToMany(
+    () => KtqResourcePermission,
+    (resourcePermission) => resourcePermission.permission,
+  )
+  @Exclude()
+  resourcePermissions: KtqResourcePermission[];
 }

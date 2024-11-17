@@ -3,8 +3,9 @@ import { Presets, SingleBar } from 'cli-progress';
 import * as fs from 'fs';
 import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
-import GenerateBase, { Endpoint, Field, Relation, TableDefinition } from '../generate-base';
+import GenerateBase, { Endpoint, Field, Relation, TableDefinition, TableIndexes } from '../generate-base';
 import KtqAppConstant from '../../constants/ktq-app.constant';
+import { table } from 'console';
 
 export default class GenerateCommand extends GenerateBase {
     private outputDir = join(__dirname, '../../entities');
@@ -56,7 +57,7 @@ export default class GenerateCommand extends GenerateBase {
     }
 
     generateModels() {
-        // const data = this.getDataFormDbml(this.schemaFilePath);
+        this.dataDb = this.getDataDb();
 
         const tables: TableDefinition[] = this.dataDb.tables;
         const refs: Relation[] = this.dataDb.refs;
@@ -355,10 +356,10 @@ export default class GenerateCommand extends GenerateBase {
         return this.dataDb.refs.find((item) => item.endpoints.find((i) => tableName === i.tableName));
     }
 
-    createColumn(tableName: string, item: Field) {
+    createColumn(tableName: string, item: Field, data: TableDefinition) {
         let jsonParamsData = ``;
 
-        if (item.name.includes('_id') && this.exitsRelation(tableName)) return '';
+        if (item.name.endsWith('_id') && this.exitsRelation(tableName)) return '';
 
         const params = {
             type: this.extractType(item.type.type_name.toLocaleLowerCase()),
@@ -388,6 +389,7 @@ export default class GenerateCommand extends GenerateBase {
         }
 
         return `
+            ${this.exitsIndex(data) ? `@Index()` : ''}
             @Column(${jsonParamsData})
             ${this.isExclude(item) ? '@Exclude()' : ''}
             ${item.name}: ${this.mapSqlDataTypeToJs(item.type.type_name, () => {
@@ -396,10 +398,10 @@ export default class GenerateCommand extends GenerateBase {
         `;
     }
 
-    createColumns(tableName: string, fields: Field[]) {
+    createColumns(data: TableDefinition) {
         let result = '';
 
-        const clearedTimestamp = fields.filter((item) => {
+        const clearedTimestamp = data.fields.filter((item) => {
             return item.name !== 'created_at' && item.name !== 'updated_at';
         });
 
@@ -407,7 +409,7 @@ export default class GenerateCommand extends GenerateBase {
             if (item.pk) {
                 result += this.createPrimaryKey(item);
             } else {
-                result += this.createColumn(tableName, item);
+                result += this.createColumn(data.name, item, data);
             }
         });
 
@@ -425,6 +427,31 @@ export default class GenerateCommand extends GenerateBase {
         }, ``);
     }
 
+    exitsMultipleUnique(data: TableDefinition) {
+        if (!data?.indexes) return false;
+
+        return data.indexes.some((item) => {
+            return item?.unique;
+        });
+    }
+
+    exitsIndex(data: TableDefinition) {
+        if (!data?.indexes) return false;
+
+        return data.indexes.some((item) => {
+            const columns = item?.columns;
+            return Array.isArray(columns) && columns.length === 1 && !item?.unique;
+        });
+    }
+
+    exitsMultipleIndex(data: TableDefinition) {
+        if (!data?.indexes) return false;
+
+        return data.indexes.some((item) => {
+            return (item?.columns as []).length >= 2 && !item?.unique;
+        });
+    }
+
     createImportTypeOrm(data: TableDefinition, refs: Relation[]) {
         const initImport = ['Entity', 'Column', 'PrimaryGeneratedColumn'];
         const relations = this.getRelation(refs, data);
@@ -432,6 +459,14 @@ export default class GenerateCommand extends GenerateBase {
         const mappings = relations.map((item) => {
             return this.mappingRef(this.sortEnpointWithTableName(data.name, item.endpoints)).key;
         });
+
+        if (this.exitsMultipleUnique(data)) {
+            initImport.push('Unique');
+        }
+
+        if (this.exitsIndex(data) || this.exitsMultipleIndex(data)) {
+            initImport.push('Index');
+        }
 
         const uniqueTableNames = [...new Set(mappings)];
 
@@ -456,6 +491,44 @@ export default class GenerateCommand extends GenerateBase {
         return result ? `import { Exclude } from 'class-transformer';` : '';
     }
 
+    createMultipleIndexes(data: TableDefinition) {
+        if (!this.exitsMultipleIndex(data)) return '';
+
+        const indexes = data.indexes.filter((item) => {
+            return !item?.unique && item?.columns.length >= 2;
+        });
+
+        return indexes.reduce((prev, cur) => {
+            const columnNames = cur.columns.map((column) => `"${column.value}"`);
+
+            const indexName = `"IDX_${data.name.toUpperCase()}_${cur.columns
+                .map((column) => `${column.value}`)
+                .join('_')
+                .toUpperCase()}"`;
+
+            return (prev += `@Index(${indexName} ,[${columnNames.join(', ')}])\n`);
+        }, '');
+    }
+
+    createMultipleUnique(data: TableDefinition) {
+        if (!this.exitsMultipleUnique(data)) return '';
+
+        const uniques = data.indexes.filter((item) => {
+            return item?.unique && item?.columns.length >= 2;
+        });
+
+        return uniques.reduce((prev, cur) => {
+            const columnNames = cur.columns.map((column) => `"${column.value}"`);
+
+            const uniqueName = `"UQ_${data.name.toUpperCase()}_${cur.columns
+                .map((column) => `${column.value}`)
+                .join('_')
+                .toUpperCase()}"`;
+
+            return (prev += `@Unique(${uniqueName}, [${columnNames.join(', ')}])\n`);
+        }, '');
+    }
+
     createTemplate(data: TableDefinition, refs: Relation[]) {
         const isTimestamp = this.isTimestamp(data.fields);
         const isExitsEnum = this.existEnum(data.fields);
@@ -475,11 +548,11 @@ export default class GenerateCommand extends GenerateBase {
 
 
             @Entity('${data.name}')
+            ${this.createMultipleUnique(data)}
+            ${this.createMultipleIndexes(data)}
             export default class ${this.toSingular(this.convertTableNameToClassName(data.name))} ${isTimestamp ? 'extends Timestamp' : ''} {
-                ${this.createColumns(data.name, data.fields)}
-
+                ${this.createColumns(data)}
                 
-        
                 ${this.createRelation(refs, data)}
         }`;
     }

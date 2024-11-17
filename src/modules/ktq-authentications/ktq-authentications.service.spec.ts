@@ -1,24 +1,26 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { TTokenData } from '@/common/decorators/token-data.decorator';
+import { RefreshTokenDto, RegisterKtqAdminUserDto, RegisterKtqCustomerDto } from '@/common/dtos/ktq-authentication.dto';
+import { UserRoleType } from '@/common/enums/user-role-type.enum';
+import KtqResponse from '@/common/systems/response/ktq-response';
+import KtqRolesConstant from '@/constants/ktq-roles.constant';
+import KtqAdminUser from '@/entities/ktq-admin-users.entity';
+import KtqCustomer from '@/entities/ktq-customers.entity';
+import KtqSession from '@/entities/ktq-sessions.entity';
 import { BadRequestException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Test, TestingModule } from '@nestjs/testing';
 import * as bcrypt from 'bcryptjs';
-import * as crypto from 'crypto';
-import { KtqAuthenticationsService } from './ktq-authentications.service';
-import { KtqAdminUsersService } from '../ktq-admin-users/ktq-admin-users.service';
-import { KtqSessionsService } from '../ktq-sessions/ktq-sessions.service';
-import KtqAdminUser from '@/entities/ktq-admin-users.entity';
-import { UserRoleType } from '@/common/enums/user-role-type.enum';
-import { Request } from 'express';
-import { KtqRolesService } from '../ktq-roles/ktq-roles.service';
-import KtqRole from '@/entities/ktq-roles.entity';
-import KtqRolesConstant from '@/constants/ktq-roles.constant';
-import KtqResponse from '@/common/systems/response/ktq-response';
 import { plainToClass } from 'class-transformer';
-import { RefreshTokenDto, RegisterKtqAdminUserDto, RegisterKtqCustomerDto } from '@/common/dtos/ktq-authentication.dto';
-import { TTokenData } from '@/common/decorators/token-data.decorator';
-import KtqSession from '@/entities/ktq-sessions.entity';
+import * as crypto from 'crypto';
+import { Request } from 'express';
+import { KtqAdminUsersService } from '../ktq-admin-users/ktq-admin-users.service';
 import { KtqCustomersService } from '../ktq-customers/ktq-customers.service';
-import KtqCustomer from '@/entities/ktq-customers.entity';
+import { KtqRolesService } from '../ktq-roles/ktq-roles.service';
+import { KtqSessionsService } from '../ktq-sessions/ktq-sessions.service';
+import { KtqAuthenticationsService } from './ktq-authentications.service';
+import { KtqQueuesService } from '../ktq-queues/ktq-queues.service';
+import { KtqConfigEmailsService } from '../ktq-config-emails/ktq-config-emails.service';
+import { KtqUserForgotPasswordsService } from '../ktq-user-forgot-passwords/ktq-user-forgot-passwords.service';
 
 describe('KtqAuthenticationsService', () => {
     let service: KtqAuthenticationsService;
@@ -27,6 +29,9 @@ describe('KtqAuthenticationsService', () => {
     let sessionService: KtqSessionsService;
     let jwtService: JwtService;
     let rolesService: KtqRolesService;
+    let forgotPasswordService: KtqUserForgotPasswordsService;
+    let configEmailsService: KtqConfigEmailsService;
+    let queuesService: KtqQueuesService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -75,6 +80,26 @@ describe('KtqAuthenticationsService', () => {
                         verify: jest.fn(),
                     },
                 },
+                {
+                    provide: KtqUserForgotPasswordsService,
+                    useValue: {
+                        requestPasswordReset: jest.fn(),
+                        resetPassword: jest.fn(),
+                    },
+                },
+                {
+                    provide: KtqConfigEmailsService,
+                    useValue: {
+                        sendEmail: jest.fn(),
+                    },
+                },
+                {
+                    provide: KtqQueuesService,
+                    useValue: {
+                        addToQueue: jest.fn(),
+                        processQueue: jest.fn(),
+                    },
+                },
             ],
         }).compile();
 
@@ -84,6 +109,9 @@ describe('KtqAuthenticationsService', () => {
         rolesService = module.get<KtqRolesService>(KtqRolesService);
         sessionService = module.get<KtqSessionsService>(KtqSessionsService);
         jwtService = module.get<JwtService>(JwtService);
+        forgotPasswordService = module.get<KtqUserForgotPasswordsService>(KtqUserForgotPasswordsService);
+        configEmailsService = module.get<KtqConfigEmailsService>(KtqConfigEmailsService);
+        queuesService = module.get<KtqQueuesService>(KtqQueuesService);
     });
 
     describe('generateMD5Hash', () => {
@@ -584,6 +612,7 @@ describe('KtqAuthenticationsService', () => {
                 username: 'newUser',
                 email: 'test@example.com',
                 password_hash: 'hashedPassword',
+                resourcePermissions: [],
                 first_name: null,
                 last_name: null,
                 is_active: true,
@@ -601,7 +630,7 @@ describe('KtqAuthenticationsService', () => {
                         username: 'newUser',
                         email: 'test@example.com',
                     }),
-                    message: '',
+                    message: 'Success',
                     status_code: 200,
                 }),
             );
@@ -756,7 +785,7 @@ describe('KtqAuthenticationsService', () => {
             expect(response).toEqual(
                 expect.objectContaining({
                     data: expect.objectContaining(admin),
-                    message: '',
+                    message: 'Success',
                     status_code: 200,
                     token: newAccessToken,
                     refresh_token: newRefreshToken.token,
@@ -915,7 +944,7 @@ describe('KtqAuthenticationsService', () => {
             expect(response).toEqual(
                 expect.objectContaining({
                     data: expect.objectContaining(customer),
-                    message: '',
+                    message: 'Success',
                     status_code: 200,
                     token: newAccessToken,
                     refresh_token: newRefreshToken.token,
@@ -1005,7 +1034,15 @@ describe('KtqAuthenticationsService', () => {
 
             const result = await service.getCurrentAdminProfile(tokenData);
 
-            expect(result).toEqual(KtqResponse.toResponse(mockAdmin, { message: 'Profile was got' }));
+            expect(result).toMatchObject({
+                data: {
+                    email: 'admin@example.com',
+                    id: 123,
+                    username: 'adminUser',
+                },
+                message: 'Profile was got',
+                status_code: 200,
+            });
         });
     });
 
@@ -1096,6 +1133,42 @@ describe('KtqAuthenticationsService', () => {
             jest.spyOn(customerService, 'create').mockRejectedValue(new Error('Error creating customer')); // Giả lập lỗi khi tạo khách hàng
 
             await expect(service.customerRegister(dto)).rejects.toThrow(new Error('Error creating customer'));
+        });
+    });
+
+    describe('getUserFromTokenData', () => {
+        it('should return customer data when userClass is CUSTOMER', async () => {
+            const tokenData: TTokenData = { id: 123, class: UserRoleType.CUSTOMER, session_key: 'session_key', iat: new Date().getTime(), exp: new Date().getTime() };
+            const mockCustomer = new KtqCustomer();
+            mockCustomer.id = 1;
+
+            jest.spyOn(customerService, 'findOne').mockResolvedValue(mockCustomer);
+
+            const result = await service.getUserFromTokenData(tokenData);
+
+            expect(result).toEqual(mockCustomer);
+            expect(customerService.findOne).toHaveBeenCalledWith(tokenData.id);
+        });
+
+        it('should return admin data when userClass is ADMIN', async () => {
+            const tokenData: TTokenData = { id: 123, class: UserRoleType.ADMIN, session_key: 'session_key', iat: new Date().getTime(), exp: new Date().getTime() };
+
+            const mockAdmin = new KtqAdminUser();
+            mockAdmin.id = 1;
+
+            jest.spyOn(adminUserService, 'findOne').mockResolvedValue(mockAdmin);
+
+            const result = await service.getUserFromTokenData(tokenData);
+
+            expect(result).toEqual(mockAdmin);
+            expect(adminUserService.findOne).toHaveBeenCalledWith(tokenData.id);
+        });
+
+        it('should throw BadRequestException for an invalid user class', async () => {
+            const tokenData = { id: 789, class: 'INVALID', iat: new Date().getTime(), exp: new Date().getTime() };
+
+            await expect(service.getUserFromTokenData(tokenData as unknown as TTokenData)).rejects.toThrow(BadRequestException);
+            await expect(service.getUserFromTokenData(tokenData as unknown as TTokenData)).rejects.toThrow(new BadRequestException('Invalid user class'));
         });
     });
 });

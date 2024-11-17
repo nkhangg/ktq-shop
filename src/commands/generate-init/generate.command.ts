@@ -1,62 +1,193 @@
 // ts-node src/commands/generate-model/index.ts generate
-import { exec } from 'child_process';
-import GenerateBase from '../generate-base';
+import axios, { AxiosError } from 'axios';
+import KtqAppConstant from '../../constants/ktq-app.constant';
 import KtqConfigConstant from '../../constants/ktq-configs.constant';
-
+import GenerateBase from '../generate-base';
 export default class GenerateCommand extends GenerateBase {
-    public async generateRoles() {
-        const curlCommand = `curl -X POST "${KtqConfigConstant.getHostname()}/ktq-roles/init-roles"`;
+    private token = null;
 
-        exec(curlCommand, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Lỗi khi gọi API: ${error.message}`);
-                return;
+    public async login() {
+        try {
+            const { username, password } = KtqAppConstant.getRootUserData();
+
+            const response = await axios({
+                method: 'POST',
+                url: `${KtqConfigConstant.getHostname()}/admin/auth/login`,
+                data: {
+                    username,
+                    password,
+                },
+            });
+
+            if (response && response.data?.token) {
+                this.token = response.data.token;
             }
-            if (stderr) {
-                console.log(`Initialize roles success`);
-                return;
-            }
+        } catch (error) {
+            console.log((error as AxiosError).response.data);
+            console.log('error went login');
+        }
+    }
+
+    public async logout() {
+        const response = await axios({
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${this.token}`,
+            },
+            url: `${KtqConfigConstant.getHostname()}/admin/auth/logout`,
         });
+
+        if (response.status !== 200) {
+            return;
+        }
+
+        this.token = null;
+    }
+
+    public async generateRoles() {
+        try {
+            const response = await axios({
+                method: 'post',
+                url: `${KtqConfigConstant.getHostname()}/admin/roles/init-roles`,
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                },
+            });
+            console.log(`Initialize roles success: ${JSON.stringify(response.data)}`);
+        } catch (error) {
+            console.error(`Lỗi khi gọi API: ${error.message}`);
+        }
     }
 
     public async generateConfigs() {
-        const curlCommand = `curl -X POST "${KtqConfigConstant.getHostname()}/ktq-configs/init-configs"`;
-
-        exec(curlCommand, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Lỗi khi gọi API: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                console.log(`Initialize configs success`);
-                return;
-            }
-        });
+        try {
+            const response = await axios({
+                method: 'post',
+                url: `${KtqConfigConstant.getHostname()}/admin/configs/init-configs`,
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                },
+            });
+            console.log(`Initialize configs success: ${JSON.stringify(response.data)}`);
+        } catch (error) {
+            console.error(`Lỗi khi gọi API: ${error.message}`);
+        }
     }
 
     public async generateRootUser() {
-        const curlCommand = `curl -X POST "${KtqConfigConstant.getHostname()}/ktq-admin-users/init-configs"`;
+        try {
+            const response = await axios({
+                method: 'post',
+                url: `${KtqConfigConstant.getHostname()}/admin/admin-users/init-configs`,
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                },
+            });
+            if (response.data) {
+                console.log(`Initialize root user success`);
+            } else {
+                console.log(`Initialize root user failure`);
+            }
+        } catch (error) {
+            console.error(`Lỗi khi gọi API: ${error.message}`);
+        }
+    }
 
-        exec(curlCommand, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Lỗi khi gọi API: ${error.message}`);
-                return;
+    public async importResources() {
+        try {
+            const response = await axios({
+                method: 'post',
+                url: `${KtqConfigConstant.getHostname()}/admin/resources/import-resource`,
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                },
+            });
+            if (response.data) {
+                console.log(`Import resource success`);
+            } else {
+                console.log(`Import resource failure`);
             }
-            if (stderr) {
-                const response = JSON.parse(stdout);
-                if (response.data) {
-                    console.log(`Initialize root user success`);
-                } else {
-                    console.log(`Initialize root user failure`);
-                }
-                return;
+        } catch (error) {
+            console.error(`Lỗi khi gọi API: ${error.message}`);
+        }
+    }
+
+    public async initPermissions() {
+        try {
+            const response = await axios({
+                method: 'post',
+                url: `${KtqConfigConstant.getHostname()}/admin/permissions/init-permissions`,
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                },
+            });
+            if (response.data) {
+                console.log(`Initialize permissions success`);
+            } else {
+                console.log(response.data);
+                console.log(`Initialize permissions failure`);
             }
-        });
+        } catch (error) {
+            console.error(`Lỗi khi gọi API: ${error.message}`);
+        }
+    }
+
+    public async initRolePermissions() {
+        try {
+            const response = await axios({
+                method: 'post',
+                url: `${KtqConfigConstant.getHostname()}/admin/role-permissions/init-role-permissions`,
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                },
+            });
+            if (response.data) {
+                console.log(`Initialize role permissions success`);
+            } else {
+                console.log(response.data);
+                console.log(`Initialize role permissions failure`);
+            }
+        } catch (error) {
+            console.error(`Lỗi khi gọi API: ${error.message}`);
+        }
+    }
+
+    public async initRoleResources() {
+        try {
+            const response = await axios({
+                method: 'post',
+                url: `${KtqConfigConstant.getHostname()}/admin/role-resources/init-role-resources`,
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                },
+            });
+            if (response.data) {
+                console.log(`Initialize role resources success`);
+            } else {
+                console.log(response.data);
+                console.log(`Initialize role resources failure`);
+            }
+        } catch (error) {
+            console.error(`Lỗi khi gọi API: ${error.message}`);
+        }
     }
 
     public async generateInit() {
+        await this.login();
+
+        if (!this.token) {
+            console.log('The Initialize failure. Because login to app failure');
+            return;
+        }
+
         await this.generateRoles();
         await this.generateConfigs();
         await this.generateRootUser();
+        await this.initPermissions();
+        await this.importResources();
+        await this.initRolePermissions();
+        await this.initRoleResources();
+
+        await this.logout();
     }
 }

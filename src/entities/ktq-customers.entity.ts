@@ -5,8 +5,6 @@ import { Timestamp } from "@/common/entities/column/timestamp";
 
 import KtqProductReview from "./ktq-product-reviews.entity";
 import KtqOrder from "./ktq-orders.entity";
-import KtqCustomerBlackList from "./ktq-customer-black-lists.entity";
-import KtqCustomerBackListLog from "./ktq-customer-back-list-logs.entity";
 import KtqCart from "./ktq-carts.entity";
 import KtqAddress from "./ktq-addresses.entity";
 import KtqCouponUsage from "./ktq-coupon-usage.entity";
@@ -39,20 +37,6 @@ export default class KtqCustomer extends Timestamp {
   @OneToMany(() => KtqOrder, (order) => order.customer)
   @Exclude()
   orders: KtqOrder[];
-
-  @OneToMany(
-    () => KtqCustomerBlackList,
-    (customerBlackList) => customerBlackList.customer,
-  )
-  @Exclude()
-  customerBlackLists: KtqCustomerBlackList[];
-
-  @OneToMany(
-    () => KtqCustomerBackListLog,
-    (customerBackListLog) => customerBackListLog.customer,
-  )
-  @Exclude()
-  customerBackListLogs: KtqCustomerBackListLog[];
 
   @OneToMany(() => KtqCart, (cart) => cart.customer)
   @Exclude()

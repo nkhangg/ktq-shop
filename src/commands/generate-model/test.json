@@ -1,0 +1,106 @@
+{
+  "schemas": [
+    {
+      "name": "public",
+      "note": "Default Public Schema",
+      "tables": [
+        {
+          "name": "ExampleEntity",
+          "alias": null,
+          "note": null,
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "schemaName": null,
+                "type_name": "int",
+                "args": null
+              },
+              "pk": true,
+              "note": null,
+              "increment": true
+            },
+            {
+              "name": "column1",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "column2",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "column3",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            },
+            {
+              "name": "column4",
+              "type": {
+                "schemaName": null,
+                "type_name": "varchar",
+                "args": null
+              },
+              "note": null
+            }
+          ],
+          "indexes": [
+            {
+              "unique": true,
+              "note": null,
+              "columns": [
+                {
+                  "type": "column",
+                  "value": "column1"
+                },
+                {
+                  "type": "column",
+                  "value": "column2"
+                }
+              ]
+            },
+            {
+              "note": null,
+              "columns": [
+                {
+                  "type": "column",
+                  "value": "column3"
+                }
+              ]
+            },
+            {
+              "note": null,
+              "columns": [
+                {
+                  "type": "column",
+                  "value": "column3"
+                },
+                {
+                  "type": "column",
+                  "value": "column4"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "enums": [],
+      "tableGroups": [],
+      "refs": []
+    }
+  ],
+  "notes": []
+}

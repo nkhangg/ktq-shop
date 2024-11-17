@@ -19,8 +19,6 @@ export default class GenerateCommand extends GenerateBase {
         super();
         const data = this.getDataFormDbml(this.schemaFilePath);
 
-        console.log(this.schemaFilePath);
-
         const tables: TableDefinition[] = data['schemas'][0]['tables'];
         const refs: Relation[] = data['schemas'][0]['refs'];
 
@@ -58,7 +56,7 @@ export default class GenerateCommand extends GenerateBase {
         import { ServiceInterface } from '@/services/service-interface';
         import { Injectable } from '@nestjs/common';
         import { InjectRepository } from '@nestjs/typeorm';
-        import { Repository } from 'typeorm';
+        import { Repository, FindManyOptions } from 'typeorm';
         `;
     }
 
@@ -105,7 +103,7 @@ export default class GenerateCommand extends GenerateBase {
 
         ${this.existEnum(table.fields) ? this.createEnumImports(table.fields, '../enums') : ''}
 
-           export default  interface General${this.convertTableNameToClassName(this.modelName)}Dto {
+           export default class General${this.convertTableNameToClassName(this.modelName)}Dto {
                 ${columnsStr}
             }
         `;
@@ -215,7 +213,15 @@ export default class GenerateCommand extends GenerateBase {
             }
 
             async delete(id: ${this.modelName}['${primaryKey.name}']): Promise<void> {
-                await this.${repoVariable}.delete(id);
+                  await this.${repoVariable}.delete(id);
+            }
+
+            async findWith(options?: FindManyOptions<${this.modelName}>) {
+                return await this.${repoVariable}.find(options);
+            }
+
+            async findOneWith(options?: FindManyOptions<${this.modelName}>) {
+                return await this.${repoVariable}.findOne(options);
             }
         }
         `;

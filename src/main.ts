@@ -5,13 +5,25 @@ import { BadRequestExceptionFilter } from './common/systems/filters/bad-request-
 import KtqResponse from './common/systems/response/ktq-response';
 import KtqConfigConstant from './constants/ktq-configs.constant';
 import { useContainer } from 'class-validator';
+import helmet from 'helmet';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+
+    // Cấu hình CORS
+    app.enableCors({
+        origin: ['http://localhost:3000', 'http://localhost:5173'],
+        methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
+        allowedHeaders: 'Content-Type, Accept, Authorization',
+        credentials: true,
+    });
+
     app.setGlobalPrefix(`${KtqConfigConstant.getApiPrefix().key_value}/${KtqConfigConstant.getApiVersion().key_value}`);
     // app.setGlobalPrefix('api/v1');
 
     app.useGlobalFilters(new BadRequestExceptionFilter());
+
+    app.use(helmet());
 
     app.useGlobalPipes(
         new ValidationPipe({

@@ -1,9 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+} from "typeorm";
 import { Exclude } from "class-transformer";
 
 import { Timestamp } from "@/common/entities/column/timestamp";
 
 import KtqRole from "./ktq-roles.entity";
+import KtqResourcePermission from "./ktq-resource-permissions.entity";
 
 @Entity("ktq_admin_users")
 export default class KtqAdminUser extends Timestamp {
@@ -36,4 +43,11 @@ export default class KtqAdminUser extends Timestamp {
   })
   @Exclude()
   role: KtqRole;
+
+  @OneToMany(
+    () => KtqResourcePermission,
+    (resourcePermission) => resourcePermission.adminUser,
+  )
+  @Exclude()
+  resourcePermissions: KtqResourcePermission[];
 }

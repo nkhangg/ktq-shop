@@ -24,7 +24,13 @@ export interface TableDefinition {
     alias: string | null;
     note: string | null;
     fields: Field[];
-    indexes: any[];
+    indexes: TableIndexes[];
+}
+
+export interface TableIndexes {
+    unique?: boolean;
+    note: null | string;
+    columns: { type: string; value: string }[];
 }
 
 export interface Endpoint {

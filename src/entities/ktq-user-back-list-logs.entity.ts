@@ -2,11 +2,10 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 import { Exclude } from "class-transformer";
 import { BackListType } from "@/common/enums/back-list-type.enum";
 
-import KtqCustomer from "./ktq-customers.entity";
-import KtqCustomerBlackList from "./ktq-customer-black-lists.entity";
+import KtqUserBlackList from "./ktq-user-black-lists.entity";
 
-@Entity("ktq_customer_back_list_logs")
-export default class KtqCustomerBackListLog {
+@Entity("ktq_user_back_list_logs")
+export default class KtqUserBackListLog {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
@@ -20,20 +19,13 @@ export default class KtqCustomerBackListLog {
   end_at: Date;
 
   @Column({ type: "varchar" })
-  description: string;
-
-  @ManyToOne(() => KtqCustomer, (customer) => customer.customerBackListLogs, {
-    cascade: true,
-    eager: true,
-  })
-  @Exclude()
-  customer: KtqCustomer;
+  reason: string;
 
   @ManyToOne(
-    () => KtqCustomerBlackList,
-    (customerBlackList) => customerBlackList.customerBackListLogs,
+    () => KtqUserBlackList,
+    (userBlackList) => userBlackList.userBackListLogs,
     { cascade: true, eager: true },
   )
   @Exclude()
-  customerBlackList: KtqCustomerBlackList;
+  userBlackList: KtqUserBlackList;
 }

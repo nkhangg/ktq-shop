@@ -148,7 +148,10 @@ Table ktq_role_permissions {
 Table ktq_resources { // API, Admin, Order, ...
   id int [pk]
   resource_name varchar [unique]
-  description varchar
+  type_resource enum('api', 'material') [default: 'api']
+  resource_code varchar 
+  resource_method varchar [null, default: null]
+  description varchar [null, default: null]
   created_at timestamp
   updated_at timestamp
 }
@@ -157,6 +160,13 @@ Table ktq_role_resources {
   id int [pk]
   role_id int
   resource_id int
+}
+
+Table ktq_resource_permissions{
+  id int [pk]
+  user_admin_id int
+  resource_id int
+  permission_id int
 }
 
 Table ktq_customers{
@@ -170,23 +180,27 @@ Table ktq_customers{
   updated_at timestamp
 }
 
-Table ktq_customer_black_lists{
+Table ktq_user_black_lists{
   id int [pk]
-  customer_id integer
+  user_id_app integer
+  user_role_type enum('admin', 'customer') 
   back_list_type enum('warning', 'block')
   start_at timestamp [null, default: null]
   end_at timestamp [null, default: null]
-  description varchar
+  reason varchar
+
+  Indexes {
+    (user_role_type, user_id_app) [unique] 
+  }
 }
 
-Table ktq_customer_back_list_logs{
+Table ktq_user_back_list_logs{
   id int [pk]
-  customer_id integer
   black_list_id integer 
   back_list_type enum('warning', 'block')
   start_at timestamp [null, default: null]
   end_at timestamp [null, default: null]
-  description varchar
+  reason varchar
   created_at timestamp
 }
 
@@ -431,6 +445,18 @@ Table ktq_notifi_images{
 }
 
 
+Table ktq_user_forgot_passwords{
+  id INTEGER [primary key]
+  user_role_type enum('admin', 'customer')
+  email varchar
+  send_at timestamp [null, default: null]
+  code varchar
+  forgotten boolean [default: 0]
+  time_expired timestamp [null, default: null]
+
+}
+
+
 
 Ref: ktq_admin_users.role_id > ktq_roles.id
 Ref: ktq_role_permissions.role_id > ktq_roles.id
@@ -451,9 +477,8 @@ Ref: ktq_tax_conditions.tax_rate_id > ktq_tax_rates.id
 
 Ref: ktq_orders.shipping_address_id - ktq_addresses.id
 
-Ref: ktq_customer_black_lists.customer_id > ktq_customers.id
-Ref: ktq_customer_back_list_logs.customer_id > ktq_customers.id
-Ref: ktq_customer_back_list_logs.black_list_id > ktq_customer_black_lists.id
+// Ref: ktq_customer_black_lists.customer_id > ktq_customers.id
+Ref: ktq_user_back_list_logs.black_list_id > ktq_user_black_lists.id
 
 Ref: ktq_order_items.order_id > ktq_orders.id
 Ref: ktq_order_items.product_id > ktq_products.id
@@ -489,4 +514,8 @@ Ref: ktq_categories.id < ktq_category_products.category_id
 
 Ref: ktq_products.type - ktq_default_attributes.product_type
 Ref: ktq_default_attributes.attribute_id < ktq_attributes.id
+
+Ref: ktq_resource_permissions.user_admin_id > ktq_admin_users.id
+Ref: ktq_resource_permissions.resource_id > ktq_resources.id
+Ref: ktq_resource_permissions.permission_id > ktq_permissions.id
 

@@ -24,10 +24,16 @@ import { KtqUserBlackListsModule } from './modules/ktq-user-black-lists/ktq-user
 import { KtqConfigEmailsModule } from './modules/ktq-config-emails/ktq-config-emails.module';
 import { KtqUserForgotPasswordsModule } from './modules/ktq-user-forgot-passwords/ktq-user-forgot-passwords.module';
 import { KtqQueuesModule } from './modules/ktq-queues/ktq-queues.module';
+import { KtqAddressesModule } from './modules/ktq-addresses/ktq-addresses.module';
+import { KtqCustomerGroupsModule } from './modules/ktq-customer-groups/ktq-customer-groups.module';
+import { KtqUserBlackListLogsModule } from './modules/ktq-user-black-list-logs/ktq-user-black-list-logs.module';
+import { KtqAppMediasModule } from './modules/ktq-app-medias/ktq-app-medias.module';
+import { KtqProvincesModule } from './modules/ktq-provinces/ktq-provinces.module';
 
 @Module({
     imports: [
         KtqAppConfigsModule,
+        KtqAppMediasModule,
         KtqConfigsModule,
         KtqAppValidatorsModule,
         KtqAdminUsersModule,
@@ -46,9 +52,12 @@ import { KtqQueuesModule } from './modules/ktq-queues/ktq-queues.module';
         KtqConfigEmailsModule,
         KtqUserForgotPasswordsModule,
         KtqQueuesModule,
+        KtqAddressesModule,
+        KtqCustomerGroupsModule,
+        KtqUserBlackListLogsModule,
+        KtqAppMediasModule,
+        KtqProvincesModule,
     ],
-    controllers: [],
-    providers: [],
 })
 export class AppModule {
     configure(consumer: MiddlewareConsumer) {

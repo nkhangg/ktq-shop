@@ -37,7 +37,7 @@ export class OnBlackListValidator implements ValidatorConstraintInterface {
         const result: KtqUserBlackList | null = (await this.entityManager
             .getRepository(this.table_name)
             .createQueryBuilder(this.table_name)
-            .where({ user_id_app: user.id, back_list_type: BackListType.BLOCK })
+            .where({ user_id_app: user.id, back_list_type: BackListType.BLOCK, user_role_type })
             .andWhere(`${this.table_name}.start_at <= CURRENT_TIMESTAMP`)
             .andWhere(
                 new Brackets((qb) => {

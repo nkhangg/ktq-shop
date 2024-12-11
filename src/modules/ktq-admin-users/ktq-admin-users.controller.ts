@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { KtqAdminUsersService } from './ktq-admin-users.service';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 
@@ -11,6 +11,7 @@ export class KtqAdminUsersController {
         return await this.ktqAdminUserService.initRootAdmin();
     }
 
+    @Get('')
     async getAll(@Paginate() query: PaginateQuery) {
         return await this.ktqAdminUserService.getAll(query);
     }

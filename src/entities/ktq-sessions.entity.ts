@@ -26,4 +26,7 @@ export default class KtqSession extends Timestamp {
 
   @Column({ type: "bool", default: 1 })
   live: boolean;
+
+  @Column({ type: "varchar" })
+  user_agent: string;
 }

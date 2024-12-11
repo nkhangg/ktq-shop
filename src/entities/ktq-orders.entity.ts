@@ -41,26 +41,26 @@ export default class KtqOrder extends Timestamp {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   customer: KtqCustomer;
 
   @OneToMany(() => KtqOrderPayment, (orderPayment) => orderPayment.order)
-  @Exclude()
+  //@Exclude()
   orderPayments: KtqOrderPayment[];
 
   @OneToMany(() => KtqOrderTax, (orderTax) => orderTax.order)
-  @Exclude()
+  //@Exclude()
   orderTaxes: KtqOrderTax[];
 
   @OneToOne(() => KtqAddress, (address) => address.order)
-  @Exclude()
+  //@Exclude()
   address: KtqAddress;
 
   @OneToMany(() => KtqOrderItem, (orderItem) => orderItem.order)
-  @Exclude()
+  //@Exclude()
   orderItems: KtqOrderItem[];
 
   @OneToMany(() => KtqCouponUsage, (couponUsage) => couponUsage.order)
-  @Exclude()
+  //@Exclude()
   couponUsages: KtqCouponUsage[];
 }

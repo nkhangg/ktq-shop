@@ -1,10 +1,11 @@
 import KtqAppConstant from '@/constants/ktq-app.constant';
-import { BullModule } from '@nestjs/bull';
-import { CacheInterceptor, CacheModule, CacheStore } from '@nestjs/cache-manager';
+import { CacheInterceptor } from '@/interceptors/cache-interceptor';
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import * as redisStore from 'cache-manager-ioredis';
+import { KtqCachesService } from './ktq-caches.service';
 @Module({
     imports: [
         ConfigModule,
@@ -26,6 +27,8 @@ import * as redisStore from 'cache-manager-ioredis';
             provide: APP_INTERCEPTOR,
             useClass: CacheInterceptor,
         },
+        KtqCachesService,
     ],
+    exports: [KtqCachesService],
 })
 export class KtqCachesModule {}

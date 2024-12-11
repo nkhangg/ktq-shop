@@ -14,14 +14,14 @@ export default class KtqResourcePermission {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   adminUser: KtqAdminUser;
 
   @ManyToOne(() => KtqResource, (resource) => resource.resourcePermissions, {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   resource: KtqResource;
 
   @ManyToOne(
@@ -29,6 +29,6 @@ export default class KtqResourcePermission {
     (permission) => permission.resourcePermissions,
     { cascade: true, eager: true },
   )
-  @Exclude()
+  //@Exclude()
   permission: KtqPermission;
 }

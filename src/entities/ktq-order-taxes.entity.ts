@@ -18,13 +18,13 @@ export default class KtqOrderTax extends Timestamp {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   order: KtqOrder;
 
   @ManyToOne(() => KtqTaxRate, (taxRate) => taxRate.orderTaxes, {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   taxRate: KtqTaxRate;
 }

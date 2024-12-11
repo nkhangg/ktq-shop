@@ -17,20 +17,20 @@ export default class KtqCouponUsage {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   coupon: KtqCoupon;
 
   @ManyToOne(() => KtqCustomer, (customer) => customer.couponUsages, {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   customer: KtqCustomer;
 
   @ManyToOne(() => KtqOrder, (order) => order.couponUsages, {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   order: KtqOrder;
 }

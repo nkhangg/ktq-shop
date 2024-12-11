@@ -22,6 +22,6 @@ export default class KtqMedia {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   product: KtqProduct;
 }

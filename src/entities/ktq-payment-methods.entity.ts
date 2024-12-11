@@ -20,6 +20,6 @@ export default class KtqPaymentMethod extends Timestamp {
     () => KtqOrderPayment,
     (orderPayment) => orderPayment.paymentMethod,
   )
-  @Exclude()
+  //@Exclude()
   orderPayments: KtqOrderPayment[];
 }

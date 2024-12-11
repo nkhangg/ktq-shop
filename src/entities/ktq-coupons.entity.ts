@@ -36,13 +36,13 @@ export default class KtqCoupon extends Timestamp {
   histories: string;
 
   @OneToMany(() => KtqCouponUsage, (couponUsage) => couponUsage.coupon)
-  @Exclude()
+  //@Exclude()
   couponUsages: KtqCouponUsage[];
 
   @OneToMany(
     () => KtqCouponCondition,
     (couponCondition) => couponCondition.coupon,
   )
-  @Exclude()
+  //@Exclude()
   couponConditions: KtqCouponCondition[];
 }

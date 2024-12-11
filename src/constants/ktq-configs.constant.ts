@@ -71,6 +71,17 @@ export default class KtqConfigConstant {
         return `${this.getAppHost().key_value}:${this.getAppPort().key_value}/${this.getApiPrefix().key_value}/${this.getApiVersion().key_value}`;
     }
 
+    public static getMediaPath(mediasPath?: string, host = false) {
+        if (host) {
+            return `${this.getAppHost().key_value}:${this.getAppPort().key_value}/medias/${mediasPath ? `${mediasPath}` : ''}`;
+        }
+
+        return `medias/${mediasPath ? `${mediasPath}` : ''}`;
+    }
+
+    public static getCustomerMediaPath(filename: string, type: 'avatar' | 'cover' = 'avatar', host = false) {
+        return this.getMediaPath(`customer/${type}/${filename}`, host);
+    }
     public static getClientAppUrl() {
         return this.getConfigs().find((item) => item.key_name === this.CONFIG_APP_CLIENT_APP_URL);
     }

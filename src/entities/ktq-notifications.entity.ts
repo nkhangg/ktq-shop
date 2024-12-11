@@ -19,10 +19,10 @@ export default class KtqNotification {
     () => KtqReadNotification,
     (readNotification) => readNotification.notification,
   )
-  @Exclude()
+  //@Exclude()
   readNotifications: KtqReadNotification[];
 
   @OneToMany(() => KtqNotifiImage, (notifiImage) => notifiImage.notification)
-  @Exclude()
+  //@Exclude()
   notifiImages: KtqNotifiImage[];
 }

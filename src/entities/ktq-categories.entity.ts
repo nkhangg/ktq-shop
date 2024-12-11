@@ -26,6 +26,6 @@ export default class KtqCategory extends Timestamp {
     () => KtqCategoryProduct,
     (categoryProduct) => categoryProduct.category,
   )
-  @Exclude()
+  //@Exclude()
   categoryProducts: KtqCategoryProduct[];
 }

@@ -6,11 +6,16 @@ import { KtqAppConfigsController } from './ktq-app-configs.controller';
 import { KtqAppConfigsService } from './ktq-app-configs.service';
 import { KtqConfigEmailsModule } from '../ktq-config-emails/ktq-config-emails.module';
 import { KtqQueuesModule } from '../ktq-queues/ktq-queues.module';
+import { MulterModule } from '@nestjs/platform-express';
+import KtqAppConstant from '@/constants/ktq-app.constant';
 
 @Module({
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
+        }),
+        MulterModule.register({
+            dest: KtqAppConstant.MEDIA_PATH,
         }),
         KtqCachesModule,
         KtqConfigEmailsModule,

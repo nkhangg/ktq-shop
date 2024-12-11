@@ -1,0 +1,29 @@
+Table ktq_provinces{
+  id INTEGER [primary key]
+  name           varchar  [note: "Tên địa danh"]
+  code           int      [note: "Mã địa danh"]
+  division_type  varchar  [note: "Loại hình phân cấp hành chính"]
+  codename       varchar  [note: "Tên mã địa danh"]
+  phone_code     int      [note: "Mã vùng điện thoại"]
+}
+
+Table ktq_districts {
+  id INTEGER [primary key]
+  name           varchar  [note: "Tên quận/huyện"]
+  code           int      [note: "Mã quận/huyện"]
+  division_type  varchar  [note: "Loại hình phân cấp hành chính"]
+  codename       varchar  [note: "Tên mã quận/huyện"]
+  province_code  int      [note: "Mã tỉnh/thành phố liên kết"]
+}
+
+Table ktq_wards {
+  id INTEGER [primary key]
+  name           varchar  [note: "Tên phường/xã"]
+  code           int      [note: "Mã phường/xã"]
+  division_type  varchar  [note: "Loại hình phân cấp hành chính"]
+  codename       varchar  [note: "Tên mã phường/xã"]
+  district_code  int      [note: "Mã quận/huyện liên kết"]
+}
+
+Ref: ktq_districts.province_code > ktq_provinces.code
+Ref: ktq_wards.district_code > ktq_districts.code

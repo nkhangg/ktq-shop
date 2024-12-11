@@ -13,13 +13,13 @@ export default class KtqRolePermission {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   role: KtqRole;
 
   @ManyToOne(() => KtqPermission, (permission) => permission.rolePermissions, {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   permission: KtqPermission;
 }

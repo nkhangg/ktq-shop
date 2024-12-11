@@ -4,8 +4,8 @@ import { BackListType } from "@/common/enums/back-list-type.enum";
 
 import KtqUserBlackList from "./ktq-user-black-lists.entity";
 
-@Entity("ktq_user_back_list_logs")
-export default class KtqUserBackListLog {
+@Entity("ktq_user_black_list_logs")
+export default class KtqUserBlackListLog {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
@@ -23,9 +23,9 @@ export default class KtqUserBackListLog {
 
   @ManyToOne(
     () => KtqUserBlackList,
-    (userBlackList) => userBlackList.userBackListLogs,
+    (userBlackList) => userBlackList.userBlackListLogs,
     { cascade: true, eager: true },
   )
-  @Exclude()
+  //@Exclude()
   userBlackList: KtqUserBlackList;
 }

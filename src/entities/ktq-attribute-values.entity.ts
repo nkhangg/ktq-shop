@@ -17,6 +17,6 @@ export default class KtqAttributeValue extends Timestamp {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   attribute: KtqAttribute;
 }

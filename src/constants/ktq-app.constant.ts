@@ -27,8 +27,17 @@ export default class KtqAppConstant {
 
     public static ROOT_DIRECTORY = resolve(__dirname, '../');
 
+    public static MEDIA_PATH = 'public';
+    public static CUSTOMER_MEDIA_PATH = 'customers';
+
     public static etcFilePath = (etc_file: string) => {
         return join(this.ROOT_DIRECTORY, `etc/${etc_file}`);
+    };
+
+    public static customerMediaFilePath = (filename: string) => {
+        const rootDir = process.cwd();
+
+        return join(rootDir, `${this.MEDIA_PATH}/${this.CUSTOMER_MEDIA_PATH}/${filename}`);
     };
 
     public static DB_SCHEMA_PATH = this.etcFilePath(this.DB_SCHEMA_FILE_NAME);

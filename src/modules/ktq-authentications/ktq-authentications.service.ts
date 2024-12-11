@@ -36,6 +36,7 @@ import { KtqUserForgotPasswordsService } from '../ktq-user-forgot-passwords/ktq-
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { KtqQueuesService } from '../ktq-queues/ktq-queues.service';
+import KtqCustomerGroupsConstant from '@/constants/ktq-customer-groups.constant';
 @Injectable()
 export class KtqAuthenticationsService {
     constructor(
@@ -229,13 +230,19 @@ export class KtqAuthenticationsService {
         const clientInfo = await this.getClientInfo(request);
         const clientJson = JSON.stringify(clientInfo);
 
-        const sessionData = await this.ktqSessionService.getSessionByData({ user_id: admin.id, user_role_type: UserRoleType.ADMIN, payload: clientJson });
+        const sessionData = await this.ktqSessionService.getSessionByData({ user_id: admin.id, user_role_type: UserRoleType.ADMIN, clientInfo });
 
         const { token, sessionMD5Key, expiresAt } = this.createAccessToken(admin);
         const refreshToken = this.createRefreshToken(admin, { sessionMD5Key: sessionMD5Key });
 
         if (sessionData) {
-            this.ktqSessionService.update(sessionData.id, { ...sessionData, expires_at: new Date(expiresAt), session_token: sessionMD5Key, payload: clientJson });
+            this.ktqSessionService.update(sessionData.id, {
+                ...sessionData,
+                expires_at: new Date(expiresAt),
+                session_token: sessionMD5Key,
+                payload: clientJson,
+                user_agent: clientInfo.userAgent,
+            });
 
             return KtqResponse.toResponse(plainToClass(KtqAdminUser, admin), { bonus: { token, refresh_token: refreshToken.token } });
         } else {
@@ -245,6 +252,7 @@ export class KtqAuthenticationsService {
                 session_token: sessionMD5Key,
                 user_id: admin.id,
                 user_role_type: UserRoleType.ADMIN,
+                user_agent: clientInfo.userAgent,
             });
 
             if (!session) {
@@ -265,13 +273,19 @@ export class KtqAuthenticationsService {
         const clientInfo = await this.getClientInfo(request);
         const clientJson = JSON.stringify(clientInfo);
 
-        const sessionData = await this.ktqSessionService.getSessionByData({ user_id: customer.id, user_role_type: UserRoleType.CUSTOMER, payload: clientJson });
+        const sessionData = await this.ktqSessionService.getSessionByData({ user_id: customer.id, user_role_type: UserRoleType.CUSTOMER, clientInfo });
 
         const { token, sessionMD5Key, expiresAt } = this.createAccessToken(customer, { class: UserRoleType.CUSTOMER });
         const refreshToken = this.createRefreshToken(customer, { sessionMD5Key: sessionMD5Key, class: UserRoleType.CUSTOMER });
 
         if (sessionData) {
-            this.ktqSessionService.update(sessionData.id, { ...sessionData, expires_at: new Date(expiresAt), session_token: sessionMD5Key, payload: clientJson });
+            this.ktqSessionService.update(sessionData.id, {
+                ...sessionData,
+                expires_at: new Date(expiresAt),
+                session_token: sessionMD5Key,
+                payload: clientJson,
+                user_agent: clientInfo.userAgent,
+            });
 
             return KtqResponse.toResponse(plainToClass(KtqCustomer, customer), { bonus: { token, refresh_token: refreshToken.token } });
         } else {
@@ -281,13 +295,14 @@ export class KtqAuthenticationsService {
                 session_token: sessionMD5Key,
                 user_id: customer.id,
                 user_role_type: UserRoleType.CUSTOMER,
+                user_agent: clientInfo.userAgent,
             });
 
             if (!session) {
                 throw new BadRequestException('Session was not created');
             }
 
-            return KtqResponse.toResponse(plainToClass(KtqAdminUser, customer), { bonus: { token, refresh_token: refreshToken.token } });
+            return KtqResponse.toResponse(plainToClass(KtqCustomer, customer), { bonus: { token, refresh_token: refreshToken.token } });
         }
     }
 
@@ -312,9 +327,9 @@ export class KtqAuthenticationsService {
     async customerRegister({ username, password, email }: RegisterKtqCustomerDto) {
         const password_hash = bcrypt.hashSync(password);
 
-        const newAdmin = await this.ktqCustomerService.create({ email, password: password_hash, username });
+        const newCustomer = await this.ktqCustomerService.create({ email, password: password_hash, username, customerGroup: KtqCustomerGroupsConstant.getCustomerGeneralGroup() });
 
-        return KtqResponse.toResponse(plainToClass(KtqAdminUser, newAdmin));
+        return KtqResponse.toResponse(plainToClass(KtqCustomer, newCustomer));
     }
 
     async logout(tokenData: TTokenData) {

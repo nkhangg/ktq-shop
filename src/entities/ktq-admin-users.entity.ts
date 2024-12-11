@@ -34,20 +34,19 @@ export default class KtqAdminUser extends Timestamp {
   password_hash: string;
 
   @Column({ type: "boolean", default: 1 })
-  @Exclude()
   is_active: boolean;
 
   @ManyToOne(() => KtqRole, (role) => role.adminUsers, {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   role: KtqRole;
 
   @OneToMany(
     () => KtqResourcePermission,
     (resourcePermission) => resourcePermission.adminUser,
   )
-  @Exclude()
+  //@Exclude()
   resourcePermissions: KtqResourcePermission[];
 }

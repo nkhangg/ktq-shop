@@ -13,13 +13,13 @@ export default class KtqCategoryProduct {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   product: KtqProduct;
 
   @ManyToOne(() => KtqCategory, (category) => category.categoryProducts, {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   category: KtqCategory;
 }

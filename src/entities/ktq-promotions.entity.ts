@@ -42,6 +42,6 @@ export default class KtqPromotion extends Timestamp {
     () => KtqProductPromotion,
     (productPromotion) => productPromotion.promotion,
   )
-  @Exclude()
+  //@Exclude()
   productPromotions: KtqProductPromotion[];
 }

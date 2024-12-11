@@ -33,6 +33,6 @@ export default class KtqCouponCondition extends Timestamp {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   coupon: KtqCoupon;
 }

@@ -1,8 +1,9 @@
 import KtqWebsite from '@/entities/ktq-websites.entity';
+import KtqWard from '@/entities/ktq-wards.entity';
 import KtqVisible from '@/entities/ktq-visibles.entity';
 import KtqUserForgotPassword from '@/entities/ktq-user-forgot-passwords.entity';
 import KtqUserBlackList from '@/entities/ktq-user-black-lists.entity';
-import KtqUserBackListLog from '@/entities/ktq-user-back-list-logs.entity';
+import KtqUserBlackListLog from '@/entities/ktq-user-black-list-logs.entity';
 import KtqTaxRate from '@/entities/ktq-tax-rates.entity';
 import KtqTaxCondition from '@/entities/ktq-tax-conditions.entity';
 import KtqSession from '@/entities/ktq-sessions.entity';
@@ -14,6 +15,7 @@ import KtqResourcePermission from '@/entities/ktq-resource-permissions.entity';
 import KtqRegion from '@/entities/ktq-regions.entity';
 import KtqReadNotification from '@/entities/ktq-read-notifications.entity';
 import KtqReadAdminNotification from '@/entities/ktq-read-admin-notifications.entity';
+import KtqProvince from '@/entities/ktq-provinces.entity';
 import KtqPromotion from '@/entities/ktq-promotions.entity';
 import KtqProduct from '@/entities/ktq-products.entity';
 import KtqProductWebsite from '@/entities/ktq-product-websites.entity';
@@ -30,8 +32,10 @@ import KtqNotification from '@/entities/ktq-notifications.entity';
 import KtqNotifiImage from '@/entities/ktq-notifi-images.entity';
 import KtqMedia from '@/entities/ktq-medias.entity';
 import KtqInventory from '@/entities/ktq-inventories.entity';
+import KtqDistrict from '@/entities/ktq-districts.entity';
 import KtqDefaultAttribute from '@/entities/ktq-default-attributes.entity';
 import KtqCustomer from '@/entities/ktq-customers.entity';
+import KtqCustomerGroup from '@/entities/ktq-customer-groups.entity';
 import KtqCoupon from '@/entities/ktq-coupons.entity';
 import KtqCouponUsage from '@/entities/ktq-coupon-usage.entity';
 import KtqCouponCondition from '@/entities/ktq-coupon-conditions.entity';
@@ -63,7 +67,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
                 password: configService.get<string>('DB_PASSWORD'),
                 database: configService.get<string>('DB_NAME'),
                 charset: 'utf8mb4_unicode_ci',
-                entities: [KtqAddress,KtqAdminNotification,KtqAdminUser,KtqAttributeSet,KtqAttributeValue,KtqAttribute,KtqCart,KtqCategory,KtqCategoryProduct,KtqConfig,KtqCountry,KtqCouponCondition,KtqCouponUsage,KtqCoupon,KtqCustomer,KtqDefaultAttribute,KtqInventory,KtqMedia,KtqNotifiImage,KtqNotification,KtqOrderItem,KtqOrderPayment,KtqOrderTax,KtqOrder,KtqPaymentMethod,KtqPermission,KtqProductPromotion,KtqProductReview,KtqProductVisible,KtqProductWebsite,KtqProduct,KtqPromotion,KtqReadAdminNotification,KtqReadNotification,KtqRegion,KtqResourcePermission,KtqResource,KtqRolePermission,KtqRoleResource,KtqRole,KtqSession,KtqTaxCondition,KtqTaxRate,KtqUserBackListLog,KtqUserBlackList,KtqUserForgotPassword,KtqVisible,KtqWebsite],
+                entities: [KtqAddress,KtqAdminNotification,KtqAdminUser,KtqAttributeSet,KtqAttributeValue,KtqAttribute,KtqCart,KtqCategory,KtqCategoryProduct,KtqConfig,KtqCountry,KtqCouponCondition,KtqCouponUsage,KtqCoupon,KtqCustomerGroup,KtqCustomer,KtqDefaultAttribute,KtqDistrict,KtqInventory,KtqMedia,KtqNotifiImage,KtqNotification,KtqOrderItem,KtqOrderPayment,KtqOrderTax,KtqOrder,KtqPaymentMethod,KtqPermission,KtqProductPromotion,KtqProductReview,KtqProductVisible,KtqProductWebsite,KtqProduct,KtqPromotion,KtqProvince,KtqReadAdminNotification,KtqReadNotification,KtqRegion,KtqResourcePermission,KtqResource,KtqRolePermission,KtqRoleResource,KtqRole,KtqSession,KtqTaxCondition,KtqTaxRate,KtqUserBlackListLog,KtqUserBlackList,KtqUserForgotPassword,KtqVisible,KtqWard,KtqWebsite],
                 synchronize: true,
             }),
         }),

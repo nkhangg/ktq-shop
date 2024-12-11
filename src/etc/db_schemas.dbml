@@ -173,12 +173,28 @@ Table ktq_customers{
   id int [pk]
   username varchar
   password varchar
+  avatar varchar [null, default: null]
+  bg_cover varchar [null, default: null]
   email varchar
   first_name varchar [null, default: null]
   last_name varchar [null, default: null]
+  date_of_birth varchar [null, default: null]
+  is_active boolean [default: 1]
+  vat_number varchar [null, default: null]
+  phone varchar [null, default: null]
+  gender enum('male', 'female', 'other') [null, default: 'other']
+  group_id integer
   created_at timestamp
   updated_at timestamp
 }
+
+Table ktq_customer_groups{
+  id int [pk]
+  name varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
 
 Table ktq_user_black_lists{
   id int [pk]
@@ -194,7 +210,7 @@ Table ktq_user_black_lists{
   }
 }
 
-Table ktq_user_back_list_logs{
+Table ktq_user_black_list_logs{
   id int [pk]
   black_list_id integer 
   back_list_type enum('warning', 'block')
@@ -212,6 +228,7 @@ Table ktq_sessions {
   payload json [null,  default: null]
   expires_at timestamp [null, default: null]
   live bool [null, default: 1]
+  user_agent varchar
   created_at timestamp
   updated_at timestamp
 }
@@ -265,8 +282,8 @@ Table ktq_addresses {
   ward varchar // Phường/Xã (có thể tùy chỉnh hoặc bỏ qua nếu không phù hợp với quốc gia khác)
   district varchar // Quận/Huyện (có thể tùy chỉnh hoặc bỏ qua nếu không phù hợp với quốc gia khác)
   city varchar // Tỉnh/Thành phố
-  postal_code varchar // Mã bưu điện (nếu có)
-  state varchar // Tiểu bang hoặc vùng (dành cho các quốc gia như Hoa Kỳ, Úc...)
+  postal_code varchar [null, default: null]// Mã bưu điện (nếu có)
+  state varchar [null, default: null]// Tiểu bang hoặc vùng (dành cho các quốc gia như Hoa Kỳ, Úc...)
   country_id integer // Liên kết đến bảng quốc gia
   region_id integer // Liên kết đến bảng vùng (nếu có)
   is_default boolean [default: 0] // Đánh dấu địa chỉ mặc định
@@ -457,7 +474,6 @@ Table ktq_user_forgot_passwords{
 }
 
 
-
 Ref: ktq_admin_users.role_id > ktq_roles.id
 Ref: ktq_role_permissions.role_id > ktq_roles.id
 Ref: ktq_role_permissions.permission_id > ktq_permissions.id
@@ -478,7 +494,7 @@ Ref: ktq_tax_conditions.tax_rate_id > ktq_tax_rates.id
 Ref: ktq_orders.shipping_address_id - ktq_addresses.id
 
 // Ref: ktq_customer_black_lists.customer_id > ktq_customers.id
-Ref: ktq_user_back_list_logs.black_list_id > ktq_user_black_lists.id
+Ref: ktq_user_black_list_logs.black_list_id > ktq_user_black_lists.id
 
 Ref: ktq_order_items.order_id > ktq_orders.id
 Ref: ktq_order_items.product_id > ktq_products.id
@@ -518,4 +534,6 @@ Ref: ktq_default_attributes.attribute_id < ktq_attributes.id
 Ref: ktq_resource_permissions.user_admin_id > ktq_admin_users.id
 Ref: ktq_resource_permissions.resource_id > ktq_resources.id
 Ref: ktq_resource_permissions.permission_id > ktq_permissions.id
+
+Ref: ktq_customers.group_id > ktq_customer_groups.id
 

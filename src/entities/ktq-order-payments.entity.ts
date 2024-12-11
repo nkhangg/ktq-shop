@@ -21,7 +21,7 @@ export default class KtqOrderPayment extends Timestamp {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   order: KtqOrder;
 
   @ManyToOne(
@@ -29,6 +29,6 @@ export default class KtqOrderPayment extends Timestamp {
     (paymentMethod) => paymentMethod.orderPayments,
     { cascade: true, eager: true },
   )
-  @Exclude()
+  //@Exclude()
   paymentMethod: KtqPaymentMethod;
 }

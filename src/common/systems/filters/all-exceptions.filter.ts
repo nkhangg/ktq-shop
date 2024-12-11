@@ -9,7 +9,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
         const status = exception instanceof HttpException ? exception.getStatus() : 500; // Mặc định là 500 nếu không phải HttpException
 
-        console.log(exception);
         const errorResponse = {
             status_code: status,
             message:

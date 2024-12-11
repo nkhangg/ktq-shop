@@ -21,10 +21,10 @@ export default class KtqDefaultAttribute extends Timestamp {
   product_type: string;
 
   @OneToOne(() => KtqProduct, (product) => product.defaultAttribute)
-  @Exclude()
+  //@Exclude()
   product: KtqProduct;
 
   @OneToMany(() => KtqAttribute, (attribute) => attribute.defaultAttribute)
-  @Exclude()
+  //@Exclude()
   attributes: KtqAttribute[];
 }

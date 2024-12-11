@@ -43,14 +43,14 @@ export default class KtqAttribute extends Timestamp {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   attributeSet: KtqAttributeSet;
 
   @OneToMany(
     () => KtqAttributeValue,
     (attributeValue) => attributeValue.attribute,
   )
-  @Exclude()
+  //@Exclude()
   attributeValues: KtqAttributeValue[];
 
   @ManyToOne(
@@ -58,6 +58,6 @@ export default class KtqAttribute extends Timestamp {
     (defaultAttribute) => defaultAttribute.attributes,
     { cascade: true, eager: true },
   )
-  @Exclude()
+  //@Exclude()
   defaultAttribute: KtqDefaultAttribute;
 }

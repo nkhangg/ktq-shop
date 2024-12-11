@@ -21,13 +21,13 @@ export default class KtqCart extends Timestamp {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   customer: KtqCustomer;
 
   @ManyToOne(() => KtqProduct, (product) => product.carts, {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   product: KtqProduct;
 }

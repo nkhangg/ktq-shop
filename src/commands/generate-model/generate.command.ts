@@ -26,7 +26,8 @@ export default class GenerateCommand extends GenerateBase {
         tables: [] as TableDefinition[],
     };
 
-    private excludeKeys = ['password', '_id', 'is_active', 'active'];
+    private excludeKeys = ['password', '_id'];
+    // private excludeKeys = ['password', '_id', 'active'];
     constructor() {
         super();
         // Tạo thư mục nếu chưa tồn tại
@@ -178,7 +179,7 @@ export default class GenerateCommand extends GenerateBase {
 
         return `
                 @OneToMany(() => ${consumerClass}, (${consumerName}) => ${consumerName}.${this.toSingular(producerVariable)})
-                @Exclude()
+                //@Exclude()
                 ${this.toPlural(consumerVariable)}: ${consumerClass}[];
                 `;
     }
@@ -198,7 +199,7 @@ export default class GenerateCommand extends GenerateBase {
 
         return `
                 @ManyToOne(() => ${consumerClass}, (${consumerName}) => ${consumerName}.${this.toPlural(producerVariable)}, { cascade: true, eager: true })
-                @Exclude()
+                //@Exclude()
                 ${this.toSingular(consumerVariable)}: ${consumerClass};
                 `;
     }
@@ -220,7 +221,7 @@ export default class GenerateCommand extends GenerateBase {
 
         return `
                 @OneToOne(() => ${consumerClass}, (${consumerName}) => ${consumerName}.${this.toSingular(producerVariable)}, ${fileExists ? '' : '{ cascade: true }'})
-                @Exclude()
+                //@Exclude()
                 ${this.toSingular(consumerVariable)}: ${consumerClass};
                 `;
     }

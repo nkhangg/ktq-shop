@@ -27,13 +27,13 @@ export default class KtqResource extends Timestamp {
   description: string;
 
   @OneToMany(() => KtqRoleResource, (roleResource) => roleResource.resource)
-  @Exclude()
+  //@Exclude()
   roleResources: KtqRoleResource[];
 
   @OneToMany(
     () => KtqResourcePermission,
     (resourcePermission) => resourcePermission.resource,
   )
-  @Exclude()
+  //@Exclude()
   resourcePermissions: KtqResourcePermission[];
 }

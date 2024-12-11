@@ -13,13 +13,13 @@ export default class KtqRoleResource {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   role: KtqRole;
 
   @ManyToOne(() => KtqResource, (resource) => resource.roleResources, {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   resource: KtqResource;
 }

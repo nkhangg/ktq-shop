@@ -24,13 +24,13 @@ export default class KtqOrderItem extends Timestamp {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   order: KtqOrder;
 
   @ManyToOne(() => KtqProduct, (product) => product.orderItems, {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   product: KtqProduct;
 }

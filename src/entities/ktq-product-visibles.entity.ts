@@ -13,13 +13,13 @@ export default class KtqProductVisible {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   product: KtqProduct;
 
   @ManyToOne(() => KtqVisible, (visible) => visible.productVisibles, {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   visible: KtqVisible;
 }

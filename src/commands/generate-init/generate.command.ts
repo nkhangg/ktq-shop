@@ -172,6 +172,26 @@ export default class GenerateCommand extends GenerateBase {
         }
     }
 
+    public async initCustomerGroups() {
+        try {
+            const response = await axios({
+                method: 'post',
+                url: `${KtqConfigConstant.getHostname()}/admin/customer-groups/init-customer-groups`,
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                },
+            });
+            if (response.data) {
+                console.log(`Initialize customer groups success`);
+            } else {
+                console.log(response.data);
+                console.log(`Initialize customer groups failure`);
+            }
+        } catch (error) {
+            console.error(`Lỗi khi gọi API: ${error.message}`);
+        }
+    }
+
     public async generateInit() {
         await this.login();
 
@@ -187,7 +207,7 @@ export default class GenerateCommand extends GenerateBase {
         await this.importResources();
         await this.initRolePermissions();
         await this.initRoleResources();
-
+        await this.initCustomerGroups();
         await this.logout();
     }
 }

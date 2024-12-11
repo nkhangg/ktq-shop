@@ -89,4 +89,8 @@ export const excludeResource = [
         path: 'auth/me',
         method: RequestMethod.GET,
     },
+    {
+        path: 'admin/sessions/me',
+        method: RequestMethod.GET,
+    },
 ];

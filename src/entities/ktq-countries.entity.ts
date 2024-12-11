@@ -18,10 +18,10 @@ export default class KtqCountry extends Timestamp {
   country_code: string;
 
   @OneToMany(() => KtqRegion, (region) => region.country)
-  @Exclude()
+  //@Exclude()
   regions: KtqRegion[];
 
   @OneToMany(() => KtqAddress, (address) => address.country)
-  @Exclude()
+  //@Exclude()
   addresses: KtqAddress[];
 }

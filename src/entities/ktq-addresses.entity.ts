@@ -31,37 +31,37 @@ export default class KtqAddress extends Timestamp {
   @Column({ type: "varchar" })
   city: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", default: null })
   postal_code: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", default: null })
   state: string;
 
   @Column({ type: "boolean", default: 0 })
   is_default: boolean;
 
   @OneToOne(() => KtqOrder, (order) => order.address)
-  @Exclude()
+  //@Exclude()
   order: KtqOrder;
 
   @ManyToOne(() => KtqCustomer, (customer) => customer.addresses, {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   customer: KtqCustomer;
 
   @ManyToOne(() => KtqCountry, (country) => country.addresses, {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   country: KtqCountry;
 
   @ManyToOne(() => KtqRegion, (region) => region.addresses, {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   region: KtqRegion;
 }

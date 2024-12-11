@@ -13,13 +13,13 @@ export default class KtqProductWebsite {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   product: KtqProduct;
 
   @ManyToOne(() => KtqWebsite, (website) => website.productWebsites, {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   website: KtqWebsite;
 }

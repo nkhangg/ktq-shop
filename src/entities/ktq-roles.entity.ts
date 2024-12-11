@@ -16,14 +16,14 @@ export default class KtqRole extends Timestamp {
   role_name: string;
 
   @OneToMany(() => KtqAdminUser, (adminUser) => adminUser.role)
-  @Exclude()
+  //@Exclude()
   adminUsers: KtqAdminUser[];
 
   @OneToMany(() => KtqRolePermission, (rolePermission) => rolePermission.role)
-  @Exclude()
+  //@Exclude()
   rolePermissions: KtqRolePermission[];
 
   @OneToMany(() => KtqRoleResource, (roleResource) => roleResource.role)
-  @Exclude()
+  //@Exclude()
   roleResources: KtqRoleResource[];
 }

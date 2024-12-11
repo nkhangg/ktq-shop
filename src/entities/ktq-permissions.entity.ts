@@ -21,13 +21,13 @@ export default class KtqPermission extends Timestamp {
     () => KtqRolePermission,
     (rolePermission) => rolePermission.permission,
   )
-  @Exclude()
+  //@Exclude()
   rolePermissions: KtqRolePermission[];
 
   @OneToMany(
     () => KtqResourcePermission,
     (resourcePermission) => resourcePermission.permission,
   )
-  @Exclude()
+  //@Exclude()
   resourcePermissions: KtqResourcePermission[];
 }

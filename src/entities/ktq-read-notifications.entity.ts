@@ -16,6 +16,6 @@ export default class KtqReadNotification {
     (notification) => notification.readNotifications,
     { cascade: true, eager: true },
   )
-  @Exclude()
+  //@Exclude()
   notification: KtqNotification;
 }

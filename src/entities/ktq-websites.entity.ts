@@ -20,6 +20,6 @@ export default class KtqWebsite extends Timestamp {
     () => KtqProductWebsite,
     (productWebsite) => productWebsite.website,
   )
-  @Exclude()
+  //@Exclude()
   productWebsites: KtqProductWebsite[];
 }

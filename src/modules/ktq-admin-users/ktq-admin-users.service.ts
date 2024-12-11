@@ -9,7 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import KtqRolesConstant from '@/constants/ktq-roles.constant';
 import KtqResponse from '@/common/systems/response/ktq-response';
-import { paginate, PaginateQuery } from 'nestjs-paginate';
+import { FilterOperator, FilterSuffix, paginate, PaginateQuery } from 'nestjs-paginate';
+import { Column } from 'nestjs-paginate/lib/helper';
 
 @Injectable()
 export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Partial<KtqAdminUser>>, ServiceUserAuthInterface<KtqAdminUser> {
@@ -45,15 +46,15 @@ export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Part
     }
 
     async findByUsername(username: string): Promise<KtqAdminUser> {
-        return await this.ktqAdminUserRepository.findOne({ where: { username } });
+        return await this.ktqAdminUserRepository.findOne({ where: { username, is_active: true } });
     }
 
     async findByEmail(email: string): Promise<KtqAdminUser> {
-        return await this.ktqAdminUserRepository.findOne({ where: { email } });
+        return await this.ktqAdminUserRepository.findOne({ where: { email, is_active: true } });
     }
 
     async findByUsernameAndEmail(username: string, email: string) {
-        return await this.ktqAdminUserRepository.findOne({ where: { email, username } });
+        return await this.ktqAdminUserRepository.findOne({ where: { email, username, is_active: true } });
     }
     async findRootAdmin() {
         const { email, username } = KtqAppConstant.getRootUserData();
@@ -85,11 +86,27 @@ export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Part
     }
 
     async getAll(query: PaginateQuery) {
+        const filterableColumns: {
+            [key in Column<KtqAdminUser> | (string & {})]?: (FilterOperator | FilterSuffix)[] | true;
+        } = {
+            id: true,
+            username: [FilterOperator.ILIKE],
+            email: [FilterOperator.ILIKE],
+            last_name: [FilterOperator.ILIKE],
+            first_name: [FilterOperator.ILIKE],
+            created_at: true,
+            updated_at: true,
+        };
+
         const data = await paginate(query, this.ktqAdminUserRepository, {
             sortableColumns: ['id'],
-            searchableColumns: [],
+            searchableColumns: ['id', 'last_name', 'last_name', 'username', 'email'],
             defaultSortBy: [['id', 'DESC']],
+            filterableColumns,
             maxLimit: 100,
+            relations: {
+                role: true,
+            },
         });
 
         return KtqResponse.toPagination<KtqAdminUser>(data, true, KtqAdminUser);

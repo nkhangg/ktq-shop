@@ -19,6 +19,6 @@ export default class KtqNotifiImage {
     (notification) => notification.notifiImages,
     { cascade: true, eager: true },
   )
-  @Exclude()
+  //@Exclude()
   notification: KtqNotification;
 }

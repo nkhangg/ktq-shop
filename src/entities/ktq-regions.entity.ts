@@ -27,10 +27,10 @@ export default class KtqRegion extends Timestamp {
     cascade: true,
     eager: true,
   })
-  @Exclude()
+  //@Exclude()
   country: KtqCountry;
 
   @OneToMany(() => KtqAddress, (address) => address.region)
-  @Exclude()
+  //@Exclude()
   addresses: KtqAddress[];
 }

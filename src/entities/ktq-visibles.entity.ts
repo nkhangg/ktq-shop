@@ -18,6 +18,6 @@ export default class KtqVisible {
     () => KtqProductVisible,
     (productVisible) => productVisible.visible,
   )
-  @Exclude()
+  //@Exclude()
   productVisibles: KtqProductVisible[];
 }

@@ -19,6 +19,6 @@ export default class KtqAdminNotification {
     () => KtqReadAdminNotification,
     (readAdminNotification) => readAdminNotification.adminNotification,
   )
-  @Exclude()
+  //@Exclude()
   readAdminNotifications: KtqReadAdminNotification[];
 }

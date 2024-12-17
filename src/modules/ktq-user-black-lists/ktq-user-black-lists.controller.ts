@@ -5,7 +5,7 @@ import { CacheTTL } from '@nestjs/cache-manager';
 import KtqCustomer from '@/entities/ktq-customers.entity';
 
 @Controller('admin/black-lists')
-@CacheTTL(0)
+@CacheTTL(10000)
 export class KtqUserBlackListsController {
     constructor(private readonly ktqUserBlackListsService: KtqUserBlackListsService) {}
 

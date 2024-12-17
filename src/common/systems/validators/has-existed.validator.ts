@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
-import { EntityManager } from 'typeorm';
+import { EntityManager, In } from 'typeorm';
 import { IsExitedInput } from './decorators/has-existed';
 
 @Injectable()
@@ -8,14 +8,26 @@ import { IsExitedInput } from './decorators/has-existed';
 export class HasExistedValidator implements ValidatorConstraintInterface {
     constructor(private readonly entityManager: EntityManager) {}
 
-    async validate(value: string, args: ValidationArguments) {
-        const { column, tableName, queryOption }: IsExitedInput = args.constraints[0];
+    async validate(value: any, args: ValidationArguments) {
+        const { column, tableName, queryOption, each }: IsExitedInput = args.constraints[0];
 
-        const result = await this.entityManager
-            .getRepository(tableName)
-            .createQueryBuilder(tableName)
-            .where({ [column]: value, ...(queryOption || {}) })
-            .getOne();
+        let result = null;
+
+        if (!each) {
+            result = await this.entityManager
+                .getRepository(tableName)
+                .createQueryBuilder(tableName)
+                .where({ [column]: value, ...(queryOption || {}) })
+                .getOne();
+        } else {
+            const response = await this.entityManager
+                .getRepository(tableName)
+                .createQueryBuilder(tableName)
+                .where({ [column]: In(value), ...(queryOption || {}) })
+                .getMany();
+
+            result = response.length === value.length;
+        }
 
         return !!result;
     }

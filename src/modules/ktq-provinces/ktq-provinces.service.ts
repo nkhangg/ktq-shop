@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import { plainToClass } from 'class-transformer';
 import { FindManyOptions, Like, Repository } from 'typeorm';
-import { KtqCachesService } from '../ktq-caches/ktq-caches.service';
+import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
 import { KtqAddressesService } from '../ktq-addresses/ktq-addresses.service';
 
 @Injectable()
@@ -128,11 +128,11 @@ export class KtqProvincesService {
     }
 
     async syncToDb() {
-        // await this.initProvinces();
-        // await this.initDistricts();
-        // await this.initWards();
+        await this.initProvinces();
+        await this.initDistricts();
+        await this.initWards();
 
-        await this.initCountries();
+        // await this.initCountries();
 
         return KtqResponse.toResponse(true);
     }

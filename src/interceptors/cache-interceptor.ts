@@ -7,7 +7,9 @@ export class CacheInterceptor extends CI {
         const request = context.switchToHttp().getRequest();
         const path = request.url;
 
-        if (path.startsWith('/medias')) {
+        const endsWith = ['events', 'events-sse'];
+
+        if (path.startsWith('/medias') || endsWith.some((suffix) => (path as string).includes(suffix))) {
             return undefined;
         }
 

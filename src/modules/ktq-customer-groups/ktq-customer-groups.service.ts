@@ -14,7 +14,7 @@ import { Column } from 'nestjs-paginate/lib/helper';
 import { FindManyOptions, Repository } from 'typeorm';
 import { KtqCustomersService } from '../ktq-customers/ktq-customers.service';
 import KtqCustomer from '@/entities/ktq-customers.entity';
-import { KtqCachesService } from '../ktq-caches/ktq-caches.service';
+import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
 import { customerGroupRoutes } from './ktq-customer-groups.route';
 
 @Injectable()

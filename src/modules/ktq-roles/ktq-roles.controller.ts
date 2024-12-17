@@ -1,9 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { KtqRolesService } from './ktq-roles.service';
 import { PaginateQuery } from 'nestjs-paginate';
-import GeneralKtqRoleDto from '@/common/dtos/ktq-roles.dto';
+import GeneralKtqRoleDto, { AddResourceForRoleKtqRoleDto, GetByAdminUserKtqRoleDto } from '@/common/dtos/ktq-roles.dto';
 import KtqRole from '@/entities/ktq-roles.entity';
 import { roleRoutes } from './ktq-role.route';
+import KtqAdminUser from '@/entities/ktq-admin-users.entity';
 
 @Controller(roleRoutes.BASE)
 export class KtqRolesController {
@@ -19,9 +20,19 @@ export class KtqRolesController {
         return await this.ktqRolesService.getAll(query);
     }
 
+    @Get('by-admin-user/:id')
+    public async getByAdminUser(@Param('id') id: KtqAdminUser['id']) {
+        return await this.ktqRolesService.getRoleByUserAdmin(id);
+    }
+
     @Post()
     public async create(@Body() data: GeneralKtqRoleDto) {
         return await this.ktqRolesService.createRole(data);
+    }
+
+    @Post(':id')
+    public async addResourceForRole(@Param('') id: KtqRole['id'], @Body() data: AddResourceForRoleKtqRoleDto) {
+        return await this.ktqRolesService.addResourceForRole(id, data);
     }
 
     @Put(':id')

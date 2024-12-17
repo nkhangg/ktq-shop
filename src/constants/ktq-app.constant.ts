@@ -47,7 +47,7 @@ export default class KtqAppConstant {
         const password = env(this.CONFIG_ROOT_USER_PASSWORD, 'Admin@123');
         const email = env(this.CONFIG_ROOT_USER_EMAIL);
 
-        return { username, password, email };
+        return { username, password, email, id: 1 };
     };
 
     public static mappingUnit(unit: string): moment.DurationInputArg2 {

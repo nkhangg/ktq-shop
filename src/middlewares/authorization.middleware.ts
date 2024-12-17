@@ -58,12 +58,15 @@ export class AuthorizationMiddleware implements NestMiddleware {
         }
 
         // check if root NEXT
-        if (
-            admin.role.role_name === KtqRolesConstant.SUPER_ADMIN &&
-            admin.role.rolePermissions.some((permission) => permission.permission.permission_code === KtqPermissionsConstant.getRootPermission().permission_code)
-        ) {
+        if (admin.role.role_name === KtqRolesConstant.ROOT) {
             return next();
         }
+        // if (
+        //     admin.role.role_name === KtqRolesConstant.ROOT &&
+        //     admin.role.rolePermissions.some((permission) => permission.permission.permission_code === KtqPermissionsConstant.getRootPermission().permission_code)
+        // ) {
+        //     return next();
+        // }
 
         const curPermission = KtqPermissionsConstant.requestMappingRole(KtqPermissionsConstant.convertToRequestMethod(method));
 

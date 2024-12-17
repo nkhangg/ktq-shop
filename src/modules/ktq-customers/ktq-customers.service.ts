@@ -16,9 +16,9 @@ import { plainToClass } from 'class-transformer';
 import { FilterOperator, FilterSuffix, paginate, PaginateQuery } from 'nestjs-paginate';
 import { Column } from 'nestjs-paginate/lib/helper';
 import { join } from 'path';
-import { FindManyOptions, LessThanOrEqual, Raw, Repository } from 'typeorm';
+import { FindManyOptions, In, LessThanOrEqual, Raw, Repository } from 'typeorm';
 import { KtqAddressesService } from '../ktq-addresses/ktq-addresses.service';
-import { KtqCachesService } from '../ktq-caches/ktq-caches.service';
+import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
 import { KtqSessionsService } from '../ktq-sessions/ktq-sessions.service';
 import { KtqUserBlackListsService } from '../ktq-user-black-lists/ktq-user-black-lists.service';
 import { customersRoutes } from './ktq-customers.route';
@@ -123,11 +123,11 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
         return KtqResponse.toPagination<KtqCustomer>(data, true, KtqCustomer);
     }
 
-    async hiddenCustomer(id: KtqCustomer['id']) {
+    async inactive(id: KtqCustomer['id']) {
         const customer = await this.findOne(id);
 
         if (!customer) {
-            throw new NotFoundException(KtqResponse.toResponse(null, { message: 'Not foud data', status_code: HttpStatusCode.NotFound }));
+            throw new NotFoundException(KtqResponse.toResponse(null, { message: 'Not found data', status_code: HttpStatusCode.NotFound }));
         }
 
         const result = await this.update(customer.id, { is_active: false });
@@ -140,7 +140,7 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
         return KtqResponse.toResponse(plainToClass(KtqCustomer, result));
     }
 
-    async hiddenCustomers(ids: KtqCustomer['id'][]) {
+    async inActives(ids: KtqCustomer['id'][]) {
         const result = await this.ktqCustomerRepository.update(ids, { is_active: false });
 
         if (!result?.affected) {
@@ -151,11 +151,11 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
         return KtqResponse.toResponse(true);
     }
 
-    async unhiddenCustomer(id: KtqCustomer['id']) {
+    async active(id: KtqCustomer['id']) {
         const customer = await this.findOne(id);
 
         if (!customer) {
-            throw new NotFoundException(KtqResponse.toResponse(null, { message: 'Not foud data', status_code: HttpStatusCode.NotFound }));
+            throw new NotFoundException(KtqResponse.toResponse(null, { message: 'Not found data', status_code: HttpStatusCode.NotFound }));
         }
 
         const result = await this.update(customer.id, { is_active: true });
@@ -168,8 +168,8 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
         return KtqResponse.toResponse(plainToClass(KtqCustomer, result));
     }
 
-    async unhiddenCustomers(ids: KtqCustomer['id'][]) {
-        const result = await this.ktqCustomerRepository.update(ids, { is_active: true });
+    async actives(ids: KtqCustomer['id'][]) {
+        const result = await this.ktqCustomerRepository.update({ id: In(ids) }, { is_active: true });
 
         if (!result?.affected) {
             throw new BadRequestException(KtqResponse.toResponse(false, { message: 'Update failure', status_code: HttpStatusCode.BadRequest }));

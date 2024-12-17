@@ -4,15 +4,18 @@ import e, { Request } from 'express';
 import { ServiceInterface } from '@/services/service-interface';
 import { BadRequestException, Injectable, Req } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Not, Repository } from 'typeorm';
 import { KtqAppConfigsService } from '../ktq-app-configs/ktq-app-configs.service';
 import KtqResponse from '@/common/systems/response/ktq-response';
 import { HttpStatusCode } from 'axios';
 import { TypeResource } from '@/common/enums/type-resource.enum';
-import { paginate, PaginateQuery } from 'nestjs-paginate';
+import { FilterOperator, FilterSuffix, paginate, PaginateQuery } from 'nestjs-paginate';
 import { excludeResource } from '@/common/routes/exclude-route';
 import { RouteInfo } from '@nestjs/common/interfaces';
 import KtqPermissionsConstant from '@/constants/ktq-permission.constant';
+import KtqRole from '@/entities/ktq-roles.entity';
+import { KtqRolesService } from '../ktq-roles/ktq-roles.service';
+import { Column } from 'nestjs-paginate/lib/helper';
 
 @Injectable()
 export class KtqResourcesService implements ServiceInterface<KtqResource, Partial<KtqResource>> {
@@ -20,6 +23,7 @@ export class KtqResourcesService implements ServiceInterface<KtqResource, Partia
         @InjectRepository(KtqResource)
         private readonly ktqResourceRepository: Repository<KtqResource>,
         private readonly ktqAppConfigService: KtqAppConfigsService,
+        private readonly ktqRoleService: KtqRolesService,
         private readonly dataSource: DataSource,
     ) {}
 
@@ -130,5 +134,66 @@ export class KtqResourcesService implements ServiceInterface<KtqResource, Partia
         }
 
         return KtqResponse.toResponse(result);
+    }
+
+    async getResourceByRole(role_id: KtqRole['id'], query: PaginateQuery) {
+        const filterableColumns: {
+            [key in Column<KtqResource> | (string & {})]?: (FilterOperator | FilterSuffix)[] | true;
+        } = {
+            id: true,
+
+            created_at: true,
+            updated_at: true,
+        };
+
+        query.filter = KtqResponse.processFilters(query.filter, filterableColumns);
+
+        const data = await paginate(query, this.ktqResourceRepository, {
+            sortableColumns: ['id'],
+            searchableColumns: ['id'],
+            defaultLimit: 10,
+            filterableColumns,
+            defaultSortBy: [['id', 'DESC']],
+            maxLimit: 100,
+            where: {
+                roleResources: {
+                    role: { id: role_id },
+                },
+            },
+            relations: {
+                resourcePermissions: true,
+            },
+        });
+
+        return KtqResponse.toPagination<KtqResource>(data, false, KtqResource);
+    }
+
+    async getIgnoreResourceByRole(role_id: KtqRole['id'], query: PaginateQuery) {
+        const filterableColumns: {
+            [key in Column<KtqResource> | (string & {})]?: (FilterOperator | FilterSuffix)[] | true;
+        } = {
+            id: true,
+
+            created_at: true,
+            updated_at: true,
+        };
+
+        query.filter = KtqResponse.processFilters(query.filter, filterableColumns);
+
+        const data = await paginate(query, this.ktqResourceRepository, {
+            sortableColumns: ['id'],
+            searchableColumns: ['id', 'resource_name'],
+            defaultLimit: 10,
+            filterableColumns,
+            defaultSortBy: [['id', 'DESC']],
+            maxLimit: 100,
+            where: {
+                roleResources: {
+                    role: { id: Not(role_id) },
+                },
+            },
+        });
+
+        return KtqResponse.toPagination<KtqResource>(data, false, KtqResource);
     }
 }

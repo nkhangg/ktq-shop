@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { KtqAdminUsersModule } from '../ktq-admin-users/ktq-admin-users.module';
@@ -17,7 +17,7 @@ import { KtqQueuesModule } from '../ktq-queues/ktq-queues.module';
         KtqAdminUsersModule,
         KtqCustomersModule,
         KtqSessionsModule,
-        KtqRolesModule,
+        forwardRef(() => KtqRolesModule),
         PassportModule,
         KtqConfigEmailsModule,
         KtqUserForgotPasswordsModule,

@@ -6,6 +6,7 @@ export type IsExitedInput = {
     column: string;
     queryOption?: Record<string, any>;
     message?: string;
+    each?: boolean;
 };
 
 export function HasExisted(options: IsExitedInput, validationOptions?: ValidationOptions) {

@@ -5,37 +5,37 @@ import { RequestMethod } from '@nestjs/common';
 export default class KtqPermissionsConstant {
     public static getPermissions() {
         return [
+            // {
+            //     id: 1,
+            //     description: 'Root something',
+            //     permission_code: PermissionKey.ROOT,
+            // },
             {
                 id: 1,
-                description: 'Root something',
-                permission_code: PermissionKey.ROOT,
-            },
-            {
-                id: 2,
                 description: 'Create something',
                 permission_code: PermissionKey.CREATE,
             },
             {
-                id: 3,
+                id: 2,
                 description: 'Read something',
                 permission_code: PermissionKey.READ,
             },
             {
-                id: 4,
+                id: 3,
                 description: 'Update something',
                 permission_code: PermissionKey.UPDATE,
             },
             {
-                id: 5,
+                id: 4,
                 description: 'Delete something',
                 permission_code: PermissionKey.DELETE,
             },
         ] as KtqPermission[];
     }
 
-    public static getRootPermission() {
-        return this.getPermissions().find((item) => item.permission_code === PermissionKey.ROOT);
-    }
+    // public static getRootPermission() {
+    //     return this.getPermissions().find((item) => item.permission_code === PermissionKey.ROOT);
+    // }
 
     public static getCreatePermission() {
         return this.getPermissions().find((item) => item.permission_code === PermissionKey.CREATE);

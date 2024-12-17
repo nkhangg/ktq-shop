@@ -355,6 +355,7 @@ describe('KtqAuthenticationsService', () => {
                 created_at: new Date(),
                 updated_at: new Date(),
                 expires_at: new Date(),
+                user_agent: '',
                 id: 1,
                 live: true,
                 payload: null,
@@ -444,6 +445,8 @@ describe('KtqAuthenticationsService', () => {
                 payload: JSON.stringify({ host: '127.0.0.1' }),
                 session_token: 'session_md5_key',
                 user_id: customer.id,
+                user_agent: '',
+
                 user_role_type: UserRoleType.ADMIN,
                 created_at: new Date(),
                 updated_at: new Date(),
@@ -480,6 +483,8 @@ describe('KtqAuthenticationsService', () => {
                 updated_at: new Date(),
                 expires_at: new Date(),
                 id: 1,
+                user_agent: '',
+
                 live: true,
                 payload: null,
                 session_token: 'session_token',

@@ -1,25 +1,38 @@
 //import GeneralKtqRoleDto from "@/common/dtos/ktq-roles.dto";
-import GeneralKtqRoleDto from '@/common/dtos/ktq-roles.dto';
+import GeneralKtqRoleDto, { AddResourceForRoleKtqRoleDto } from '@/common/dtos/ktq-roles.dto';
 import KtqResponse from '@/common/systems/response/ktq-response';
 import KtqRolesConstant from '@/constants/ktq-roles.constant';
 import KtqRole from '@/entities/ktq-roles.entity';
 
+import KtqAdminUser from '@/entities/ktq-admin-users.entity';
+import KtqPermission from '@/entities/ktq-permissions.entity';
+import KtqResourcePermission from '@/entities/ktq-resource-permissions.entity';
+import KtqResource from '@/entities/ktq-resources.entity';
+import KtqRolePermission from '@/entities/ktq-role-permissions.entity';
 import { ServiceInterface } from '@/services/service-interface';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpStatusCode } from 'axios';
+import { plainToClass } from 'class-transformer';
 import { FilterOperator, FilterSuffix, paginate, PaginateQuery } from 'nestjs-paginate';
 import { Column } from 'nestjs-paginate/lib/helper';
-import { Repository } from 'typeorm';
-import { KtqCachesService } from '../ktq-caches/ktq-caches.service';
+import { FindManyOptions, QueryFailedError, Repository } from 'typeorm';
+import { KtqAdminUsersService } from '../ktq-admin-users/ktq-admin-users.service';
+import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
 import { roleRoutes } from './ktq-role.route';
+import KtqRoleResource from '@/entities/ktq-role-resources.entity';
 
 @Injectable()
 export class KtqRolesService implements ServiceInterface<KtqRole, Partial<KtqRole>> {
     constructor(
         @InjectRepository(KtqRole)
         private readonly ktqRoleRepository: Repository<KtqRole>,
+        @InjectRepository(KtqRolePermission)
+        private readonly ktqRolePermissionRepository: Repository<KtqRolePermission>,
+        @InjectRepository(KtqRoleResource)
+        private readonly ktqRoleResourceRepository: Repository<KtqRoleResource>,
         private readonly ktqCacheService: KtqCachesService,
+        private readonly ktqAdminUserService: KtqAdminUsersService,
     ) {}
 
     async create(role: Partial<KtqRole>): Promise<KtqRole> {
@@ -91,6 +104,14 @@ export class KtqRolesService implements ServiceInterface<KtqRole, Partial<KtqRol
         return KtqResponse.toResponse(result);
     }
 
+    async findWith(options?: FindManyOptions<KtqRole>) {
+        return await this.ktqRoleRepository.find(options);
+    }
+
+    async findOneWith(options?: FindManyOptions<KtqRole>) {
+        return await this.ktqRoleRepository.findOne(options);
+    }
+
     async deleteRole(id: KtqRole['id']) {
         try {
             await this.delete(id);
@@ -99,6 +120,45 @@ export class KtqRolesService implements ServiceInterface<KtqRole, Partial<KtqRol
             return KtqResponse.toResponse(true);
         } catch (error) {
             throw new BadRequestException(KtqResponse.toResponse(false, { message: `Can't delete this role`, status_code: HttpStatusCode.BadRequest }));
+        }
+    }
+
+    async getRoleByUserAdmin(id: KtqAdminUser['id']) {
+        const rolesData = await this.ktqRoleRepository.findOne({
+            where: {
+                adminUsers: {
+                    id,
+                },
+            },
+            relations: {
+                rolePermissions: true,
+                roleResources: true,
+            },
+        });
+
+        return KtqResponse.toResponse(plainToClass(KtqRole, rolesData));
+    }
+
+    async addResourceForRole(id: KtqRole['id'], { permission_ids, resource_ids }: AddResourceForRoleKtqRoleDto) {
+        const role = await this.findOne(id);
+
+        if (!role) throw new NotFoundException(`Role not found`);
+
+        const rolePermissions = permission_ids.map((permissionId) => ({
+            role,
+            permission: { id: permissionId },
+        }));
+
+        const roleResources = resource_ids.map((resourceId) => ({
+            role,
+            resource: { id: resourceId },
+        }));
+
+        try {
+            await this.ktqRolePermissionRepository.save(rolePermissions);
+            await this.ktqRoleResourceRepository.save(roleResources);
+        } finally {
+            return KtqResponse.toResponse(role);
         }
     }
 }

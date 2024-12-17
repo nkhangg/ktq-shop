@@ -13,10 +13,12 @@ import { UserRoleType } from '@/common/enums/user-role-type.enum';
 import KtqResponse from '@/common/systems/response/ktq-response';
 import KtqAppConstant from '@/constants/ktq-app.constant';
 import KtqConfigConstant from '@/constants/ktq-configs.constant';
+import KtqCustomerGroupsConstant from '@/constants/ktq-customer-groups.constant';
 import KtqRolesConstant from '@/constants/ktq-roles.constant';
 import KtqAdminUser from '@/entities/ktq-admin-users.entity';
 import KtqCustomer from '@/entities/ktq-customers.entity';
 import KtqSession from '@/entities/ktq-sessions.entity';
+import moment from '@/utils/moment';
 import { BadRequestException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { HttpStatusCode } from 'axios';
@@ -24,19 +26,16 @@ import * as bcrypt from 'bcryptjs';
 import { plainToClass } from 'class-transformer';
 import * as crypto from 'crypto';
 import { Request } from 'express';
-import moment from '@/utils/moment';
 import UAParser from 'ua-parser-js';
 import { v4 as uuid } from 'uuid';
 import { KtqAdminUsersService } from '../ktq-admin-users/ktq-admin-users.service';
 import { KtqConfigEmailsService } from '../ktq-config-emails/ktq-config-emails.service';
 import { KtqCustomersService } from '../ktq-customers/ktq-customers.service';
+import { KtqQueuesService } from '../ktq-queues/ktq-queues.service';
 import { KtqRolesService } from '../ktq-roles/ktq-roles.service';
 import { KtqSessionsService } from '../ktq-sessions/ktq-sessions.service';
 import { KtqUserForgotPasswordsService } from '../ktq-user-forgot-passwords/ktq-user-forgot-passwords.service';
-import { Queue } from 'bull';
-import { InjectQueue } from '@nestjs/bull';
-import { KtqQueuesService } from '../ktq-queues/ktq-queues.service';
-import KtqCustomerGroupsConstant from '@/constants/ktq-customer-groups.constant';
+
 @Injectable()
 export class KtqAuthenticationsService {
     constructor(
@@ -155,8 +154,8 @@ export class KtqAuthenticationsService {
             throw new UnauthorizedException(KtqResponse.toResponse(null, { message: 'Refresh token is expired', status_code: HttpStatus.UNAUTHORIZED }));
         }
 
-        const expiredTime = moment(session.expires_at); // Sử dụng moment để lấy thời gian hết hạn
-        const now = moment(); // Sử dụng moment để lấy thời gian hiện tại
+        const expiredTime = moment(session.expires_at);
+        const now = moment();
 
         if (now.isBefore(expiredTime.subtract(1, 'second'))) {
             throw new BadRequestException(KtqResponse.toResponse(null, { message: 'The session still valid', status_code: HttpStatus.BAD_REQUEST }));

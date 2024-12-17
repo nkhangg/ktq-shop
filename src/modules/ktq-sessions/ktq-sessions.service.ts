@@ -11,8 +11,9 @@ import { plainToClass } from 'class-transformer';
 import { FilterOperator, FilterSuffix, paginate, PaginateQuery } from 'nestjs-paginate';
 import { Column } from 'nestjs-paginate/lib/helper';
 import { FindManyOptions, FindOptionsWhere, In, Repository } from 'typeorm';
-import { KtqCachesService } from '../ktq-caches/ktq-caches.service';
+import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
 import { sessionsRoutes } from './ktq-sessions.route';
+import KtqAdminUser from '@/entities/ktq-admin-users.entity';
 
 @Injectable()
 export class KtqSessionsService implements ServiceInterface<KtqSession, Partial<KtqSession>> {
@@ -53,6 +54,13 @@ export class KtqSessionsService implements ServiceInterface<KtqSession, Partial<
         return await this.ktqSessionRepository.delete({
             user_id: In(ids),
             user_role_type: UserRoleType.CUSTOMER,
+        });
+    }
+
+    async deleteByAdminUserIds(ids: KtqAdminUser['id'][]) {
+        return await this.ktqSessionRepository.delete({
+            user_id: In(ids),
+            user_role_type: UserRoleType.ADMIN,
         });
     }
 

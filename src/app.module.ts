@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { forwardRef, MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { excludeAuthorization, excludeAuth } from './common/routes/exclude-route';
 import { AuthMiddleware } from './middlewares/auth.middleware';
 import { KtqAdminUsersModule } from './modules/ktq-admin-users/ktq-admin-users.module';
@@ -29,6 +29,7 @@ import { KtqCustomerGroupsModule } from './modules/ktq-customer-groups/ktq-custo
 import { KtqUserBlackListLogsModule } from './modules/ktq-user-black-list-logs/ktq-user-black-list-logs.module';
 import { KtqAppMediasModule } from './modules/ktq-app-medias/ktq-app-medias.module';
 import { KtqProvincesModule } from './modules/ktq-provinces/ktq-provinces.module';
+import { KtqEventsModule } from './modules/ktq-events-sse/ktq-events-sse.module';
 
 @Module({
     imports: [
@@ -39,7 +40,7 @@ import { KtqProvincesModule } from './modules/ktq-provinces/ktq-provinces.module
         KtqAdminUsersModule,
         KtqAuthenticationsModule,
         KtqSessionsModule,
-        KtqRolesModule,
+        forwardRef(() => KtqRolesModule),
         KtqWebsitesModule,
         KtqCustomersModule,
         KtqResourcesModule,
@@ -57,6 +58,7 @@ import { KtqProvincesModule } from './modules/ktq-provinces/ktq-provinces.module
         KtqUserBlackListLogsModule,
         KtqAppMediasModule,
         KtqProvincesModule,
+        KtqEventsModule,
     ],
 })
 export class AppModule {
@@ -65,7 +67,6 @@ export class AppModule {
             .apply(AuthMiddleware)
             .exclude(...excludeAuth)
             .forRoutes(KtqAdminAuthenticationsController, KtqCustomerAuthenticationsController, KtqCustomersController);
-
         consumer
             .apply(AuthorizationMiddleware)
             .exclude(...excludeAuthorization)

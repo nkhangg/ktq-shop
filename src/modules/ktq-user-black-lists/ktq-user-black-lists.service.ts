@@ -13,7 +13,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { HttpStatusCode } from 'axios';
 import { FindManyOptions, In, Repository } from 'typeorm';
 import { KtqUserBlackListLogsService } from '../ktq-user-black-list-logs/ktq-user-black-list-logs.service';
-import { KtqCachesService } from '../ktq-caches/ktq-caches.service';
+import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
 import { customersRoutes } from '../ktq-customers/ktq-customers.route';
 
 @Injectable()

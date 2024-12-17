@@ -14,8 +14,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { customersRoutes } from './ktq-customers.route';
 import { KtqCustomersService } from './ktq-customers.service';
-import { KtqAuthenticationsService } from '../ktq-authentications/ktq-authentications.service';
-import { RegisterKtqCustomerDto } from '@/common/dtos/ktq-authentication.dto';
 
 @Controller(customersRoutes.BASE)
 export class KtqCustomersController {
@@ -32,7 +30,7 @@ export class KtqCustomersController {
     }
 
     @Get('/view/:id')
-    @CacheTTL(0)
+    @CacheTTL(2000)
     public async getCustomerView(@Param('id') id: KtqCustomer['id']) {
         return await this.ktqCustomerService.getCustomerView(id);
     }
@@ -79,29 +77,29 @@ export class KtqCustomersController {
         return await this.ktqCustomerService.updates(data);
     }
 
+    @Put('in-actives')
+    public async inActives(@Body() { ids }: HiddenKtqCustomerDto) {
+        return await this.ktqCustomerService.inActives(ids);
+    }
+
+    @Put('actives')
+    public async actives(@Body() { ids }: HiddenKtqCustomerDto) {
+        return await this.ktqCustomerService.actives(ids);
+    }
+
     @Put(':id')
     public async update(@Param('id') id: KtqCustomer['id'], @Body() data: GeneralKtqCustomerDto) {
         return await this.ktqCustomerService.updateById(id, data);
     }
 
-    @Put('hidden/multiple')
-    public async hiddenCustomers(@Body() { ids }: HiddenKtqCustomerDto) {
-        return await this.ktqCustomerService.hiddenCustomers(ids);
+    @Put(':id/in-active')
+    public async inActive(@Param('id') id: KtqCustomer['id']) {
+        return await this.ktqCustomerService.inactive(id);
     }
 
-    @Put('hidden/:id')
-    public async hiddenCustomer(@Param('id') id: KtqCustomer['id']) {
-        return await this.ktqCustomerService.hiddenCustomer(id);
-    }
-
-    @Put('unhidden/multiple')
-    public async unhiddenCustomers(@Body() { ids }: HiddenKtqCustomerDto) {
-        return await this.ktqCustomerService.unhiddenCustomers(ids);
-    }
-
-    @Put('unhidden/:id')
-    public async unhiddenCustomer(@Param('id') id: KtqCustomer['id']) {
-        return await this.ktqCustomerService.unhiddenCustomer(id);
+    @Put(':id/active')
+    public async active(@Param('id') id: KtqCustomer['id']) {
+        return await this.ktqCustomerService.active(id);
     }
 
     @Delete('multiple')

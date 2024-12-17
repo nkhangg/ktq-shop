@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { KtqCachesService } from './services/ktq-caches.service';
+import { KtqEventsService } from './ktq-events-sse.service';
 
-describe('KtqCachesService', () => {
-    let service: KtqCachesService;
+describe('KtqEventsService', () => {
+    let service: KtqEventsService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [KtqCachesService],
+            providers: [KtqEventsService],
         }).compile();
 
-        service = module.get<KtqCachesService>(KtqCachesService);
+        service = module.get<KtqEventsService>(KtqEventsService);
     });
 
     it('should be defined', () => {

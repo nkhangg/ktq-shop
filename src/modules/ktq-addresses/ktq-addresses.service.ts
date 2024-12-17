@@ -12,7 +12,7 @@ import { HttpStatusCode } from 'axios';
 import { FilterOperator, FilterSuffix, paginate, PaginateQuery } from 'nestjs-paginate';
 import { Column } from 'nestjs-paginate/lib/helper';
 import { FindManyOptions, In, Repository } from 'typeorm';
-import { KtqCachesService } from '../ktq-caches/ktq-caches.service';
+import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
 import { adRoutes } from './ktq-address.route';
 
 @Injectable()
@@ -85,6 +85,7 @@ export class KtqAddressesService implements ServiceInterface<KtqAddress, Partial
             sortableColumns: ['id'],
             searchableColumns: ['address_line', 'id', 'city', 'country.country_name', 'postal_code', 'ward', 'district'],
             filterableColumns,
+            defaultSortBy: [['id', 'DESC']],
             maxLimit: 100,
             where: {
                 customer: {

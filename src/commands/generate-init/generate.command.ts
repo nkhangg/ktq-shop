@@ -6,27 +6,27 @@ import GenerateBase from '../generate-base';
 export default class GenerateCommand extends GenerateBase {
     private token = null;
 
-    public async login() {
-        try {
-            const { username, password } = KtqAppConstant.getRootUserData();
+    // public async login() {
+    //     try {
+    //         const { username, password } = KtqAppConstant.getRootUserData();
 
-            const response = await axios({
-                method: 'POST',
-                url: `${KtqConfigConstant.getHostname()}/admin/auth/login`,
-                data: {
-                    username,
-                    password,
-                },
-            });
+    //         const response = await axios({
+    //             method: 'POST',
+    //             url: `${KtqConfigConstant.getHostname()}/admin/auth/login`,
+    //             data: {
+    //                 username,
+    //                 password,
+    //             },
+    //         });
 
-            if (response && response.data?.token) {
-                this.token = response.data.token;
-            }
-        } catch (error) {
-            console.log((error as AxiosError).response.data);
-            console.log('error went login');
-        }
-    }
+    //         if (response && response.data?.token) {
+    //             this.token = response.data.token;
+    //         }
+    //     } catch (error) {
+    //         console.log((error as AxiosError).response.data);
+    //         console.log('error went login');
+    //     }
+    // }
 
     public async logout() {
         const response = await axios({
@@ -193,12 +193,12 @@ export default class GenerateCommand extends GenerateBase {
     }
 
     public async generateInit() {
-        await this.login();
+        // await this.login();
 
-        if (!this.token) {
-            console.log('The Initialize failure. Because login to app failure');
-            return;
-        }
+        // if (!this.token) {
+        //     console.log('The Initialize failure. Because login to app failure');
+        //     return;
+        // }
 
         await this.generateRoles();
         await this.generateConfigs();
@@ -208,6 +208,6 @@ export default class GenerateCommand extends GenerateBase {
         await this.initRolePermissions();
         await this.initRoleResources();
         await this.initCustomerGroups();
-        await this.logout();
+        // await this.logout();
     }
 }

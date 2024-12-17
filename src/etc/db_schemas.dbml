@@ -118,6 +118,7 @@ Table ktq_admin_users {
   last_name varchar [null, default: null]
   password_hash varchar
   role_id int [null, default: null]
+  gender enum('male', 'female', 'other') [null, default: 'other'] 
   is_active boolean [default: 1]
   created_at timestamp
   updated_at timestamp

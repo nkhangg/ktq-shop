@@ -1,13 +1,15 @@
 import KtqConfigConstant from '@/constants/ktq-configs.constant';
 import { Injectable } from '@nestjs/common';
 import { Request, Router } from 'express';
+import { KtqConfigsService } from '../ktq-configs/ktq-configs.service';
 
 @Injectable()
 export class KtqAppConfigsService {
-    constructor() {}
+    constructor(private readonly ktqConfigService: KtqConfigsService) {}
 
-    getRoutes(request: Request) {
+    async getRoutes(request: Request) {
         const router = request.app._router as Router;
+        const prefix_version = await this.ktqConfigService.getPrefixVersion();
 
         const routes = router.stack
             .map((layer) => {
@@ -15,7 +17,7 @@ export class KtqAppConfigsService {
                     const path = layer.route?.path;
                     const method = layer.route?.stack[0].method;
 
-                    const name = (layer.route?.path as string).replace(`${KtqConfigConstant.getVersionPrefix()}/`, '');
+                    const name = (layer.route?.path as string).replace(`${prefix_version}/`, '');
 
                     return {
                         path: path.endsWith('/') ? path.slice(0, -1) : path,

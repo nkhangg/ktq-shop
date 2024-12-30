@@ -132,7 +132,7 @@ export class KtqProvincesService {
         await this.initDistricts();
         await this.initWards();
 
-        // await this.initCountries();
+        await this.initCountries();
 
         return KtqResponse.toResponse(true);
     }

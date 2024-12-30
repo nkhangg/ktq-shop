@@ -86,3 +86,9 @@ export class CreateKtqAdminUserDto extends ConfirmPasswordAdmin {
     @IsOptional()
     gender: Gender;
 }
+
+export class UpdateRoleKtqAdminUserDto extends ConfirmPasswordAdmin {
+    @IsNumber()
+    @HasExisted({ tableName: 'ktq_roles', column: 'id' })
+    role_id: KtqRole['id'];
+}

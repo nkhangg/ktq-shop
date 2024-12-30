@@ -6,6 +6,7 @@ import KtqPermissionsConstant from '@/constants/ktq-permission.constant';
 import KtqRolesConstant from '@/constants/ktq-roles.constant';
 import { KtqAdminUsersService } from '@/modules/ktq-admin-users/ktq-admin-users.service';
 import { KtqResourcePermissionsService } from '@/modules/ktq-resource-permissions/ktq-resource-permissions.service';
+import { cleanUrl } from '@/utils/app';
 import { ForbiddenException, Injectable, NestMiddleware, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { HttpStatusCode } from 'axios';
@@ -20,7 +21,7 @@ export class AuthorizationMiddleware implements NestMiddleware {
     ) {}
 
     async use(req: Request, res: Response, next: NextFunction) {
-        const path = req.url.endsWith('/') ? req.url.slice(0, -1) : req.url;
+        const path = cleanUrl(req.url);
         const method = req.method;
 
         const authorization: string = req.headers['authorization'];
@@ -61,24 +62,8 @@ export class AuthorizationMiddleware implements NestMiddleware {
         if (admin.role.role_name === KtqRolesConstant.ROOT) {
             return next();
         }
-        // if (
-        //     admin.role.role_name === KtqRolesConstant.ROOT &&
-        //     admin.role.rolePermissions.some((permission) => permission.permission.permission_code === KtqPermissionsConstant.getRootPermission().permission_code)
-        // ) {
-        //     return next();
-        // }
 
         const curPermission = KtqPermissionsConstant.requestMappingRole(KtqPermissionsConstant.convertToRequestMethod(method));
-
-        const permissions = admin.role.rolePermissions.map((item) => item.permission);
-        const resources = admin.role.roleResources.map((item) => item.resource);
-
-        const includePermission = permissions.some((permission) => permission.permission_code === curPermission.permission_code);
-        const includeResource = resources.some((resource) => resource.resource_code === path && resource.resource_method === method && resource.type_resource === TypeResource.API);
-
-        if (includeResource && includePermission) {
-            return next();
-        }
 
         const resourcePermission = await this.ktqResourcePermissionService.findOneWith({
             where: {
@@ -97,6 +82,12 @@ export class AuthorizationMiddleware implements NestMiddleware {
         });
 
         if (resourcePermission) {
+            return next();
+        }
+
+        const isRoleAccept = admin.role.rolePermissions.some((item) => item.permission.permission_code === curPermission.permission_code);
+
+        if (isRoleAccept) {
             return next();
         }
 

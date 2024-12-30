@@ -8,6 +8,7 @@ import { KtqConfigEmailsModule } from '../ktq-config-emails/ktq-config-emails.mo
 import { KtqQueuesModule } from '../ktq-queues/ktq-queues.module';
 import { MulterModule } from '@nestjs/platform-express';
 import KtqAppConstant from '@/constants/ktq-app.constant';
+import { KtqConfigsModule } from '../ktq-configs/ktq-configs.module';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import KtqAppConstant from '@/constants/ktq-app.constant';
         KtqConfigEmailsModule,
         KtqDatabasesModule,
         KtqQueuesModule,
+        KtqConfigsModule,
     ],
     providers: [KtqAppConfigsService],
     exports: [KtqAppConfigsService],

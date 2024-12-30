@@ -1,28 +1,3 @@
-// import { Injectable } from '@nestjs/common';
-// import { Response } from 'express';
-// import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
-// import { adminUserRoutes, extractIds } from '../ktq-admin-users/ktq-admin-users.route';
-// @Injectable()
-// export class KtqEventsSseService {
-//     constructor(private readonly ktqCacheService: KtqCachesService) {}
-
-//     private clients: Response[] = [];
-
-//     addClient(res: Response) {
-//         this.clients.push(res);
-
-//         res.on('close', () => {
-//             this.clients = this.clients.filter((client) => client !== res);
-//             res.end();
-//         });
-//     }
-
-//     useTimePassword(key: string) {
-//         this.clients.forEach((client) => {
-//             client.write(`data: ${JSON.stringify({ event: 'key-expired', key })}\n\n`);
-//         });
-//     }
-// }
 import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
 

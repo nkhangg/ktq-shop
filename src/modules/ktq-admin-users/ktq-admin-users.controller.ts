@@ -10,10 +10,12 @@ import {
     IdsKtqAdminUserDto,
     SetNewPasswordKtqAdminUserDto,
     UpdateKtqAdminUserDto,
+    UpdateRoleKtqAdminUserDto,
 } from '@/common/dtos/ktq-admin-users.dto';
 import { adminUserRoutes } from './ktq-admin-users.route';
 import { TokenData, TTokenData } from '@/common/decorators/token-data.decorator';
 import { CacheTTL } from '@nestjs/cache-manager';
+import { BlockActionForRoot } from '@/common/guards/block-action-for-root.guard';
 
 @Controller(adminUserRoutes.BASE)
 export class KtqAdminUsersController {
@@ -80,6 +82,12 @@ export class KtqAdminUsersController {
     @UseGuards(ConfirmPasswordAdminGuard)
     async updateAdminUser(@Param('id') id: KtqAdminUser['id'], @Body() data: UpdateKtqAdminUserDto) {
         return await this.ktqAdminUserService.updateAdminUser(id, data);
+    }
+
+    @Put('role/:id')
+    @UseGuards(BlockActionForRoot, ConfirmPasswordAdminGuard)
+    async updateRole(@Param('id') id: KtqAdminUser['id'], @Body() data: UpdateRoleKtqAdminUserDto) {
+        return await this.ktqAdminUserService.updateRole(id, data);
     }
 
     @Put(':id/set-new-password')

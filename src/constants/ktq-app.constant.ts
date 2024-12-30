@@ -25,6 +25,8 @@ export default class KtqAppConstant {
     public static CONFIG_TTL_RESET_LINK = 'TTL_RESET_LINK';
     public static CONFIG_TTL_RESET_LINK_UNIT = 'TTL_RESET_LINK_UNIT';
 
+    public static CACHE_KEYS = ['public_keys', 'private_keys', 'system_keys'];
+
     public static ROOT_DIRECTORY = resolve(__dirname, '../');
 
     public static MEDIA_PATH = 'public';

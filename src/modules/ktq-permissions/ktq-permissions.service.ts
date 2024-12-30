@@ -1,19 +1,31 @@
 //import GeneralKtqPermissionDto from "@/common/dtos/ktq-permissions.dto";
+import { AddPermissionForRoleData } from '@/common/dtos/ktq-permissions.dto';
 import KtqResponse from '@/common/systems/response/ktq-response';
 import KtqPermissionsConstant from '@/constants/ktq-permission.constant';
 import KtqPermission from '@/entities/ktq-permissions.entity';
+import KtqRolePermission from '@/entities/ktq-role-permissions.entity';
+import KtqRole from '@/entities/ktq-roles.entity';
 
 import { ServiceInterface } from '@/services/service-interface';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpStatusCode } from 'axios';
+import { FilterOperator, FilterSuffix, paginate, PaginateQuery } from 'nestjs-paginate';
+import { Column } from 'nestjs-paginate/lib/helper';
 import { FindManyOptions, Repository } from 'typeorm';
+import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
+import { permissionRoutes } from './ktq-permissions.route';
 
 @Injectable()
 export class KtqPermissionsService implements ServiceInterface<KtqPermission, Partial<KtqPermission>> {
     constructor(
         @InjectRepository(KtqPermission)
         private readonly ktqPermissionRepository: Repository<KtqPermission>,
+        @InjectRepository(KtqRolePermission)
+        private readonly ktqRolePermissionRepository: Repository<KtqRolePermission>,
+        @InjectRepository(KtqRole)
+        private readonly ktqRoleRepository: Repository<KtqRole>,
+        private ktqCacheService: KtqCachesService,
     ) {}
 
     async create(permission: Partial<KtqPermission>): Promise<KtqPermission> {
@@ -56,5 +68,83 @@ export class KtqPermissionsService implements ServiceInterface<KtqPermission, Pa
         }
 
         return KtqResponse.toResponse(result);
+    }
+
+    async getAll(query: PaginateQuery) {
+        const filterableColumns: {
+            [key in Column<KtqPermission> | (string & {})]?: (FilterOperator | FilterSuffix)[] | true;
+        } = {
+            id: true,
+            created_at: true,
+            updated_at: true,
+        };
+
+        const data = await paginate(query, this.ktqPermissionRepository, {
+            sortableColumns: ['id'],
+            filterableColumns,
+            searchableColumns: [],
+            defaultSortBy: [['id', 'ASC']],
+            maxLimit: 100,
+        });
+
+        return KtqResponse.toPagination<KtqPermission>(data, true, KtqPermission);
+    }
+
+    async getPermissionByRole(role_id: KtqRole['id']) {
+        const result = await this.findWith({
+            where: {
+                rolePermissions: {
+                    role: {
+                        id: role_id,
+                    },
+                },
+            },
+        });
+
+        return KtqResponse.toResponse(result);
+    }
+
+    async addPermissionForRole(role_id: KtqRole['id'], data: AddPermissionForRoleData) {
+        const rolePermission = await this.ktqRolePermissionRepository.findOne({
+            where: {
+                permission: {
+                    id: data.permission_id,
+                },
+                role: {
+                    id: role_id,
+                },
+            },
+        });
+
+        if (rolePermission) return KtqResponse.toResponse(rolePermission);
+
+        const role = await this.ktqRoleRepository.findOne({ where: { id: role_id } });
+
+        const result = await this.ktqRolePermissionRepository.save({
+            permission: this.ktqPermissionRepository.create({ id: data.permission_id }),
+            role,
+        });
+
+        if (!result) throw new BadRequestException(KtqResponse.toResponse(null, { message: `Fail to add permission for role`, status_code: HttpStatusCode.BadRequest }));
+
+        await this.ktqCacheService.clearKeysByPrefix(permissionRoutes.role(role_id));
+        return KtqResponse.toResponse(result);
+    }
+
+    async removePermissionFormRole(role_id: KtqRole['id'], { permission_id }: AddPermissionForRoleData) {
+        const result = await this.ktqRolePermissionRepository.delete({
+            role: {
+                id: role_id,
+            },
+            permission: {
+                id: permission_id,
+            },
+        });
+
+        if (!result) throw new BadRequestException(KtqResponse.toResponse(false));
+
+        await this.ktqCacheService.clearKeysByPrefix(permissionRoutes.role(role_id));
+
+        return KtqResponse.toResponse(true);
     }
 }

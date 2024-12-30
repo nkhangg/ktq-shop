@@ -5,9 +5,10 @@ import { KtqAdminUsersService } from './ktq-admin-users.service';
 import { KtqAdminUsersController } from './ktq-admin-users.controller';
 import { KtqCachesModule } from '../ktq-caches/ktq-caches.module';
 import { KtqSessionsModule } from '../ktq-sessions/ktq-sessions.module';
+import KtqRole from '@/entities/ktq-roles.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([KtqAdminUser]), KtqCachesModule, KtqSessionsModule],
+    imports: [TypeOrmModule.forFeature([KtqAdminUser, KtqRole]), KtqCachesModule, KtqSessionsModule],
     providers: [KtqAdminUsersService],
     controllers: [KtqAdminUsersController],
     exports: [KtqAdminUsersService],

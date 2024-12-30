@@ -1,5 +1,11 @@
 import { TTokenData } from '@/common/decorators/token-data.decorator';
-import { ChangePasswordKtqAdminUserDto, CreateKtqAdminUserDto, SetNewPasswordKtqAdminUserDto, UpdateKtqAdminUserDto } from '@/common/dtos/ktq-admin-users.dto';
+import {
+    ChangePasswordKtqAdminUserDto,
+    CreateKtqAdminUserDto,
+    SetNewPasswordKtqAdminUserDto,
+    UpdateKtqAdminUserDto,
+    UpdateRoleKtqAdminUserDto,
+} from '@/common/dtos/ktq-admin-users.dto';
 import KtqResponse from '@/common/systems/response/ktq-response';
 import KtqAppConstant from '@/constants/ktq-app.constant';
 import KtqRolesConstant from '@/constants/ktq-roles.constant';
@@ -17,12 +23,15 @@ import { FindManyOptions, FindOneOptions, In, Repository } from 'typeorm';
 import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
 import { adminUserRoutes } from './ktq-admin-users.route';
 import { KtqSessionsService } from '../ktq-sessions/ktq-sessions.service';
+import KtqRole from '@/entities/ktq-roles.entity';
 
 @Injectable()
 export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Partial<KtqAdminUser>>, ServiceUserAuthInterface<KtqAdminUser> {
     constructor(
         @InjectRepository(KtqAdminUser)
         private readonly ktqAdminUserRepository: Repository<KtqAdminUser>,
+        @InjectRepository(KtqRole)
+        private readonly ktqRoleRepository: Repository<KtqRole>,
         private readonly ktqCacheService: KtqCachesService,
         private readonly ktqSessionService: KtqSessionsService,
     ) {}
@@ -296,5 +305,21 @@ export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Part
         if (!adminUser) throw new BadRequestException(KtqResponse.toResponse(null, { message: `Can't create new admin user`, status_code: HttpStatusCode.BadRequest }));
 
         return KtqResponse.toResponse(plainToClass(KtqAdminUser, adminUser));
+    }
+
+    async updateRole(id: KtqAdminUser['id'], { role_id }: UpdateRoleKtqAdminUserDto) {
+        const adminUser = await this.findOne(id);
+
+        if (!adminUser) throw new NotFoundException(KtqResponse.toResponse(null, { message: 'Admin user not found', status_code: HttpStatusCode.NotFound }));
+
+        if (role_id === KtqRolesConstant.getRoot().id) {
+            throw new BadRequestException(KtqResponse.toResponse(null, { message: `Unable to update root permissions for any account`, status_code: HttpStatusCode.BadRequest }));
+        }
+
+        const result = await this.update(id, { role: this.ktqRoleRepository.create({ id: role_id }) });
+
+        if (!result) throw new BadRequestException(KtqResponse.toResponse(null, { message: `Can't update role for this admin`, status_code: HttpStatusCode.BadRequest }));
+
+        return KtqResponse.toResponse(plainToClass(KtqAdminUser, result));
     }
 }

@@ -1,19 +1,15 @@
 import { Controller, Get, Post } from '@nestjs/common';
+import { Paginate, PaginateQuery } from 'nestjs-paginate';
+import { configsRoutes } from './ktq-configs.route';
 import { KtqConfigsService } from './ktq-configs.service';
-import { KeyType } from '@/common/enums/key-type.enum';
 
-@Controller('admin/configs')
+@Controller(configsRoutes.BASE)
 export class KtqConfigsController {
     constructor(private readonly ktqConfigService: KtqConfigsService) {}
 
     @Get()
-    findAll(): Object {
-        return this.ktqConfigService.findAll();
-    }
-
-    @Get()
-    update(): Object {
-        return this.ktqConfigService.update(2, { key_name: 'a', key_type: KeyType.JSON, key_value: '' });
+    async getAll(@Paginate() query: PaginateQuery) {
+        return await this.ktqConfigService.getAll(query);
     }
 
     @Post('init-configs')

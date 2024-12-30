@@ -1,5 +1,5 @@
 //import GeneralKtqRoleDto from "@/common/dtos/ktq-roles.dto";
-import GeneralKtqRoleDto, { AddResourceForRoleKtqRoleDto } from '@/common/dtos/ktq-roles.dto';
+import GeneralKtqRoleDto, { AddResourceForRoleKtqRoleDto, DeleteResourceForRoleKtqRoleDto } from '@/common/dtos/ktq-roles.dto';
 import KtqResponse from '@/common/systems/response/ktq-response';
 import KtqRolesConstant from '@/constants/ktq-roles.constant';
 import KtqRole from '@/entities/ktq-roles.entity';
@@ -16,11 +16,12 @@ import { HttpStatusCode } from 'axios';
 import { plainToClass } from 'class-transformer';
 import { FilterOperator, FilterSuffix, paginate, PaginateQuery } from 'nestjs-paginate';
 import { Column } from 'nestjs-paginate/lib/helper';
-import { FindManyOptions, QueryFailedError, Repository } from 'typeorm';
+import { FindManyOptions, In, QueryFailedError, Repository } from 'typeorm';
 import { KtqAdminUsersService } from '../ktq-admin-users/ktq-admin-users.service';
 import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
 import { roleRoutes } from './ktq-role.route';
 import KtqRoleResource from '@/entities/ktq-role-resources.entity';
+import { resourcesRoutes } from '../ktq-resources/ktq-resources.route';
 
 @Injectable()
 export class KtqRolesService implements ServiceInterface<KtqRole, Partial<KtqRole>> {
@@ -139,26 +140,35 @@ export class KtqRolesService implements ServiceInterface<KtqRole, Partial<KtqRol
         return KtqResponse.toResponse(plainToClass(KtqRole, rolesData));
     }
 
-    async addResourceForRole(id: KtqRole['id'], { permission_ids, resource_ids }: AddResourceForRoleKtqRoleDto) {
+    async addResourceForRole(id: KtqRole['id'], { resource_ids }: AddResourceForRoleKtqRoleDto) {
         const role = await this.findOne(id);
 
         if (!role) throw new NotFoundException(`Role not found`);
-
-        const rolePermissions = permission_ids.map((permissionId) => ({
-            role,
-            permission: { id: permissionId },
-        }));
 
         const roleResources = resource_ids.map((resourceId) => ({
             role,
             resource: { id: resourceId },
         }));
 
-        try {
-            await this.ktqRolePermissionRepository.save(rolePermissions);
-            await this.ktqRoleResourceRepository.save(roleResources);
-        } finally {
-            return KtqResponse.toResponse(role);
-        }
+        await this.ktqRoleResourceRepository.save(roleResources);
+
+        await this.ktqCacheService.clearKeysByPrefixes([resourcesRoutes.role(id), resourcesRoutes.ignoreRole(id)]);
+        return KtqResponse.toResponse(role);
+    }
+
+    async deleteResourcesForRole(role_id: KtqRole['id'], { resource_ids }: DeleteResourceForRoleKtqRoleDto) {
+        const result = await this.ktqRoleResourceRepository.delete({
+            role: {
+                id: role_id,
+            },
+            resource: {
+                id: In(resource_ids),
+            },
+        });
+
+        if (!result) throw new BadRequestException(KtqResponse.toResponse(false, { message: `Can't delete this role resource`, status_code: HttpStatusCode.BadRequest }));
+
+        await this.ktqCacheService.clearKeysByPrefixes([resourcesRoutes.role(role_id), resourcesRoutes.ignoreRole(role_id)]);
+        return KtqResponse.toResponse(true);
     }
 }

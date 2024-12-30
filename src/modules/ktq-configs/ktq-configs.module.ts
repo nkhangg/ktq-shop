@@ -8,5 +8,6 @@ import { KtqConfigsService } from './ktq-configs.service';
     imports: [TypeOrmModule.forFeature([KtqConfig])],
     controllers: [KtqConfigsController],
     providers: [KtqConfigsService],
+    exports: [KtqConfigsService],
 })
 export class KtqConfigsModule {}

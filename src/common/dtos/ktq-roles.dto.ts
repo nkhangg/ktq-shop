@@ -1,8 +1,9 @@
-import { IsNumber, IsString, MinLength } from 'class-validator';
+import { IsNumber, IsOptional, IsString, MinLength } from 'class-validator';
 import { IsUnique } from '../systems/validators/decorators/is-unique';
 import { HasExisted } from '../systems/validators/decorators/has-existed';
 import KtqAdminUser from '@/entities/ktq-admin-users.entity';
 import KtqResource from '@/entities/ktq-resources.entity';
+import KtqRoleResource from '@/entities/ktq-role-resources.entity';
 
 export default class GeneralKtqRoleDto {
     @IsString()
@@ -21,8 +22,9 @@ export class AddResourceForRoleKtqRoleDto {
     @IsNumber({}, { each: true })
     @HasExisted({ tableName: 'ktq_resources', column: 'id', each: true })
     resource_ids: KtqResource['id'][];
+}
 
+export class DeleteResourceForRoleKtqRoleDto {
     @IsNumber({}, { each: true })
-    @HasExisted({ tableName: 'ktq_permissions', column: 'id', each: true })
-    permission_ids: KtqResource['id'][];
+    resource_ids: KtqRoleResource['id'][];
 }

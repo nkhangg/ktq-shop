@@ -16,7 +16,7 @@ import { plainToClass } from 'class-transformer';
 import { FilterOperator, FilterSuffix, paginate, PaginateQuery } from 'nestjs-paginate';
 import { Column } from 'nestjs-paginate/lib/helper';
 import { join } from 'path';
-import { FindManyOptions, In, LessThanOrEqual, Raw, Repository } from 'typeorm';
+import { FindManyOptions, In, IsNull, LessThanOrEqual, Not, Raw, Repository } from 'typeorm';
 import { KtqAddressesService } from '../ktq-addresses/ktq-addresses.service';
 import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
 import { KtqSessionsService } from '../ktq-sessions/ktq-sessions.service';
@@ -269,9 +269,10 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
             where: {
                 user_role_type: UserRoleType.CUSTOMER,
                 user_id_app: customer.id,
-                start_at: LessThanOrEqual(now),
-                // end_at: MoreThanOrEqual(now),
-                end_at: Raw((alias) => `${alias} >= :now OR ${alias} IS NULL`, { now }),
+                start_at: Not(IsNull()),
+                // start_at: LessThanOrEqual(now),
+                // // end_at: MoreThanOrEqual(now),
+                // end_at: Raw((alias) => `${alias} >= :now OR ${alias} IS NULL`, { now }),
             },
         });
 

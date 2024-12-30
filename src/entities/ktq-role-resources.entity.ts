@@ -11,15 +11,19 @@ export default class KtqRoleResource {
     id: number;
 
     @ManyToOne(() => KtqRole, (role) => role.roleResources, {
-        cascade: true,
         eager: true,
+        cascade: ['remove'],
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
     })
     //@Exclude()
     role: KtqRole;
 
     @ManyToOne(() => KtqResource, (resource) => resource.roleResources, {
-        cascade: true,
         eager: true,
+        cascade: ['remove'],
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
     })
     //@Exclude()
     resource: KtqResource;

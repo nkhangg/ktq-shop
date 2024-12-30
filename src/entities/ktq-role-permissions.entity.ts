@@ -11,15 +11,19 @@ export default class KtqRolePermission {
     id: number;
 
     @ManyToOne(() => KtqRole, (role) => role.rolePermissions, {
-        cascade: true,
         eager: true,
+        cascade: ['remove'],
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
     })
     //@Exclude()
     role: KtqRole;
 
     @ManyToOne(() => KtqPermission, (permission) => permission.rolePermissions, {
-        cascade: true,
         eager: true,
+        cascade: ['remove'],
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
     })
     //@Exclude()
     permission: KtqPermission;

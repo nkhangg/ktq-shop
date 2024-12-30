@@ -2,6 +2,7 @@ Table ktq_configs {
   id integer [primary key]
   key_name varchar unique
   key_type enum('string', 'number', 'json', 'none')
+  key_space enum('public', 'private') [ default: 'private']
   key_value varchar
 }
 

@@ -9,6 +9,7 @@ import { KtqCachesService } from './services/ktq-caches.service';
 import { RedisModule } from '@nestjs-modules/ioredis';
 import { RedisKeyExpirationListenerService } from './services/redis-key-expiration-listener.service';
 import { KtqEventsModule } from '../ktq-events-sse/ktq-events-sse.module';
+import { KtqCachesController } from './ktq-caches.controller';
 @Module({
     imports: [
         ConfigModule,
@@ -36,6 +37,9 @@ import { KtqEventsModule } from '../ktq-events-sse/ktq-events-sse.module';
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => ({
                 type: 'single',
+                options: {
+                    socketTimeout: 20000,
+                },
                 url: `redis://${configService.get(KtqAppConstant.CONFIG_REDIS_HOST)}:${configService.get(KtqAppConstant.CONFIG_REDIS_PORT)}`,
             }),
         }),
@@ -49,5 +53,6 @@ import { KtqEventsModule } from '../ktq-events-sse/ktq-events-sse.module';
         RedisKeyExpirationListenerService,
     ],
     exports: [KtqCachesService],
+    controllers: [KtqCachesController],
 })
 export class KtqCachesModule {}

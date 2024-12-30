@@ -16,12 +16,12 @@ export function extractIds(inputString: string) {
 }
 
 export const adminUserRoutes = (() => {
+    const buildUrl = (...paths: string[]) => `/${API_PREFIX}/${API_VERSION}/${paths.join('/')}`;
+
     const API_PREFIX = KtqConfigConstant.getApiPrefix().key_value;
     const API_VERSION = KtqConfigConstant.getApiVersion().key_value;
     const BASE = 'admin/admin-users';
-    const BASE_USE_TIME_PASSWORD = 'admin_cache_password_time';
-
-    const buildUrl = (...paths: string[]) => `/${API_PREFIX}/${API_VERSION}/${paths.join('/')}`;
+    const BASE_USE_TIME_PASSWORD = buildUrl(BASE, 'admin_cache_password_time');
 
     return {
         BASE,

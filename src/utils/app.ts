@@ -32,3 +32,24 @@ export function showAddress(address: KtqAddress): string {
 
     return fullAddress.replace(/, $/, '');
 }
+
+export function cleanUrl(url: string): string {
+    const index = url.indexOf('?');
+    let cleanedUrl = index !== -1 ? url.substring(0, index) : url;
+    return cleanedUrl.endsWith('/') ? cleanedUrl.slice(0, -1) : cleanedUrl;
+}
+
+export function camelToSnakeCase(obj: Record<string, any>): Record<string, any> {
+    const result: Record<string, any> = {};
+
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            const snakeKey = key.replace(/[A-Z]/g, (match) => `_${match.toLowerCase()}`);
+
+            const value = obj[key];
+            result[snakeKey] = value && typeof value === 'object' && !Array.isArray(value) ? camelToSnakeCase(value) : value;
+        }
+    }
+
+    return result;
+}

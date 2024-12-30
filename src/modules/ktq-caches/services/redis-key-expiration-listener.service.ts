@@ -20,6 +20,7 @@ export class RedisKeyExpirationListenerService implements OnModuleInit {
         subscriber.on('message', (channel, message) => {
             if (String(message).includes(adminUserRoutes.BASE_USE_TIME_PASSWORD)) {
                 const { requester_id } = extractIds(message);
+                console.log(requester_id);
                 this.eventsService.sendToClient('use-time-password-expired', requester_id, { key: message, requester_id });
             }
         });

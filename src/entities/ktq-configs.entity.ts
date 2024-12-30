@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 import { KeyType } from "@/common/enums/key-type.enum";
+import { KeySpace } from "@/common/enums/key-space.enum";
 
 @Entity("ktq_configs")
 export default class KtqConfig {
@@ -12,6 +13,9 @@ export default class KtqConfig {
 
   @Column({ type: "enum", enum: KeyType })
   key_type: KeyType;
+
+  @Column({ type: "enum", enum: KeySpace, default: KeySpace.PRIVATE })
+  key_space: KeySpace;
 
   @Column({ type: "varchar" })
   key_value: string;

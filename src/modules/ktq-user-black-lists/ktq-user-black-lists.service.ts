@@ -1,5 +1,5 @@
 //import GeneralKtqUserBlackListDto from "@/common/dtos/ktq-user-black-lists.dto";
-import { BlockKtqCustomerDto, BlockKtqCustomersDto } from '@/common/dtos/ktq-user-black-lists.dto';
+import { BlockKtqAdminUserDto, BlockKtqCustomerDto, BlockKtqCustomersDto } from '@/common/dtos/ktq-user-black-lists.dto';
 import { BackListType } from '@/common/enums/back-list-type.enum';
 import { UserRoleType } from '@/common/enums/user-role-type.enum';
 import KtqResponse from '@/common/systems/response/ktq-response';
@@ -11,10 +11,12 @@ import moment from '@/utils/moment';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpStatusCode } from 'axios';
-import { FindManyOptions, In, Repository } from 'typeorm';
+import { FindManyOptions, In, IsNull, LessThanOrEqual, Not, Raw, Repository } from 'typeorm';
 import { KtqUserBlackListLogsService } from '../ktq-user-black-list-logs/ktq-user-black-list-logs.service';
 import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
 import { customersRoutes } from '../ktq-customers/ktq-customers.route';
+import KtqAdminUser from '@/entities/ktq-admin-users.entity';
+import { userBlackListsRoutes } from './ktq-user-black-lists.route';
 
 @Injectable()
 export class KtqUserBlackListsService implements ServiceInterface<KtqUserBlackList, Partial<KtqUserBlackList>> {
@@ -119,6 +121,46 @@ export class KtqUserBlackListsService implements ServiceInterface<KtqUserBlackLi
         return KtqResponse.toResponse(result);
     }
 
+    async blockAdminUser({ admin_user_id, admin_password, use_time, ...data }: BlockKtqAdminUserDto) {
+        const blackList = await this.findOneWith({
+            where: {
+                user_id_app: admin_user_id,
+                user_role_type: UserRoleType.ADMIN,
+            },
+        });
+
+        let result = null;
+
+        if (blackList) {
+            result = await this.update(blackList.id, {
+                ...blackList,
+                start_at: data.from,
+                end_at: data.to,
+                back_list_type: data.black_list_type,
+                reason: data.reason,
+            });
+        } else {
+            let newBlackListData: KtqUserBlackList = {
+                ...blackList,
+                user_id_app: admin_user_id,
+                user_role_type: UserRoleType.ADMIN,
+                start_at: data.from,
+                end_at: data.to,
+                back_list_type: data.black_list_type,
+                reason: data.reason,
+            };
+
+            result = await this.ktqUserBlackListRepository.save(newBlackListData);
+        }
+
+        if (!result) throw new BadRequestException(KtqResponse.toResponse(null, { message: "Can't update black list on now" }));
+
+        await this.ktqUserBlackListLogService.writeLog(result);
+        await this.ktqCacheService.clearKeysByPrefix(userBlackListsRoutes.byAdminUser(result.user_id_app));
+
+        return KtqResponse.toResponse(result);
+    }
+
     async unlockCustomer(id: KtqCustomer['id']) {
         const blacklist = await this.findOneWith({ where: { user_id_app: id, user_role_type: UserRoleType.CUSTOMER } });
 
@@ -132,5 +174,35 @@ export class KtqUserBlackListsService implements ServiceInterface<KtqUserBlackLi
         await this.ktqCacheService.clearKeysByPrefix(customersRoutes.id(blacklist.user_id_app));
 
         return KtqResponse.toResponse(result);
+    }
+
+    async unlockAdminUser(id: KtqAdminUser['id']) {
+        const blacklist = await this.findOneWith({ where: { user_id_app: id, user_role_type: UserRoleType.ADMIN } });
+
+        if (!blacklist) throw new BadRequestException(KtqResponse.toResponse(null, { message: "Can't found data" }));
+
+        const result = await this.update(blacklist.id, { start_at: null, end_at: null });
+
+        if (!result) throw new BadRequestException(KtqResponse.toResponse(null, { message: 'Data not found' }));
+
+        await this.ktqUserBlackListLogService.writeLog(result);
+        await this.ktqCacheService.clearKeysByPrefix(userBlackListsRoutes.byAdminUser(result.user_id_app));
+
+        return KtqResponse.toResponse(result);
+    }
+
+    async getBlockAdminId(id: KtqAdminUser['id']) {
+        // const now = moment().toDate();
+
+        const admin = await this.findOneWith({
+            where: {
+                user_id_app: id,
+                user_role_type: UserRoleType.ADMIN,
+                start_at: Not(IsNull()),
+                // end_at: Raw((alias) => `${alias} >= :now OR ${alias} IS NULL`, { now }),
+            },
+        });
+
+        return KtqResponse.toResponse(admin || null);
     }
 }

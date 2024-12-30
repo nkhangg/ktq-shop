@@ -1,3 +1,4 @@
+import { KtqConfigsService } from '@/modules/ktq-configs/ktq-configs.service';
 import { KeyType } from '../common/enums/key-type.enum';
 import KtqConfig from '../entities/ktq-configs.entity';
 
@@ -7,6 +8,9 @@ export default class KtqConfigConstant {
     public static CONFIG_APP_API_PREFIX = 'app-api-prefix';
     public static CONFIG_APP_API_VERSION = 'app-api-version';
     public static CONFIG_APP_CLIENT_APP_URL = 'app-client-app-url';
+    public static CONFIG_APP_CORS_SOURCES = 'app-cors-sources';
+
+    constructor(private readonly ktqConfigService: KtqConfigsService) {}
 
     public static getConfigs() {
         return [
@@ -40,7 +44,21 @@ export default class KtqConfigConstant {
                 key_type: KeyType.STRING,
                 key_value: 'http://localhost:3000/forgot-password',
             },
+            {
+                id: 6,
+                key_name: this.CONFIG_APP_CORS_SOURCES,
+                key_type: KeyType.JSON,
+                key_value: JSON.stringify(['http://localhost:3000', 'http://localhost:5173']),
+            },
         ] as KtqConfig[];
+    }
+
+    public getTest() {
+        return this.ktqConfigService.findOneWith({
+            where: {
+                key_name: 'app-host',
+            },
+        });
     }
 
     public static getAppHost() {
@@ -65,6 +83,10 @@ export default class KtqConfigConstant {
 
     public static getVersionPrefix() {
         return `/${this.getApiPrefix().key_value}/${this.getApiVersion().key_value}`;
+    }
+
+    public static getCorsSources() {
+        return this.getConfigs().find((item) => item.key_name === this.CONFIG_APP_CORS_SOURCES);
     }
 
     public static getHostname() {

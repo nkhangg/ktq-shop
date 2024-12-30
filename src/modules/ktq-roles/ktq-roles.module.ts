@@ -15,7 +15,7 @@ import KtqRoleResource from '@/entities/ktq-role-resources.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([KtqRole, KtqResource, KtqPermission, KtqRolePermission, KtqRoleResource]),
+        TypeOrmModule.forFeature([KtqRole, KtqResource, KtqPermission, KtqRolePermission, KtqRoleResource, KtqResourcePermission]),
         forwardRef(() => KtqCachesModule),
         forwardRef(() => KtqAdminUsersModule),
     ],

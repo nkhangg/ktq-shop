@@ -21,9 +21,9 @@ import { FilterOperator, FilterSuffix, paginate, PaginateQuery } from 'nestjs-pa
 import { Column } from 'nestjs-paginate/lib/helper';
 import { FindManyOptions, FindOneOptions, In, Repository } from 'typeorm';
 import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
-import { adminUserRoutes } from './ktq-admin-users.route';
 import { KtqSessionsService } from '../ktq-sessions/ktq-sessions.service';
 import KtqRole from '@/entities/ktq-roles.entity';
+import { KtqAdminUserRoutes } from './ktq-admin-users.route';
 
 @Injectable()
 export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Partial<KtqAdminUser>>, ServiceUserAuthInterface<KtqAdminUser> {
@@ -34,6 +34,7 @@ export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Part
         private readonly ktqRoleRepository: Repository<KtqRole>,
         private readonly ktqCacheService: KtqCachesService,
         private readonly ktqSessionService: KtqSessionsService,
+        private readonly ktqAdminUserRoutes: KtqAdminUserRoutes,
     ) {}
 
     async create(adminUser: Partial<KtqAdminUser>): Promise<KtqAdminUser> {
@@ -140,10 +141,19 @@ export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Part
     }
 
     async getUseTimePassword(tokenData: TTokenData) {
-        const isUseTimePassword = await this.ktqCacheService.getCache(adminUserRoutes.cacheKeyUseTimePassword(tokenData.id));
+        const cache_key = await this.ktqAdminUserRoutes.cacheKeyUseTimePassword(tokenData.id);
+        const isUseTimePassword = await this.ktqCacheService.getCache(cache_key);
 
         return KtqResponse.toResponse({
             use_time: !!isUseTimePassword,
+        });
+    }
+
+    async clearCacheByKey() {
+        const prefix = await this.ktqAdminUserRoutes.key();
+        const cache_key_use_time_password = await this.ktqAdminUserRoutes.useTimePassword();
+        await this.ktqCacheService.clearKeysByPrefix((key: string) => {
+            return key.includes(prefix) && !key.includes(cache_key_use_time_password);
         });
     }
 
@@ -152,7 +162,9 @@ export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Part
 
         if (!result) throw new BadRequestException(KtqResponse.toResponse(null, { message: `Can't update now`, status_code: HttpStatusCode.BadRequest }));
 
-        await this.ktqCacheService.clearKeysByPrefix(adminUserRoutes.byAdminUser(admin_user_id));
+        const cache_key = await this.ktqAdminUserRoutes.byAdminUser(admin_user_id);
+
+        await this.ktqCacheService.clearKeysByPrefix(cache_key);
         return KtqResponse.toResponse(plainToClass(KtqAdminUser, result));
     }
 
@@ -215,7 +227,8 @@ export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Part
             throw new BadRequestException(KtqResponse.toResponse(null, { message: 'Update failure', status_code: HttpStatusCode.BadRequest }));
         }
 
-        this.ktqCacheService.clearKeysByPrefix(adminUserRoutes.key());
+        await this.clearCacheByKey();
+
         return KtqResponse.toResponse(plainToClass(KtqAdminUser, result));
     }
 
@@ -228,7 +241,7 @@ export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Part
             throw new BadRequestException(KtqResponse.toResponse(false, { message: 'Update failure', status_code: HttpStatusCode.BadRequest }));
         }
 
-        this.ktqCacheService.clearKeysByPrefix(adminUserRoutes.key());
+        await this.clearCacheByKey();
         return KtqResponse.toResponse(true);
     }
 
@@ -248,7 +261,8 @@ export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Part
             throw new BadRequestException(KtqResponse.toResponse(null, { message: 'Update failure', status_code: HttpStatusCode.BadRequest }));
         }
 
-        this.ktqCacheService.clearKeysByPrefix(adminUserRoutes.key());
+        await this.clearCacheByKey();
+
         return KtqResponse.toResponse(plainToClass(KtqAdminUser, result));
     }
 
@@ -261,7 +275,8 @@ export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Part
             throw new BadRequestException(KtqResponse.toResponse(false, { message: 'Update failure', status_code: HttpStatusCode.BadRequest }));
         }
 
-        this.ktqCacheService.clearKeysByPrefix(adminUserRoutes.key());
+        await this.clearCacheByKey();
+
         return KtqResponse.toResponse(true);
     }
 
@@ -276,12 +291,15 @@ export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Part
 
         if (!result.affected) throw new NotFoundException(KtqResponse.toResponse(null, { message: `Can't found data`, status_code: HttpStatusCode.NotFound }));
 
-        this.ktqCacheService.clearKeysByPrefix(adminUserRoutes.key());
+        await this.clearCacheByKey();
+
         return KtqResponse.toResponse(true, { message: `Delete success ${result.affected} items` });
     }
 
     async deleteAdminUser(id: KtqAdminUser['id']) {
         const adminUser = await this.findOne(id);
+
+        console.log(id);
 
         if (!adminUser) throw new NotFoundException(KtqResponse.toResponse(null, { message: 'Not found data', status_code: HttpStatusCode.NotFound }));
 
@@ -292,7 +310,7 @@ export class KtqAdminUsersService implements ServiceInterface<KtqAdminUser, Part
 
         await this.ktqSessionService.deleteByAdminUserIds([id]);
 
-        this.ktqCacheService.clearKeysByPrefix(adminUserRoutes.key());
+        await this.clearCacheByKey();
 
         return KtqResponse.toResponse(true);
     }

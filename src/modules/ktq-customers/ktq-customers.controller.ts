@@ -12,10 +12,10 @@ import { CacheTTL } from '@nestjs/cache-manager';
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
-import { customersRoutes } from './ktq-customers.route';
+import { KtqCustomersRoutes } from './ktq-customers.route';
 import { KtqCustomersService } from './ktq-customers.service';
 
-@Controller(customersRoutes.BASE)
+@Controller(KtqCustomersRoutes.BASE)
 export class KtqCustomersController {
     constructor(private readonly ktqCustomerService: KtqCustomersService) {}
 

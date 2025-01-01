@@ -14,7 +14,7 @@ import { FilterOperator, FilterSuffix, paginate, PaginateQuery } from 'nestjs-pa
 import { Column } from 'nestjs-paginate/lib/helper';
 import { FindManyOptions, Repository } from 'typeorm';
 import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
-import { permissionRoutes } from './ktq-permissions.route';
+import { KtqPermissionsRoutes } from './ktq-permissions.route';
 
 @Injectable()
 export class KtqPermissionsService implements ServiceInterface<KtqPermission, Partial<KtqPermission>> {
@@ -26,6 +26,7 @@ export class KtqPermissionsService implements ServiceInterface<KtqPermission, Pa
         @InjectRepository(KtqRole)
         private readonly ktqRoleRepository: Repository<KtqRole>,
         private ktqCacheService: KtqCachesService,
+        private ktqPermissionsRoutes: KtqPermissionsRoutes,
     ) {}
 
     async create(permission: Partial<KtqPermission>): Promise<KtqPermission> {
@@ -104,6 +105,12 @@ export class KtqPermissionsService implements ServiceInterface<KtqPermission, Pa
         return KtqResponse.toResponse(result);
     }
 
+    async clearCacheByRole(role_id: KtqRole['id']) {
+        const prefix = await this.ktqPermissionsRoutes.role(role_id);
+
+        await this.ktqCacheService.clearKeysByPrefix(prefix);
+    }
+
     async addPermissionForRole(role_id: KtqRole['id'], data: AddPermissionForRoleData) {
         const rolePermission = await this.ktqRolePermissionRepository.findOne({
             where: {
@@ -127,7 +134,7 @@ export class KtqPermissionsService implements ServiceInterface<KtqPermission, Pa
 
         if (!result) throw new BadRequestException(KtqResponse.toResponse(null, { message: `Fail to add permission for role`, status_code: HttpStatusCode.BadRequest }));
 
-        await this.ktqCacheService.clearKeysByPrefix(permissionRoutes.role(role_id));
+        this.clearCacheByRole(role_id);
         return KtqResponse.toResponse(result);
     }
 
@@ -143,7 +150,7 @@ export class KtqPermissionsService implements ServiceInterface<KtqPermission, Pa
 
         if (!result) throw new BadRequestException(KtqResponse.toResponse(false));
 
-        await this.ktqCacheService.clearKeysByPrefix(permissionRoutes.role(role_id));
+        this.clearCacheByRole(role_id);
 
         return KtqResponse.toResponse(true);
     }

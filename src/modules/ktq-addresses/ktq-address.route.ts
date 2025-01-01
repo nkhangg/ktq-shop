@@ -1,15 +1,18 @@
+import { Injectable } from '@nestjs/common';
 import KtqConfigConstant from '@/constants/ktq-configs.constant';
 import KtqCustomer from '@/entities/ktq-customers.entity';
+import { KtqConfigsService } from '../ktq-configs/ktq-configs.service';
+import { BaseRouteService } from '@/services/routes-base';
 
-export const adRoutes = (() => {
-    const API_PREFIX = KtqConfigConstant.getApiPrefix().key_value;
-    const API_VERSION = KtqConfigConstant.getApiVersion().key_value;
-    const BASE = 'admin/addresses';
+@Injectable()
+export class KtqAddressRoutes extends BaseRouteService {
+    public static BASE = 'admin/addresses';
 
-    const buildUrl = (...paths: string[]) => `/${API_PREFIX}/${API_VERSION}/${paths.join('/')}`;
+    constructor(configService: KtqConfigsService) {
+        super(configService);
+    }
 
-    return {
-        BASE,
-        byCustomer: (customerId: KtqCustomer['id']) => buildUrl(BASE, 'customer', `${customerId}`),
-    };
-})();
+    async byCustomer(customerId: KtqCustomer['id']): Promise<string> {
+        return this.buildUrl(KtqAddressRoutes.BASE, 'customer', `${customerId}`);
+    }
+}

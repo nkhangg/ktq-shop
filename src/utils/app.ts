@@ -53,3 +53,11 @@ export function camelToSnakeCase(obj: Record<string, any>): Record<string, any> 
 
     return result;
 }
+
+export function prefixPublicUrl(prefix: string) {
+    return (key: string) => {
+        console.log(key, prefix, key.includes(prefix) && !key.includes('admin'));
+
+        return prefix.includes(key) && !key.includes('admin');
+    };
+}

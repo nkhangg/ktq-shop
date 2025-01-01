@@ -14,8 +14,8 @@ import { FindManyOptions, Repository } from 'typeorm';
 import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
 import { CreateResourcePermission } from '@/common/dtos/ktq-resource-permissions.dto';
 import { plainToClass } from 'class-transformer';
-import { resourcePermissionsRoutes } from './ktq-resource-permissions.route';
 import { HttpStatusCode } from 'axios';
+import { KtqResourcePermissionsRoutes } from './ktq-resource-permissions.route';
 
 @Injectable()
 export class KtqResourcePermissionsService implements ServiceInterface<KtqResourcePermission, Partial<KtqResourcePermission>> {
@@ -23,6 +23,7 @@ export class KtqResourcePermissionsService implements ServiceInterface<KtqResour
         @InjectRepository(KtqResourcePermission)
         private readonly ktqResourcePermissionRepository: Repository<KtqResourcePermission>,
         private readonly ktqCacheService: KtqCachesService,
+        private readonly ktqResourcePermissionsRoutes: KtqResourcePermissionsRoutes,
     ) {}
 
     async create(resourcePermission: Partial<KtqResourcePermission>): Promise<KtqResourcePermission> {
@@ -100,6 +101,12 @@ export class KtqResourcePermissionsService implements ServiceInterface<KtqResour
         return KtqResponse.toPagination<KtqResourcePermission>(data, true, KtqResourcePermission);
     }
 
+    async clearCacheByResource(resource_id: KtqResource['id']) {
+        const prefix = await this.ktqResourcePermissionsRoutes.resource(resource_id);
+
+        await this.ktqCacheService.clearKeysByPrefix(prefix);
+    }
+
     async createResourcePermission({ admin_user_id, permission_id, resource_id }: CreateResourcePermission) {
         try {
             const resourcePermission = await this.ktqResourcePermissionRepository.save({
@@ -112,7 +119,7 @@ export class KtqResourcePermissionsService implements ServiceInterface<KtqResour
                 throw new BadRequestException(KtqResponse.toResponse(null, { message: `The resource permission can't create`, status_code: HttpStatusCode.BadRequest }));
             }
 
-            await this.ktqCacheService.clearKeysByPrefix(resourcePermissionsRoutes.resource(resource_id));
+            this.clearCacheByResource(resource_id);
             return KtqResponse.toResponse(plainToClass(KtqResourcePermission, resourcePermission), { message: `The resource permission has been created` });
         } catch (error) {
             throw new NotFoundException(KtqResponse.toResponse(null, { message: `The resource permission existed`, status_code: HttpStatusCode.NotFound }));
@@ -126,7 +133,7 @@ export class KtqResourcePermissionsService implements ServiceInterface<KtqResour
             throw new BadRequestException(KtqResponse.toResponse(false, { message: `Can't delete this resource permission`, status_code: HttpStatusCode.BadRequest }));
         }
 
-        await this.ktqCacheService.clearKeysByPrefix(resourcePermissionsRoutes.resource(resource_id));
+        this.clearCacheByResource(resource_id);
         return KtqResponse.toResponse(true, { message: `The resource permission has been deleted` });
     }
 }

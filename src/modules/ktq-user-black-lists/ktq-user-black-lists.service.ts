@@ -6,17 +6,17 @@ import KtqResponse from '@/common/systems/response/ktq-response';
 import KtqCustomer from '@/entities/ktq-customers.entity';
 import KtqUserBlackList from '@/entities/ktq-user-black-lists.entity';
 
+import KtqAdminUser from '@/entities/ktq-admin-users.entity';
 import { ServiceInterface } from '@/services/service-interface';
 import moment from '@/utils/moment';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpStatusCode } from 'axios';
-import { FindManyOptions, In, IsNull, LessThanOrEqual, Not, Raw, Repository } from 'typeorm';
-import { KtqUserBlackListLogsService } from '../ktq-user-black-list-logs/ktq-user-black-list-logs.service';
+import { FindManyOptions, In, IsNull, Not, Repository } from 'typeorm';
 import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
-import { customersRoutes } from '../ktq-customers/ktq-customers.route';
-import KtqAdminUser from '@/entities/ktq-admin-users.entity';
-import { userBlackListsRoutes } from './ktq-user-black-lists.route';
+import { KtqCustomersRoutes } from '../ktq-customers/ktq-customers.route';
+import { KtqUserBlackListLogsService } from '../ktq-user-black-list-logs/ktq-user-black-list-logs.service';
+import { KtqUserBlackListsRoutes } from './ktq-user-black-lists.route';
 
 @Injectable()
 export class KtqUserBlackListsService implements ServiceInterface<KtqUserBlackList, Partial<KtqUserBlackList>> {
@@ -25,6 +25,8 @@ export class KtqUserBlackListsService implements ServiceInterface<KtqUserBlackLi
         private readonly ktqUserBlackListRepository: Repository<KtqUserBlackList>,
         private readonly ktqUserBlackListLogService: KtqUserBlackListLogsService,
         private readonly ktqCacheService: KtqCachesService,
+        private readonly ktqCustomerRoues: KtqCustomersRoutes,
+        private readonly ktqUserBlackListRoutes: KtqUserBlackListsRoutes,
     ) {}
 
     async create(userBlackList: Partial<KtqUserBlackList>): Promise<KtqUserBlackList> {
@@ -81,6 +83,11 @@ export class KtqUserBlackListsService implements ServiceInterface<KtqUserBlackLi
         return KtqResponse.toResponse(true);
     }
 
+    async clearCustomerCacheById(id: KtqCustomer['id']) {
+        const prefix = await this.ktqCustomerRoues.id(id);
+        await this.ktqCacheService.clearKeysByPrefix(prefix);
+    }
+
     async blockCustomer({ customer_id, ...data }: BlockKtqCustomerDto) {
         const blackList = await this.findOneWith({
             where: {
@@ -116,8 +123,7 @@ export class KtqUserBlackListsService implements ServiceInterface<KtqUserBlackLi
         if (!result) throw new BadRequestException(KtqResponse.toResponse(null, { message: "Can't update black list on now" }));
 
         await this.ktqUserBlackListLogService.writeLog(result);
-        await this.ktqCacheService.clearKeysByPrefix(customersRoutes.id(result.user_id_app));
-
+        await this.clearCustomerCacheById(result.user_id_app);
         return KtqResponse.toResponse(result);
     }
 
@@ -156,7 +162,7 @@ export class KtqUserBlackListsService implements ServiceInterface<KtqUserBlackLi
         if (!result) throw new BadRequestException(KtqResponse.toResponse(null, { message: "Can't update black list on now" }));
 
         await this.ktqUserBlackListLogService.writeLog(result);
-        await this.ktqCacheService.clearKeysByPrefix(userBlackListsRoutes.byAdminUser(result.user_id_app));
+        await this.clearCacheByAdminUser(result.user_id_app);
 
         return KtqResponse.toResponse(result);
     }
@@ -171,9 +177,15 @@ export class KtqUserBlackListsService implements ServiceInterface<KtqUserBlackLi
         if (!result) throw new BadRequestException(KtqResponse.toResponse(null, { message: 'Data not found' }));
 
         await this.ktqUserBlackListLogService.writeLog(result);
-        await this.ktqCacheService.clearKeysByPrefix(customersRoutes.id(blacklist.user_id_app));
+        await this.clearCustomerCacheById(result.user_id_app);
 
         return KtqResponse.toResponse(result);
+    }
+
+    async clearCacheByAdminUser(admin_user_id: KtqAdminUser['id']) {
+        const prefix = await this.ktqUserBlackListRoutes.byAdminUser(admin_user_id);
+
+        await this.ktqCacheService.clearKeysByPrefix(prefix);
     }
 
     async unlockAdminUser(id: KtqAdminUser['id']) {
@@ -186,7 +198,7 @@ export class KtqUserBlackListsService implements ServiceInterface<KtqUserBlackLi
         if (!result) throw new BadRequestException(KtqResponse.toResponse(null, { message: 'Data not found' }));
 
         await this.ktqUserBlackListLogService.writeLog(result);
-        await this.ktqCacheService.clearKeysByPrefix(userBlackListsRoutes.byAdminUser(result.user_id_app));
+        await this.clearCacheByAdminUser(result.user_id_app);
 
         return KtqResponse.toResponse(result);
     }

@@ -19,9 +19,9 @@ import { Column } from 'nestjs-paginate/lib/helper';
 import { FindManyOptions, In, QueryFailedError, Repository } from 'typeorm';
 import { KtqAdminUsersService } from '../ktq-admin-users/ktq-admin-users.service';
 import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
-import { roleRoutes } from './ktq-role.route';
 import KtqRoleResource from '@/entities/ktq-role-resources.entity';
-import { resourcesRoutes } from '../ktq-resources/ktq-resources.route';
+import { KtqResourcesRoutes } from '../ktq-resources/ktq-resources.route';
+import { KtqRoleRoutes } from './ktq-role.route';
 
 @Injectable()
 export class KtqRolesService implements ServiceInterface<KtqRole, Partial<KtqRole>> {
@@ -29,11 +29,11 @@ export class KtqRolesService implements ServiceInterface<KtqRole, Partial<KtqRol
         @InjectRepository(KtqRole)
         private readonly ktqRoleRepository: Repository<KtqRole>,
         @InjectRepository(KtqRolePermission)
-        private readonly ktqRolePermissionRepository: Repository<KtqRolePermission>,
         @InjectRepository(KtqRoleResource)
         private readonly ktqRoleResourceRepository: Repository<KtqRoleResource>,
         private readonly ktqCacheService: KtqCachesService,
-        private readonly ktqAdminUserService: KtqAdminUsersService,
+        private readonly ktqResourcesRoutes: KtqResourcesRoutes,
+        private readonly ktqRoleRoutes: KtqRoleRoutes,
     ) {}
 
     async create(role: Partial<KtqRole>): Promise<KtqRole> {
@@ -91,8 +91,13 @@ export class KtqRolesService implements ServiceInterface<KtqRole, Partial<KtqRol
 
         if (!result) throw new BadRequestException(KtqResponse.toResponse(null, { message: `Can't update now`, status_code: HttpStatusCode.BadRequest }));
 
-        await this.ktqCacheService.clearKeysByPrefix(roleRoutes.key());
+        this.clearCacheByKey();
         return KtqResponse.toResponse(result);
+    }
+
+    async clearCacheByKey() {
+        const prefix = await this.ktqRoleRoutes.key();
+        await this.ktqCacheService.clearKeysByPrefix(prefix);
     }
 
     async createRole(data: GeneralKtqRoleDto) {
@@ -100,7 +105,7 @@ export class KtqRolesService implements ServiceInterface<KtqRole, Partial<KtqRol
 
         if (!result) throw new BadRequestException(KtqResponse.toResponse(null, { message: `Can't create now`, status_code: HttpStatusCode.BadRequest }));
 
-        await this.ktqCacheService.clearKeysByPrefix(roleRoutes.key());
+        this.clearCacheByKey();
 
         return KtqResponse.toResponse(result);
     }
@@ -117,7 +122,7 @@ export class KtqRolesService implements ServiceInterface<KtqRole, Partial<KtqRol
         try {
             await this.delete(id);
 
-            await this.ktqCacheService.clearKeysByPrefix(roleRoutes.key());
+            this.clearCacheByKey();
             return KtqResponse.toResponse(true);
         } catch (error) {
             throw new BadRequestException(KtqResponse.toResponse(false, { message: `Can't delete this role`, status_code: HttpStatusCode.BadRequest }));
@@ -140,6 +145,13 @@ export class KtqRolesService implements ServiceInterface<KtqRole, Partial<KtqRol
         return KtqResponse.toResponse(plainToClass(KtqRole, rolesData));
     }
 
+    async clearCacheResources(id: KtqRole['id']) {
+        const prefix_role = await this.ktqResourcesRoutes.role(id);
+        const prefix_ignore_role = await this.ktqResourcesRoutes.ignoreRole(id);
+
+        await this.ktqCacheService.clearKeysByPrefixes([prefix_role, prefix_ignore_role]);
+    }
+
     async addResourceForRole(id: KtqRole['id'], { resource_ids }: AddResourceForRoleKtqRoleDto) {
         const role = await this.findOne(id);
 
@@ -152,7 +164,7 @@ export class KtqRolesService implements ServiceInterface<KtqRole, Partial<KtqRol
 
         await this.ktqRoleResourceRepository.save(roleResources);
 
-        await this.ktqCacheService.clearKeysByPrefixes([resourcesRoutes.role(id), resourcesRoutes.ignoreRole(id)]);
+        await this.clearCacheResources(id);
         return KtqResponse.toResponse(role);
     }
 
@@ -168,7 +180,7 @@ export class KtqRolesService implements ServiceInterface<KtqRole, Partial<KtqRol
 
         if (!result) throw new BadRequestException(KtqResponse.toResponse(false, { message: `Can't delete this role resource`, status_code: HttpStatusCode.BadRequest }));
 
-        await this.ktqCacheService.clearKeysByPrefixes([resourcesRoutes.role(role_id), resourcesRoutes.ignoreRole(role_id)]);
+        await this.clearCacheResources(role_id);
         return KtqResponse.toResponse(true);
     }
 }

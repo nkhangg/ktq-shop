@@ -21,12 +21,12 @@ import { KtqAddressesService } from '../ktq-addresses/ktq-addresses.service';
 import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
 import { KtqSessionsService } from '../ktq-sessions/ktq-sessions.service';
 import { KtqUserBlackListsService } from '../ktq-user-black-lists/ktq-user-black-lists.service';
-import { customersRoutes } from './ktq-customers.route';
 import { existsSync, mkdirSync, unlinkSync } from 'fs';
 import KtqAppConstant from '@/constants/ktq-app.constant';
 import { KtqCustomerGroupsService } from '../ktq-customer-groups/ktq-customer-groups.service';
 import { RegisterKtqCustomerDto } from '@/common/dtos/ktq-authentication.dto';
 import KtqCustomerGroupsConstant from '@/constants/ktq-customer-groups.constant';
+import { KtqCustomersRoutes } from './ktq-customers.route';
 
 @Injectable()
 export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partial<KtqCustomer>>, ServiceUserAuthInterface<KtqCustomer> {
@@ -38,6 +38,7 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
         private readonly ktqBlackListService: KtqUserBlackListsService,
         private readonly ktqAddressesService: KtqAddressesService,
         private readonly ktqCustomerGroupService: KtqCustomerGroupsService,
+        private readonly ktqCustomerRoutes: KtqCustomersRoutes,
     ) {}
 
     async create(customer: Partial<KtqCustomer>): Promise<KtqCustomer> {
@@ -58,6 +59,12 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
         return this.findOne(id);
     }
 
+    async clearCacheByKey() {
+        const prefixCache = await this.ktqCustomerRoutes.key();
+
+        await this.ktqCachesService.clearKeysByPrefix(prefixCache);
+    }
+
     async updates({ ids, ...data }: UpdatesKtqCustomerDto): Promise<any> {
         const customerInfo = cleanObject(data);
 
@@ -67,7 +74,7 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
             throw new BadRequestException(KtqResponse.toResponse(false, { message: 'Update failure', status_code: HttpStatusCode.BadRequest }));
         }
 
-        this.ktqCachesService.clearKeysByPrefix(customersRoutes.key());
+        this.clearCacheByKey();
         return KtqResponse.toResponse(true);
     }
 
@@ -136,7 +143,7 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
             throw new BadRequestException(KtqResponse.toResponse(null, { message: 'Update failure', status_code: HttpStatusCode.BadRequest }));
         }
 
-        this.ktqCachesService.clearKeysByPrefix(customersRoutes.key());
+        this.clearCacheByKey();
         return KtqResponse.toResponse(plainToClass(KtqCustomer, result));
     }
 
@@ -147,7 +154,7 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
             throw new BadRequestException(KtqResponse.toResponse(false, { message: 'Update failure', status_code: HttpStatusCode.BadRequest }));
         }
 
-        this.ktqCachesService.clearKeysByPrefix(customersRoutes.key());
+        this.clearCacheByKey();
         return KtqResponse.toResponse(true);
     }
 
@@ -164,7 +171,7 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
             throw new BadRequestException(KtqResponse.toResponse(null, { message: 'Update failure', status_code: HttpStatusCode.BadRequest }));
         }
 
-        this.ktqCachesService.clearKeysByPrefix(customersRoutes.key());
+        this.clearCacheByKey();
         return KtqResponse.toResponse(plainToClass(KtqCustomer, result));
     }
 
@@ -175,7 +182,7 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
             throw new BadRequestException(KtqResponse.toResponse(false, { message: 'Update failure', status_code: HttpStatusCode.BadRequest }));
         }
 
-        this.ktqCachesService.clearKeysByPrefix(customersRoutes.key());
+        this.clearCacheByKey();
         return KtqResponse.toResponse(true);
     }
 
@@ -188,7 +195,7 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
 
         if (!result.affected) throw new NotFoundException(KtqResponse.toResponse(null, { message: `Can't found data`, status_code: HttpStatusCode.NotFound }));
 
-        this.ktqCachesService.clearKeysByPrefix(customersRoutes.key());
+        this.clearCacheByKey();
         return KtqResponse.toResponse(true, { message: `Delete success ${result.affected} items` });
     }
 
@@ -226,7 +233,8 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
         if (!result)
             throw new BadRequestException(KtqResponse.toResponse(null, { message: `The error when update ${customer?.username}`, status_code: HttpStatusCode.BadRequest }));
 
-        this.ktqCachesService.clearKeysByPrefix(`${customersRoutes.key()}/${id}`);
+        const cacheKeyId = await this.ktqCustomerRoutes.id(id);
+        this.ktqCachesService.clearKeysByPrefix(cacheKeyId);
         return KtqResponse.toResponse(plainToClass(KtqCustomer, result), { message: logouts ? `This customer password changed. Please re-login to use` : 'Update success' });
     }
 
@@ -239,7 +247,7 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
 
         await this.ktqSessionService.deleteByCustomerIds([id]);
 
-        this.ktqCachesService.clearKeysByPrefix(customersRoutes.key());
+        this.clearCacheByKey();
 
         return KtqResponse.toResponse(true);
     }
@@ -427,7 +435,7 @@ export class KtqCustomersService implements ServiceInterface<KtqCustomer, Partia
             date_of_birth: moment(date_of_birth).toString() ?? null,
         });
 
-        this.ktqCachesService.clearKeysByPrefix(customersRoutes.key());
+        this.clearCacheByKey();
         return KtqResponse.toResponse(plainToClass(KtqCustomer, newCustomer));
     }
 }

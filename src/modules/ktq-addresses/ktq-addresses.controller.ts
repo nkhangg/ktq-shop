@@ -3,9 +3,9 @@ import { KtqAddressesService } from './ktq-addresses.service';
 import KtqCustomer from '@/entities/ktq-customers.entity';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { CreateKtqAddressDto, DeleteKtqAddressDto, DeletesKtqAddressDto, SetDefaultKtqAddressDto, UpdateKtqAddressDto } from '@/common/dtos/ktq-addresses.dto';
-import { adRoutes } from './ktq-address.route';
+import { KtqAddressRoutes } from './ktq-address.route';
 
-@Controller(adRoutes.BASE)
+@Controller(KtqAddressRoutes.BASE)
 export class KtqAddressesController {
     constructor(private readonly ktqAddressService: KtqAddressesService) {}
 

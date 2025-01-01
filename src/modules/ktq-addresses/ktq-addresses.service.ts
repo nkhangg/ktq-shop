@@ -13,7 +13,7 @@ import { FilterOperator, FilterSuffix, paginate, PaginateQuery } from 'nestjs-pa
 import { Column } from 'nestjs-paginate/lib/helper';
 import { FindManyOptions, In, Repository } from 'typeorm';
 import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
-import { adRoutes } from './ktq-address.route';
+import { KtqAddressRoutes } from './ktq-address.route';
 
 @Injectable()
 export class KtqAddressesService implements ServiceInterface<KtqAddress, Partial<KtqAddress>> {
@@ -25,6 +25,7 @@ export class KtqAddressesService implements ServiceInterface<KtqAddress, Partial
         @InjectRepository(KtqCountry)
         private readonly ktqCountryRepository: Repository<KtqCountry>,
         private readonly ktqCacheService: KtqCachesService,
+        private readonly ktqAddressRoutes: KtqAddressRoutes,
     ) {}
 
     async create(address: Partial<KtqAddress>): Promise<KtqAddress> {
@@ -100,6 +101,11 @@ export class KtqAddressesService implements ServiceInterface<KtqAddress, Partial
         return KtqResponse.toPagination<KtqAddress>(data, false, KtqAddress);
     }
 
+    async clearCacheByCustomer(customer_id: KtqCustomer['id']) {
+        const prefixKey = await this.ktqAddressRoutes.byCustomer(customer_id);
+        await this.ktqCacheService.clearKeysByPrefix(prefixKey);
+    }
+
     async setDefaultAddressByCustomer(address_id: KtqAddress['id'], customer_id: KtqCustomer['id']) {
         const customer = await this.KtqCustomerRepository.findOne({ where: { id: customer_id } });
 
@@ -111,19 +117,20 @@ export class KtqAddressesService implements ServiceInterface<KtqAddress, Partial
             const result = await this.update(address_id, { is_default: true });
 
             if (result) {
-                await this.ktqCacheService.clearKeysByPrefix(adRoutes.byCustomer(customer_id));
+                this.clearCacheByCustomer(customer_id);
                 return KtqResponse.toResponse(result);
             }
         }
 
         if (defaultAddress.id === address_id) {
-            await this.ktqCacheService.clearKeysByPrefix(adRoutes.byCustomer(customer_id));
+            this.clearCacheByCustomer(customer_id);
+
             return KtqResponse.toResponse(defaultAddress);
         }
 
         const result = await this.update(address_id, { is_default: true });
         await this.update(defaultAddress.id, { is_default: false });
-        await this.ktqCacheService.clearKeysByPrefix(adRoutes.byCustomer(customer_id));
+        this.clearCacheByCustomer(customer_id);
 
         return KtqResponse.toResponse(result);
     }
@@ -133,7 +140,7 @@ export class KtqAddressesService implements ServiceInterface<KtqAddress, Partial
 
         if (!result.affected) throw new BadRequestException(KtqResponse.toResponse(false, { message: "Can't delete now", status_code: HttpStatusCode.BadRequest }));
 
-        await this.ktqCacheService.clearKeysByPrefix(adRoutes.byCustomer(customer_id));
+        this.clearCacheByCustomer(customer_id);
 
         return KtqResponse.toResponse(true);
     }
@@ -153,7 +160,7 @@ export class KtqAddressesService implements ServiceInterface<KtqAddress, Partial
 
         if (!result) throw new BadRequestException(KtqResponse.toResponse(false, { message: "Can't delete now", status_code: HttpStatusCode.BadRequest }));
 
-        await this.ktqCacheService.clearKeysByPrefix(adRoutes.byCustomer(customer_id));
+        this.clearCacheByCustomer(customer_id);
 
         return KtqResponse.toResponse(true);
     }
@@ -178,7 +185,7 @@ export class KtqAddressesService implements ServiceInterface<KtqAddress, Partial
 
         if (!newAddress) throw new BadRequestException(KtqResponse.toResponse(null, { message: `Can't create a new address now`, status_code: HttpStatusCode.BadRequest }));
 
-        await this.ktqCacheService.clearKeysByPrefix(adRoutes.byCustomer(customer_id));
+        this.clearCacheByCustomer(customer_id);
 
         return KtqResponse.toResponse(newAddress);
     }
@@ -197,7 +204,7 @@ export class KtqAddressesService implements ServiceInterface<KtqAddress, Partial
 
         if (!newAddress) throw new BadRequestException(KtqResponse.toResponse(null, { message: `Can't create a new address now`, status_code: HttpStatusCode.BadRequest }));
 
-        await this.ktqCacheService.clearKeysByPrefix(adRoutes.byCustomer(customer_id));
+        this.clearCacheByCustomer(customer_id);
 
         return KtqResponse.toResponse(newAddress);
     }

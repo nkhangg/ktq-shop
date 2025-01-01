@@ -9,6 +9,8 @@ import { KtqUserBlackListsModule } from '../ktq-user-black-lists/ktq-user-black-
 import { KtqAddressesModule } from '../ktq-addresses/ktq-addresses.module';
 import { KtqCustomerGroupsModule } from '../ktq-customer-groups/ktq-customer-groups.module';
 import { KtqAuthenticationsModule } from '../ktq-authentications/ktq-authentications.module';
+import { KtqCustomersRoutes } from './ktq-customers.route';
+import { KtqConfigsModule } from '../ktq-configs/ktq-configs.module';
 
 @Module({
     imports: [
@@ -19,9 +21,10 @@ import { KtqAuthenticationsModule } from '../ktq-authentications/ktq-authenticat
         KtqAddressesModule,
         KtqCustomerGroupsModule,
         forwardRef(() => KtqAuthenticationsModule),
+        KtqConfigsModule,
     ],
-    providers: [KtqCustomersService],
-    exports: [KtqCustomersService],
+    providers: [KtqCustomersService, KtqCustomersRoutes],
+    exports: [KtqCustomersService, KtqCustomersRoutes],
     controllers: [KtqCustomersController],
 })
 export class KtqCustomersModule {}

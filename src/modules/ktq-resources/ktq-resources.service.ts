@@ -19,9 +19,9 @@ import { Column } from 'nestjs-paginate/lib/helper';
 import KtqRoleResource from '@/entities/ktq-role-resources.entity';
 import { DeleteKtqResourceDto } from '@/common/dtos/ktq-resources.dto';
 import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
-import { resourcesRoutes } from './ktq-resources.route';
 import { plainToClass } from 'class-transformer';
 import KtqResourcePermission from '@/entities/ktq-resource-permissions.entity';
+import { KtqResourcesRoutes } from './ktq-resources.route';
 
 @Injectable()
 export class KtqResourcesService implements ServiceInterface<KtqResource, Partial<KtqResource>> {
@@ -33,6 +33,7 @@ export class KtqResourcesService implements ServiceInterface<KtqResource, Partia
         private readonly ktqAppConfigService: KtqAppConfigsService,
         private readonly dataSource: DataSource,
         private readonly ktqCacheService: KtqCachesService,
+        private readonly ktqResourceRoutes: KtqResourcesRoutes,
     ) {}
 
     async create(resource: Partial<KtqResource>): Promise<KtqResource> {
@@ -102,6 +103,11 @@ export class KtqResourcesService implements ServiceInterface<KtqResource, Partia
         }
     }
 
+    async clearCacheByKey() {
+        const prefix = await this.ktqResourceRoutes.key();
+        await this.ktqCacheService.clearKeysByPrefix(prefix);
+    }
+
     async importResources(@Req() request: Request, cache?: boolean) {
         const routers = await this.ktqAppConfigService.getRoutes(request);
 
@@ -160,7 +166,7 @@ export class KtqResourcesService implements ServiceInterface<KtqResource, Partia
         }
 
         if (cache) {
-            await this.ktqCacheService.clearKeysByPrefix(resourcesRoutes.key());
+            await this.clearCacheByKey();
         }
 
         return KtqResponse.toResponse(result);
@@ -238,7 +244,7 @@ export class KtqResourcesService implements ServiceInterface<KtqResource, Partia
             throw new BadRequestException(KtqResponse.toResponse(false, { message: `The resource can't delete`, status_code: HttpStatusCode.BadRequest }));
         }
 
-        await this.ktqCacheService.clearKeysByPrefix(resourcesRoutes.key());
+        await this.clearCacheByKey();
         return KtqResponse.toResponse(true, { message: `The resource has been deleted` });
     }
 

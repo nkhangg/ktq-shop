@@ -1,17 +1,31 @@
-import KtqConfigConstant from '@/constants/ktq-configs.constant';
-import KtqConfig from '@/entities/ktq-configs.entity';
 import KtqCustomer from '@/entities/ktq-customers.entity';
+import { BaseRouteService } from '@/services/routes-base';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { KtqConfigsService } from './ktq-configs.service';
 
-export const configsRoutes = (() => {
-    const API_PREFIX = KtqConfigConstant.getApiPrefix().key_value;
-    const API_VERSION = KtqConfigConstant.getApiVersion().key_value;
-    const BASE = 'admin/configs';
+@Injectable()
+export class KtqConfigsRoutes {
+    public static BASE = 'admin/configs';
+    public static PUBLIC = 'configs';
 
-    const buildUrl = (...paths: string[]) => `/${API_PREFIX}/${API_VERSION}/${paths.join('/')}`;
+    constructor(@Inject(forwardRef(() => KtqConfigsService)) protected configService: KtqConfigsService) {
+        this.configService = configService;
+    }
 
-    return {
-        BASE,
-        key: () => buildUrl(BASE),
-        id: (id: KtqConfig['id']) => buildUrl(BASE, String(id)),
-    };
-})();
+    protected async buildUrl(...paths: string[]): Promise<string> {
+        const prefix_version = await this.configService.getPrefixVersion();
+        return `/${prefix_version}/${paths.join('/')}`;
+    }
+
+    async key() {
+        return this.buildUrl(KtqConfigsRoutes.BASE);
+    }
+
+    async public_key_name(key_name: string) {
+        return this.buildUrl(KtqConfigsRoutes.PUBLIC, key_name);
+    }
+
+    async public_keys() {
+        return this.buildUrl(KtqConfigsRoutes.PUBLIC);
+    }
+}

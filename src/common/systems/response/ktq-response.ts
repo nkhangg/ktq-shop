@@ -1,3 +1,4 @@
+import { HttpStatusCode } from 'axios';
 import { plainToClass } from 'class-transformer';
 import { FilterOperator, FilterSuffix, Paginated } from 'nestjs-paginate';
 import { Column } from 'nestjs-paginate/lib/helper';
@@ -6,7 +7,7 @@ export default class KtqResponse {
     public static toResponse(data: any, options?: { message?: string; status_code?: number; bonus?: any }) {
         return {
             message: options?.message || (!Boolean(data) ? `This action cannot be performed` : 'Success'),
-            status_code: options?.status_code || 200,
+            status_code: options?.status_code || (!Boolean(data) ? HttpStatusCode.BadRequest : 200),
             data: data,
             timestamp: new Date().toISOString(),
             ...(options?.bonus || {}),

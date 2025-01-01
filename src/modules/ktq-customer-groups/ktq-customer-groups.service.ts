@@ -15,7 +15,7 @@ import { FindManyOptions, Repository } from 'typeorm';
 import { KtqCustomersService } from '../ktq-customers/ktq-customers.service';
 import KtqCustomer from '@/entities/ktq-customers.entity';
 import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
-import { customerGroupRoutes } from './ktq-customer-groups.route';
+import { KtqCustomerGroupRoutes } from './ktq-customer-groups.route';
 
 @Injectable()
 export class KtqCustomerGroupsService implements ServiceInterface<KtqCustomerGroup, Partial<KtqCustomerGroup>> {
@@ -23,6 +23,7 @@ export class KtqCustomerGroupsService implements ServiceInterface<KtqCustomerGro
         @InjectRepository(KtqCustomerGroup)
         private readonly ktqCustomerGroupRepository: Repository<KtqCustomerGroup>,
         private readonly ktqCacheService: KtqCachesService,
+        private readonly ktqCustomerGroupRoutes: KtqCustomerGroupRoutes,
     ) {}
 
     async create(customerGroup: Partial<KtqCustomerGroup>): Promise<KtqCustomerGroup> {
@@ -84,12 +85,18 @@ export class KtqCustomerGroupsService implements ServiceInterface<KtqCustomerGro
         return KtqResponse.toPagination<KtqCustomerGroup>(data, true, KtqCustomerGroup);
     }
 
+    async clearCacheByKey() {
+        const prefixCache = await this.ktqCustomerGroupRoutes.key();
+
+        await this.ktqCacheService.clearKeysByPrefix(prefixCache);
+    }
+
     async createCustomerGroup(data: GeneralKtqCustomerGroupDto) {
         const result = await this.create({ name: data.name });
 
         if (!result) throw new BadRequestException(KtqResponse.toResponse(null, { message: `Can't create now`, status_code: HttpStatusCode.BadRequest }));
 
-        await this.ktqCacheService.clearKeysByPrefix(customerGroupRoutes.key());
+        this.clearCacheByKey();
 
         return KtqResponse.toResponse(plainToClass(KtqCustomerGroup, result));
     }
@@ -103,7 +110,7 @@ export class KtqCustomerGroupsService implements ServiceInterface<KtqCustomerGro
 
         if (!result) throw new BadRequestException(KtqResponse.toResponse(null, { message: `Can't update now`, status_code: HttpStatusCode.BadRequest }));
 
-        await this.ktqCacheService.clearKeysByPrefix(customerGroupRoutes.key());
+        this.clearCacheByKey();
 
         return KtqResponse.toResponse(plainToClass(KtqCustomerGroup, result));
     }
@@ -119,7 +126,7 @@ export class KtqCustomerGroupsService implements ServiceInterface<KtqCustomerGro
             throw new BadRequestException(KtqResponse.toResponse(false, { message: `Can't delete this group` }));
         }
 
-        await this.ktqCacheService.clearKeysByPrefix(customerGroupRoutes.key());
+        this.clearCacheByKey();
         return KtqResponse.toResponse(true);
     }
 }

@@ -1,17 +1,20 @@
-import { BadRequestException, RequestMethod, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, INestApplication, RequestMethod, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { useContainer } from 'class-validator';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { BadRequestExceptionFilter } from './common/systems/filters/bad-request-exception-filter';
 import KtqResponse from './common/systems/response/ktq-response';
-import KtqConfigConstant from './constants/ktq-configs.constant';
-import { DataSource, In } from 'typeorm';
-import KtqConfig from './entities/ktq-configs.entity';
 import { KtqConfigsService } from './modules/ktq-configs/ktq-configs.service';
+
+declare global {
+    var appInstance: INestApplication<any>;
+}
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+
+    global.appInstance = app;
 
     const configService = app.get(KtqConfigsService);
 

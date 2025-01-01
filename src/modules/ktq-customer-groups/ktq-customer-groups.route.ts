@@ -1,14 +1,16 @@
-import KtqConfigConstant from '@/constants/ktq-configs.constant';
+import { BaseRouteService } from '@/services/routes-base';
+import { Injectable } from '@nestjs/common';
+import { KtqConfigsService } from '../ktq-configs/ktq-configs.service';
 
-export const customerGroupRoutes = (() => {
-    const API_PREFIX = KtqConfigConstant.getApiPrefix().key_value;
-    const API_VERSION = KtqConfigConstant.getApiVersion().key_value;
-    const BASE = 'admin/customer-groups';
+@Injectable()
+export class KtqCustomerGroupRoutes extends BaseRouteService {
+    public static BASE = 'admin/customer-groups';
 
-    const buildUrl = (...paths: string[]) => `/${API_PREFIX}/${API_VERSION}/${paths.join('/')}`;
+    constructor(configService: KtqConfigsService) {
+        super(configService);
+    }
 
-    return {
-        BASE,
-        key: () => buildUrl(BASE),
-    };
-})();
+    async key() {
+        return this.buildUrl(KtqCustomerGroupRoutes.BASE);
+    }
+}

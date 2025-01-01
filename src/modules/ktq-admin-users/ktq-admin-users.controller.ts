@@ -12,12 +12,12 @@ import {
     UpdateKtqAdminUserDto,
     UpdateRoleKtqAdminUserDto,
 } from '@/common/dtos/ktq-admin-users.dto';
-import { adminUserRoutes } from './ktq-admin-users.route';
 import { TokenData, TTokenData } from '@/common/decorators/token-data.decorator';
 import { CacheTTL } from '@nestjs/cache-manager';
 import { BlockActionForRoot } from '@/common/guards/block-action-for-root.guard';
+import { KtqAdminUserRoutes } from './ktq-admin-users.route';
 
-@Controller(adminUserRoutes.BASE)
+@Controller(KtqAdminUserRoutes.BASE)
 export class KtqAdminUsersController {
     constructor(private readonly ktqAdminUserService: KtqAdminUsersService) {}
 

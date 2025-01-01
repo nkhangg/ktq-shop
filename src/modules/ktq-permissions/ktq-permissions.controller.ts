@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { KtqPermissionsService } from './ktq-permissions.service';
-import { Paginate, PaginateQuery } from 'nestjs-paginate';
-import KtqRole from '@/entities/ktq-roles.entity';
 import { AddPermissionForRoleData } from '@/common/dtos/ktq-permissions.dto';
-import { permissionRoutes } from './ktq-permissions.route';
+import KtqRole from '@/entities/ktq-roles.entity';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Paginate, PaginateQuery } from 'nestjs-paginate';
+import { KtqPermissionsRoutes } from './ktq-permissions.route';
+import { KtqPermissionsService } from './ktq-permissions.service';
 
-@Controller(permissionRoutes.BASE)
+@Controller(KtqPermissionsRoutes.BASE)
 export class KtqPermissionsController {
     constructor(private readonly ktqPermissionService: KtqPermissionsService) {}
 

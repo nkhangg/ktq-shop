@@ -6,11 +6,13 @@ import { KtqAdminUsersController } from './ktq-admin-users.controller';
 import { KtqCachesModule } from '../ktq-caches/ktq-caches.module';
 import { KtqSessionsModule } from '../ktq-sessions/ktq-sessions.module';
 import KtqRole from '@/entities/ktq-roles.entity';
+import { KtqAdminUserRoutes } from './ktq-admin-users.route';
+import { KtqConfigsModule } from '../ktq-configs/ktq-configs.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([KtqAdminUser, KtqRole]), KtqCachesModule, KtqSessionsModule],
-    providers: [KtqAdminUsersService],
+    imports: [TypeOrmModule.forFeature([KtqAdminUser, KtqRole]), KtqCachesModule, KtqSessionsModule, KtqConfigsModule],
+    providers: [KtqAdminUsersService, KtqAdminUserRoutes],
     controllers: [KtqAdminUsersController],
-    exports: [KtqAdminUsersService],
+    exports: [KtqAdminUsersService, KtqAdminUserRoutes],
 })
 export class KtqAdminUsersModule {}

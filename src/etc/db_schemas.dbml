@@ -1,22 +1,22 @@
 Table ktq_configs {
   id integer [primary key]
   key_name varchar unique
-  key_type enum('string', 'number', 'json', 'none')
+  key_type enum('string', 'number', 'json', 'none', 'boolean')
   key_space enum('public', 'private') [ default: 'private']
   key_value varchar
 }
 
-Table ktq_websites{
-  id integer [primary key]
-  website_name varchar
-  description varchar
-  created_at timestamp
-  updated_at timestamp
-}
+// Table ktq_websites{
+//   id integer [primary key]
+//   website_name varchar
+//   description varchar
+//   created_at timestamp
+//   updated_at timestamp
+// }
 
 Table ktq_categories{
   id integer [primary key]
-  website_id integer
+  // website_id integer
   name varchar
   enable boolean
   url_key varchar
@@ -76,11 +76,11 @@ Table ktq_products {
   updated_at timestamp
 }
 
-Table ktq_product_websites {
-  id integer [primary key]
-  product_id integer // Liên kết đến bảng sản phẩm
-  website_id integer // Liên kết đến bảng website
-}
+// Table ktq_product_websites {
+//   id integer [primary key]
+//   product_id integer // Liên kết đến bảng sản phẩm
+//   website_id integer // Liên kết đến bảng website
+// }
 
 Table ktq_attribute_sets {
   id integer [primary key]
@@ -237,7 +237,7 @@ Table ktq_sessions {
 
 Table ktq_orders {
   id integer [primary key]
-  website_id integer
+  // website_id integer
   user_id integer // ID của người đặt hàng
   total_amount float // Tổng số tiền của đơn hàng
   shipping_cost float // Chi phí giao hàng (nếu có)
@@ -513,8 +513,8 @@ Ref: ktq_addresses.customer_id > ktq_customers.id
 Ref: ktq_addresses.country_id > ktq_countries.id
 Ref: ktq_addresses.region_id > ktq_regions.id
 
-Ref: ktq_product_websites.product_id > ktq_products.id
-Ref: ktq_product_websites.website_id > ktq_websites.id
+// Ref: ktq_product_websites.product_id > ktq_products.id
+// Ref: ktq_product_websites.website_id > ktq_websites.id
 
 Ref: ktq_coupon_usage.coupon_id > ktq_coupons.id
 Ref: ktq_coupon_usage.user_id > ktq_customers.id // Nếu user_id là khách hàng

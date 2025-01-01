@@ -4,10 +4,10 @@ import KtqRole from '@/entities/ktq-roles.entity';
 import { Body, Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
-import { resourcesRoutes } from './ktq-resources.route';
 import { KtqResourcesService } from './ktq-resources.service';
+import { KtqResourcesRoutes } from './ktq-resources.route';
 
-@Controller(resourcesRoutes.BASE)
+@Controller(KtqResourcesRoutes.BASE)
 export class KtqResourcesController {
     constructor(private readonly ktqResourceService: KtqResourcesService) {}
 

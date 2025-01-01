@@ -5,11 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { KtqCustomerGroupsController } from './ktq-customer-groups.controller';
 import { KtqCustomerGroupsService } from './ktq-customer-groups.service';
 import { KtqCachesModule } from '../ktq-caches/ktq-caches.module';
+import { KtqConfigsModule } from '../ktq-configs/ktq-configs.module';
+import { KtqCustomerGroupRoutes } from './ktq-customer-groups.route';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([KtqCustomerGroup, KtqCustomer]), KtqCachesModule],
-    providers: [KtqCustomerGroupsService],
+    imports: [TypeOrmModule.forFeature([KtqCustomerGroup, KtqCustomer]), KtqCachesModule, KtqConfigsModule],
+    providers: [KtqCustomerGroupsService, KtqCustomerGroupRoutes],
     controllers: [KtqCustomerGroupsController],
-    exports: [KtqCustomerGroupsService],
+    exports: [KtqCustomerGroupsService, KtqCustomerGroupRoutes],
 })
 export class KtqCustomerGroupsModule {}

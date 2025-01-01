@@ -44,6 +44,31 @@ export class KtqCachesService {
         await pipeline.exec();
     }
 
+    async clearPublicKeysByPrefix(prefix: string | ((key: string) => boolean)): Promise<void> {
+        const stream = this.redis.scanStream({
+            match: typeof prefix === 'string' ? `${prefix}*` : `*`,
+        });
+
+        const pipeline = this.redis.pipeline();
+        for await (const keys of stream) {
+            if (keys.length > 0) {
+                keys.forEach((key: string) => {
+                    if (typeof prefix === 'string') {
+                        if (key.includes(prefix) && !key.includes('admin')) {
+                            pipeline.del(key);
+                        }
+                    } else {
+                        if (prefix(key) && !key.includes('admin')) {
+                            pipeline.del(key);
+                        }
+                    }
+                });
+            }
+        }
+
+        await pipeline.exec();
+    }
+
     async clearKeysByPrefixes(prefixes: string[] | ((key: string) => boolean)[]): Promise<void> {
         for (const prefix of prefixes) {
             await this.clearKeysByPrefix(prefix);

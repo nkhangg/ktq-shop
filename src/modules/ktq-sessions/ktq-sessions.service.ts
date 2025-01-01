@@ -12,8 +12,8 @@ import { FilterOperator, FilterSuffix, paginate, PaginateQuery } from 'nestjs-pa
 import { Column } from 'nestjs-paginate/lib/helper';
 import { FindManyOptions, FindOptionsWhere, In, Repository } from 'typeorm';
 import { KtqCachesService } from '../ktq-caches/services/ktq-caches.service';
-import { sessionsRoutes } from './ktq-sessions.route';
 import KtqAdminUser from '@/entities/ktq-admin-users.entity';
+import { KtqSessionsRoutes } from './ktq-sessions.route';
 
 @Injectable()
 export class KtqSessionsService implements ServiceInterface<KtqSession, Partial<KtqSession>> {
@@ -21,6 +21,7 @@ export class KtqSessionsService implements ServiceInterface<KtqSession, Partial<
         @InjectRepository(KtqSession)
         private readonly ktqSessionRepository: Repository<KtqSession>,
         private readonly ktqCachesService: KtqCachesService,
+        private readonly ktqSessionsRoutes: KtqSessionsRoutes,
     ) {}
 
     async create(session: Partial<KtqSession>): Promise<KtqSession> {
@@ -149,6 +150,11 @@ export class KtqSessionsService implements ServiceInterface<KtqSession, Partial<
         return KtqResponse.toPagination<KtqSession>(data, true, KtqSession);
     }
 
+    async clearCacheByCustomer(user_id: number) {
+        const prefix = await this.ktqSessionsRoutes.getByCustomer(user_id);
+        await this.ktqCachesService.clearKeysByPrefix(prefix);
+    }
+
     async logoutCustomer({ id_session, user_id }: { user_id: KtqCustomer['id']; id_session: KtqSession['id'] }) {
         const session = await this.findOneWith({
             where: {
@@ -164,8 +170,7 @@ export class KtqSessionsService implements ServiceInterface<KtqSession, Partial<
         const updatedSession = await this.update(session.id, { live: false });
 
         // clear cache
-        console.log(sessionsRoutes.getByCustomer(user_id));
-        this.ktqCachesService.clearKeysByPrefix(sessionsRoutes.getByCustomer(user_id));
+        await this.clearCacheByCustomer(user_id);
         return KtqResponse.toResponse(plainToClass(KtqSession, updatedSession));
     }
 
@@ -175,7 +180,7 @@ export class KtqSessionsService implements ServiceInterface<KtqSession, Partial<
         if (!updatedSessions.affected) throw new NotFoundException(KtqResponse.toResponse(null, { message: `Can't found data`, status_code: HttpStatusCode.NotFound }));
 
         // clear cache
-        this.ktqCachesService.clearKeysByPrefix(sessionsRoutes.getByCustomer(user_id));
+        await this.clearCacheByCustomer(user_id);
         return KtqResponse.toResponse(plainToClass(KtqSession, updatedSessions));
     }
 

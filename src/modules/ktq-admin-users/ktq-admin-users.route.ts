@@ -1,5 +1,8 @@
 import KtqConfigConstant from '@/constants/ktq-configs.constant';
 import KtqAdminUser from '@/entities/ktq-admin-users.entity';
+import { BaseRouteService } from '@/services/routes-base';
+import { KtqConfigsService } from '../ktq-configs/ktq-configs.service';
+import { Injectable } from '@nestjs/common';
 
 export function extractIds(inputString: string) {
     const regex = /admin_cache_password_time-\[(\d+)]/;
@@ -15,19 +18,28 @@ export function extractIds(inputString: string) {
     return null;
 }
 
-export const adminUserRoutes = (() => {
-    const buildUrl = (...paths: string[]) => `/${API_PREFIX}/${API_VERSION}/${paths.join('/')}`;
+@Injectable()
+export class KtqAdminUserRoutes extends BaseRouteService {
+    public static BASE = 'admin/admin-users';
 
-    const API_PREFIX = KtqConfigConstant.getApiPrefix().key_value;
-    const API_VERSION = KtqConfigConstant.getApiVersion().key_value;
-    const BASE = 'admin/admin-users';
-    const BASE_USE_TIME_PASSWORD = buildUrl(BASE, 'admin_cache_password_time');
+    constructor(configService: KtqConfigsService) {
+        super(configService);
+    }
 
-    return {
-        BASE,
-        BASE_USE_TIME_PASSWORD,
-        key: () => buildUrl(BASE),
-        byAdminUser: (admin_user_id: KtqAdminUser['id']) => buildUrl(BASE, `${admin_user_id}`),
-        cacheKeyUseTimePassword: (requester_id: KtqAdminUser['id']) => `${BASE_USE_TIME_PASSWORD}-[${requester_id}]`,
-    };
-})();
+    async useTimePassword() {
+        return await this.buildUrl(KtqAdminUserRoutes.BASE, 'admin_cache_password_time');
+    }
+
+    public key() {
+        return this.buildUrl(KtqAdminUserRoutes.BASE);
+    }
+
+    public byAdminUser(adminUserId: KtqAdminUser['id']) {
+        return this.buildUrl(KtqAdminUserRoutes.BASE, `${adminUserId}`);
+    }
+
+    async cacheKeyUseTimePassword(requesterId: KtqAdminUser['id']) {
+        const BASE_USE_TIME_PASSWORD = await this.useTimePassword();
+        return `${BASE_USE_TIME_PASSWORD}-[${requesterId}]`;
+    }
+}

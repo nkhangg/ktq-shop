@@ -1,19 +1,21 @@
 import KtqAppConstant from '@/constants/ktq-app.constant';
 import { CacheInterceptor } from '@/interceptors/cache-interceptor';
+import { RedisModule } from '@nestjs-modules/ioredis';
 import { CacheModule, CacheStore } from '@nestjs/cache-manager';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { redisStore } from 'cache-manager-redis-yet';
-import { KtqCachesService } from './services/ktq-caches.service';
-import { RedisModule } from '@nestjs-modules/ioredis';
-import { RedisKeyExpirationListenerService } from './services/redis-key-expiration-listener.service';
+import { KtqAdminUsersModule } from '../ktq-admin-users/ktq-admin-users.module';
 import { KtqEventsModule } from '../ktq-events-sse/ktq-events-sse.module';
 import { KtqCachesController } from './ktq-caches.controller';
+import { KtqCachesService } from './services/ktq-caches.service';
+import { RedisKeyExpirationListenerService } from './services/redis-key-expiration-listener.service';
 @Module({
     imports: [
         ConfigModule,
         KtqEventsModule,
+        forwardRef(() => KtqAdminUsersModule),
         CacheModule.registerAsync({
             isGlobal: true,
             useFactory: async (configService: ConfigService) => {

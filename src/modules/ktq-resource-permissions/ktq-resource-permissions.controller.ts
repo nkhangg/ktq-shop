@@ -1,11 +1,11 @@
+import { CreateResourcePermission, DeleteResourcePermission } from '@/common/dtos/ktq-resource-permissions.dto';
 import KtqResource from '@/entities/ktq-resources.entity';
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
-import { resourcePermissionsRoutes } from './ktq-resource-permissions.route';
+import { KtqResourcePermissionsRoutes } from './ktq-resource-permissions.route';
 import { KtqResourcePermissionsService } from './ktq-resource-permissions.service';
-import { CreateResourcePermission, DeleteResourcePermission } from '@/common/dtos/ktq-resource-permissions.dto';
 
-@Controller(resourcePermissionsRoutes.BASE)
+@Controller(KtqResourcePermissionsRoutes.BASE)
 export class KtqResourcePermissionsController {
     constructor(private readonly ktqResourcePermissionsService: KtqResourcePermissionsService) {}
 

@@ -1,21 +1,19 @@
-import KtqAdminUser from '@/entities/ktq-admin-users.entity';
+import { KtqAdminUserRoutes } from '@/modules/ktq-admin-users/ktq-admin-users.route';
 import { KtqAdminUsersService } from '@/modules/ktq-admin-users/ktq-admin-users.service';
-import { Injectable, CanActivate, ExecutionContext, BadRequestException, NotFoundException, UnauthorizedException, Inject } from '@nestjs/common';
+import { KtqCachesService } from '@/modules/ktq-caches/services/ktq-caches.service';
+import { BadRequestException, CanActivate, ExecutionContext, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { HttpStatusCode } from 'axios';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
-import KtqResponse from '../systems/response/ktq-response';
-import { HttpStatusCode } from 'axios';
-import { ConfirmPasswordAdmin } from '../dtos/ktq-admin-users.dto';
-import { KtqCachesService } from '@/modules/ktq-caches/services/ktq-caches.service';
 import { TTokenData } from '../decorators/token-data.decorator';
-import { adminUserRoutes } from '@/modules/ktq-admin-users/ktq-admin-users.route';
-import { Cache, CACHE_MANAGER, CacheTTL } from '@nestjs/cache-manager';
-import { KtqEventsSseService } from '@/modules/ktq-events-sse/ktq-events-sse.service';
+import { ConfirmPasswordAdmin } from '../dtos/ktq-admin-users.dto';
+import KtqResponse from '../systems/response/ktq-response';
 @Injectable()
 export class ConfirmPasswordAdminGuard implements CanActivate {
     constructor(
         private readonly ktqAdminUserService: KtqAdminUsersService,
         private readonly ktqCacheService: KtqCachesService,
+        private readonly ktqAdminUserRoutes: KtqAdminUserRoutes,
     ) {}
 
     async canActivate(context: ExecutionContext) {
@@ -38,7 +36,7 @@ export class ConfirmPasswordAdminGuard implements CanActivate {
             throw new UnauthorizedException(KtqResponse.toResponse(null, { message: `Unauthenticated` }));
         }
 
-        const cache_key = adminUserRoutes.cacheKeyUseTimePassword(decoded.id);
+        const cache_key = await this.ktqAdminUserRoutes.cacheKeyUseTimePassword(decoded.id);
 
         const passwordInCache = await this.ktqCacheService.getCache<string>(cache_key);
 
@@ -65,7 +63,9 @@ export class ConfirmPasswordAdminGuard implements CanActivate {
             // await this.ktqCacheService.setCache<string>(cache_key, bcrypt.hashSync(body.admin_password), 300000);
 
             if (request_admin_id) {
-                await this.ktqCacheService.clearKeysByPrefix(adminUserRoutes.byAdminUser(request_admin_id));
+                const prefixCache = await this.ktqAdminUserRoutes.byAdminUser(request_admin_id);
+                console.log(prefixCache);
+                await this.ktqCacheService.clearKeysByPrefix(prefixCache);
             }
         }
 

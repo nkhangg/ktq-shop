@@ -3,10 +3,10 @@ import KtqAdminUser from '@/entities/ktq-admin-users.entity';
 import { CacheTTL } from '@nestjs/cache-manager';
 import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { KtqUserBlackListsService } from './ktq-user-black-lists.service';
-import { userBlackListsRoutes } from './ktq-user-black-lists.route';
 import { ConfirmPasswordAdminGuard } from '@/common/guards/confirm-password-admin.guard';
+import { KtqUserBlackListsRoutes } from './ktq-user-black-lists.route';
 
-@Controller(userBlackListsRoutes.BASE)
+@Controller(KtqUserBlackListsRoutes.BASE)
 @CacheTTL(10000)
 export class KtqUserBlackListsController {
     constructor(private readonly ktqUserBlackListsService: KtqUserBlackListsService) {}

@@ -2,10 +2,10 @@ import GeneralKtqCustomerGroupDto from '@/common/dtos/ktq-customer-groups.dto';
 import KtqCustomerGroup from '@/entities/ktq-customer-groups.entity';
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
-import { customerGroupRoutes } from './ktq-customer-groups.route';
+import { KtqCustomerGroupRoutes } from './ktq-customer-groups.route';
 import { KtqCustomerGroupsService } from './ktq-customer-groups.service';
 
-@Controller(customerGroupRoutes.BASE)
+@Controller(KtqCustomerGroupRoutes.BASE)
 export class KtqCustomerGroupsController {
     constructor(private readonly ktqCustomerGroupsService: KtqCustomerGroupsService) {}
 

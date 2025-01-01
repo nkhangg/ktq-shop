@@ -3,10 +3,10 @@ import KtqCustomer from '@/entities/ktq-customers.entity';
 import { Body, Controller, Get, Param, Put } from '@nestjs/common';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { KtqSessionsService } from './ktq-sessions.service';
-import { sessionsRoutes } from './ktq-sessions.route';
 import { TokenData, TTokenData } from '@/common/decorators/token-data.decorator';
+import { KtqSessionsRoutes } from './ktq-sessions.route';
 
-@Controller(sessionsRoutes.BASE)
+@Controller(KtqSessionsRoutes.BASE)
 export class KtqSessionsController {
     constructor(private ktqSession: KtqSessionsService) {}
 
